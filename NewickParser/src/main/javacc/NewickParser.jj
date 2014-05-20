@@ -1,0 +1,117 @@
+options {
+STATIC=false;
+//LOOKAHEAD=2;
+//DEBUG_PARSER=true;
+}
+
+PARSER_BEGIN(NewickParserImpl)
+
+package de.cebitec.mgx.newick.impl;
+
+/*
+ * adapted based on https://bitbucket.org/djiao/a-lightweight-javacc-newick-parser
+ */
+
+import java.util.*;
+import java.io.StringReader;
+import de.cebitec.mgx.newick.NodeI;
+
+@SuppressWarnings("unchecked")
+public class NewickParserImpl {
+
+    /* string-based constructor */
+    public NewickParserImpl(String nwk) {
+        this(new StringReader(nwk));
+    }
+
+	/** a very simple tree node class */
+	public static class TreeNode implements NodeI {
+		private List<NodeI> children;
+		private double weight;
+		private String name;
+		public TreeNode() {}
+		public void addChild(TreeNode child) { if (children == null) { children = new ArrayList<NodeI>(); } this.children.add(child); }
+		public List<NodeI> getChildren() { return this.children; }
+		public void setWeight(double weight) { this.weight = weight; }
+		public double getWeight() { return weight; }
+		public void setName(String name) { this.name = name; }
+                public boolean isLeaf() { return children == null || children.isEmpty(); }
+		public String getName() { return name != null ? name : ""; }
+		public List<NodeI> getLeaves() { 
+			List<NodeI> leaves = new ArrayList<NodeI>();
+			if (isLeaf()) {
+                            leaves.add(this); 
+                        }
+			else { for (NodeI child: children) { leaves.addAll(child.getLeaves()); }}
+			return leaves;
+		}
+	}
+}
+
+PARSER_END(NewickParserImpl)
+
+SKIP :
+{
+"\t"
+| "\n"
+| "\r"
+}
+
+TOKEN : /* LITERALS */
+{
+  <#LETTER:(["a"-"z"]|["A"-"Z"]|"_"|"-"|"/"|"."|"|"|"+"|"'"|"#"|"{"|"}"|"*"|"<"|">"|"&"|"?"|"`"|"%"|"^"|"="|";"|" ")>
+| <#DIGIT:["0"-"9"]>
+| <LPAR: "(">
+| <RPAR: ")">
+| <COMMA: ",">
+| <SEMICOLON: ";">
+| <IDENTIFIER: (<DIGIT>|<LETTER>)+>
+| <SINGLE_QUOTED_STRING: "\'" (~["\'"])* "\'"> 
+| <DOUBLE_QUOTED_STRING: "\"" (~["\""])* "\""> 
+| <REALNUMBER: (<DIGIT>)+ | (<DIGIT>)+"."(<DIGIT>)+>
+| <COLON: ":">
+| <NODE: <IDENTIFIER> <COLON> <REALNUMBER>>
+| <UNNAMEDNODE: <COLON> <REALNUMBER>>
+}
+
+public TreeNode tree(): { TreeNode root = null; }
+{
+	[ root = branch() ] <SEMICOLON> <EOF>
+	{
+		if (root == null) root = new TreeNode();
+		return root;
+	}
+}
+
+private TreeNode branch(): { Token t; TreeNode node;}
+{
+	node = subtree() [ <COLON> t = <REALNUMBER> { node.setWeight(Double.parseDouble(t.image)); } ] 
+	{
+		return node;
+	}
+}
+
+private TreeNode subtree(): { TreeNode node = null; Token t; String[] parts; }
+{
+	( t = <IDENTIFIER> { node = new TreeNode(); node.setName(t.image); } | 
+          t = <NODE> { node = new TreeNode(); parts = t.image.split(":"); node.setName(parts[0]); node.setWeight(Double.parseDouble(parts[1])); } | 
+	  t = <SINGLE_QUOTED_STRING> { node = new TreeNode(); node.setName(t.image.substring(1, t.image.length()-1)); } |
+	  t = <DOUBLE_QUOTED_STRING> { node = new TreeNode(); node.setName(t.image.substring(1, t.image.length()-1)); } |
+	  node = internal() 
+        ) 
+	{ return node; }
+} 
+
+private TreeNode internal(): { Token t, u; TreeNode node = new TreeNode(); TreeNode child; }
+{
+        <LPAR> ( child = branch() { node.addChild(child); } ( <COMMA> child = branch() { node.addChild(child); } )* ) <RPAR>
+        (
+          t = <UNNAMEDNODE> { node.setWeight(Double.parseDouble(t.image.substring(1))); } |
+          t = <IDENTIFIER> { node.setName(t.image); } | 
+	  t = <SINGLE_QUOTED_STRING> { node.setName(t.image.substring(1, t.image.length()-1)); } |
+	  t = <DOUBLE_QUOTED_STRING> { node.setName(t.image.substring(1, t.image.length()-1)); } )?
+	{ return node; }
+}
+
+
+
