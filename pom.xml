@@ -15,6 +15,7 @@
         <module>MGX-parallelPropChange</module>
         <module>NewickParser</module>
         <module>KEGG-Pathways</module>
+        <module>ProtoBuf-Serializer</module>
     </modules>
   
     <distributionManagement>
