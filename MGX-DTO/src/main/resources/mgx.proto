@@ -1,0 +1,469 @@
+package MGX;
+
+option java_package = "de.cebitec.mgx.dto";
+option java_outer_classname = "dto";
+option optimize_for = SPEED;
+
+// basic transfer data types
+
+message MGXString {
+  required string value = 1;
+}
+
+message MGXStringList {
+  repeated MGXString string = 1;
+}
+
+message MGXLong {
+  required uint64 value = 1;
+}
+
+message MGXLongList {
+  repeated uint64 long = 1;
+}
+
+message MGXDoubleList {
+  repeated double value = 1;
+}
+
+message MGXBoolean {
+  required bool value = 1;
+}
+
+message MGXBooleanList {
+  repeated bool l = 1;
+}
+
+message KVPair {
+    required string key = 1;
+    required string value = 2;
+}
+
+message ChoicesDTO {
+    repeated KVPair entry = 1;
+}
+
+// GPMS
+
+//message RoleDTO {
+//  required string name = 1;
+//}
+
+//message RoleDTOList {
+//  repeated RoleDTO role = 1;
+//}
+
+//message ProjectClassDTO {
+//  required string name = 1;
+//  required RoleDTOList roles = 2;
+//}
+
+//message ProjectClassDTOList {
+//  repeated ProjectClassDTO projectclass = 1;
+//}
+
+//message ProjectDTO {
+//  required string name = 1;
+//  required ProjectClassDTO project_class = 2;
+//}
+
+//message ProjectDTOList {
+//  repeated ProjectDTO project = 1;
+//}
+
+//message MembershipDTO {
+//  required ProjectDTO project = 1;
+//  required RoleDTO role = 2;
+//}
+
+//message MembershipDTOList {
+//  repeated MembershipDTO membership = 1;
+//}
+
+// ontology repository
+
+message TermDTO {
+    required uint64 id = 1;
+    required string name = 2;
+    optional string description = 3;
+    optional uint64 parent_id = 4;
+}
+
+message TermDTOList {
+    repeated TermDTO term = 1;
+}
+
+// MGX message types
+
+// attributetype
+
+message AttributeTypeDTO {
+  optional uint64 id = 1;
+  required string name = 2;
+  required string value_type = 3;   //  D: discrete, N: numeric
+  required string structure = 4;    //  B: basic, H: hierarchical
+}
+
+message AttributeTypeDTOList {
+  repeated AttributeTypeDTO attribute_type = 1;
+}
+
+// attribute
+
+message AttributeDTO {
+  optional uint64 id = 1;
+  required uint64 attribute_type_id = 2;
+  required string value = 3;
+  required uint64 jobid = 4;
+  optional uint64 parent_id = 5;
+}
+
+message AttributeDTOList {
+  repeated AttributeDTO attribute = 1;
+}
+
+message AttributeCount {
+  required AttributeDTO attribute = 1;
+  required uint64 count = 2;
+}
+
+message AttributeDistribution {
+  repeated AttributeTypeDTO attribute_type = 1;
+  repeated AttributeCount attribute_counts = 2;
+}
+
+message CorrelatedAttributeCount {
+  required AttributeDTO attribute = 1;
+  required AttributeDTO restricted_attribute = 2;
+  required int32 count = 3;
+}
+
+message AttributeCorrelation {
+  repeated AttributeTypeDTO attribute_type = 1;
+  repeated CorrelatedAttributeCount entry = 2;
+}
+
+// observation
+
+message ObservationDTO {
+    required int32 start = 1;
+    required int32 stop = 2;
+    required string attribute_name = 3;
+    required string attribute_type_value = 4;
+}
+
+message ObservationDTOList {
+    repeated ObservationDTO observation = 1;
+}
+
+// Habitat
+message HabitatDTO {
+    optional uint64 id = 1;
+    required string name = 2;
+    required double gps_latitude = 3;
+    required double gps_longitude = 4;
+    required int32 altitude = 5;
+    required string biome = 6;
+    optional string description = 7;
+}
+
+message HabitatDTOList  {
+  repeated HabitatDTO habitat = 1;
+}
+
+// Sample
+message SampleDTO {
+    optional uint64 id = 1;
+    required uint64 habitatId = 2;
+    required uint64 collectiondate = 3;
+    required string material = 4;
+    optional double temperature = 5;
+    optional int32 volume = 6;
+    optional string volume_unit = 7; // ml, l, g
+}
+
+message SampleDTOList {
+  repeated SampleDTO sample = 1;
+}
+
+
+// DNAExtract
+
+message DNAExtractDTO {
+    optional uint64 id = 1;
+    required uint64 sample_id = 2;
+    required string name = 3;
+    optional string method = 4;
+    optional string protocolName = 5;
+
+    optional string description = 6;
+
+    optional string fivePrimePrimer = 7;
+    optional string threePrimePrimer = 8;
+    optional string targetGene = 9;
+    optional string targetFragment = 10;
+}
+
+message DNAExtractDTOList {
+  repeated DNAExtractDTO extract = 1;
+}
+
+
+
+// SeqRun
+
+message SeqRunDTO {
+    optional uint64 id = 1;
+    required uint64 extract_id = 2;
+    required string name = 3;
+    required bool submitted_to_insdc = 4;
+    optional string accession = 5;
+    required TermDTO sequencingTechnology = 6;  // 454, Sanger, Illumina term id
+    required TermDTO sequencingMethod = 7; // Whole-Genome, Paired-End term id
+    optional uint64 num_sequences = 8; // 
+}
+
+message SeqRunDTOList {
+    repeated SeqRunDTO seqrun = 1;
+}
+
+// Sequence
+
+message SequenceDTO {
+  optional uint64 id = 1;
+  required string name = 2;
+  optional string sequence = 3;
+  optional bytes quality = 4;
+  optional int32 length = 5;
+}
+
+message SequenceDTOList {
+  repeated SequenceDTO seq = 1;
+  required bool complete = 2;
+  optional string uuid = 3;
+}
+
+// Tool
+message ToolDTO {
+    optional uint64 id = 1;
+    required string name = 2;
+    required string description = 3;
+    optional float version = 4;
+    required string author = 5;
+    optional string url = 6;
+    optional string xml = 7;
+}
+
+message ToolDTOList  {
+  repeated ToolDTO tool = 1;
+}
+
+// Job
+
+// job configuration - description of a parameter
+// that can be configured for a certain job
+
+
+message JobParameterDTO {
+    optional uint64 id = 1;
+    required uint64 node_id = 2;
+    required string user_name = 3;
+    required string user_desc = 4;
+
+    optional string display_name = 5;
+    optional string class_name = 6;
+    optional ChoicesDTO choices = 7;
+
+    required string parameter_name = 8;
+    optional string parameter_value = 9;
+    optional string type = 10;
+    optional bool is_optional = 11;
+    optional string default_value = 12;
+}
+
+message JobParameterListDTO {
+    repeated JobParameterDTO parameter = 1;
+}
+
+message JobDTO {
+  optional uint64 id = 1;
+  required uint64 seqrun_id = 2;
+  required uint64 tool_id = 3;
+  optional string creator = 4;
+
+  // unix timestamp
+  optional uint64 startDate = 5;
+  optional uint64 finishDate = 6;
+
+  enum JobState {
+    CREATED = 0;
+    VERIFIED = 1;
+    SUBMITTED=2;
+    PENDING=3;
+    RUNNING=4;
+    FINISHED=5;
+    FAILED=6;
+    ABORTED=7;
+    IN_DELETION=8;
+  }
+
+  required JobState state = 7;
+
+  optional JobParameterListDTO parameters = 8;
+}
+
+message JobDTOList  {
+  repeated JobDTO job = 1;
+}
+
+message JobAndAttributeTypes {
+  required JobDTO job = 1;
+  required AttributeTypeDTOList attribute_types = 2;
+}
+
+message JobsAndAttributeTypesDTO {
+  repeated JobAndAttributeTypes entry = 1;
+}
+
+// reference mapping data types
+
+// reference
+message ReferenceDTO {
+    optional uint64 id = 1;
+    required string name = 2;
+    required int32 length = 3;
+}
+
+message ReferenceDTOList  {
+  repeated ReferenceDTO reference = 1;
+}
+
+message RegionDTO {
+    optional uint64 id = 1;
+    required string name = 2;
+    optional string description = 3;
+    required int32 start = 4;
+    required int32 stop = 5;
+}
+
+message RegionDTOList  {
+  repeated RegionDTO region = 1;
+}
+
+message MappingDTO {
+     required uint64 id = 1;
+     required uint64 run_id = 2;
+     required uint64 reference_id = 3;
+     required uint64 job_id = 4;
+}
+
+message MappingDTOList  {
+  repeated MappingDTO mapping = 1;
+}
+
+message MappedSequenceDTO {
+    required uint64 seq_id = 1;
+    required int32 start = 2;
+    required int32 stop = 3;
+    required int32 identity = 4;
+}
+
+message MappedSequenceDTOList {
+    repeated MappedSequenceDTO mapped_sequence = 1;
+}
+
+//
+// Tasks
+//
+
+message TaskDTO {
+  required string message = 1;
+  enum TaskState {
+        INIT = 0;
+        PROCESSING = 1;
+        FAILED = 2;
+        FINISHED = 3;
+  }
+  required TaskState state = 2;
+}
+
+message TaskDTOList {
+  repeated TaskDTO task = 1;
+}
+
+//
+// File subsystem
+//
+
+message FileDTO {
+    required string name = 1;
+    required bool isDirectory = 2;
+    optional uint64 size = 3;
+}
+
+message FileDTOList {
+    repeated FileDTO file = 1;
+}
+
+// for file transfers
+//message FileChunkDTO {
+//    required uint64 chunk_id = 1;
+//    required bytes chunk = 2;
+//}
+
+message BytesDTO {
+    required bytes data = 1;
+}
+
+
+// search interface
+
+message SearchRequestDTO {
+    required string term = 1;
+    required bool exact = 2;
+    repeated uint64 seqrun_id = 3;
+}
+
+message SearchResultDTO {
+    required string sequence_name = 1;
+    required int32 sequence_length = 2;
+    repeated ObservationDTO observation = 3;
+}
+
+message SearchResultDTOList {
+    repeated SearchResultDTO result = 1;
+}
+
+// statistics
+
+message PointDTO {
+    required double x = 1;
+    required double y = 2;
+    optional string name = 3;
+}
+
+message PointDTOList {
+    repeated PointDTO point = 1;
+}
+
+// named vector, used e.g. for clustering
+message ProfileDTO {
+    required string name = 1;
+    required MGXDoubleList values = 2;
+}
+
+message MGXMatrixDTO {
+    repeated ProfileDTO row = 1;
+    optional MGXStringList col_names = 2;
+}
+
+
+// PCA types
+
+message PCAResultDTO {
+    repeated PointDTO datapoint = 1;
+    repeated PointDTO loading = 2;
+    repeated double variance = 3;
+}
+
+
