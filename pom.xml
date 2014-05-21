@@ -16,6 +16,7 @@
         <module>NewickParser</module>
         <module>KEGG-Pathways</module>
         <module>ProtoBuf-Serializer</module>
+        <module>MGX-restgpms</module>
     </modules>
   
     <distributionManagement>
