@@ -45,7 +45,15 @@ public class EventReceiver implements Runnable {
                             pclp.propertyChange(dEvent.getEvent());
                         }
                     } else {
+                        long start = System.currentTimeMillis();
                         pcl.propertyChange(dEvent.getEvent());
+                        start = System.currentTimeMillis() - start;
+                        if (start >= 400) {
+                            Logger.getLogger(EventReceiver.class.getName()).log(Level.SEVERE, "Slow processing of propertyChange ({0} ms)", start);
+                            for (StackTraceElement ste : Thread.currentThread().getStackTrace()) {
+                                Logger.getLogger(EventReceiver.class.getName()).log(Level.SEVERE, ste.toString());
+                            }
+                        }
                     }
                     //Logger.getLogger(EventReceiver.class.getName()).log(Level.INFO, "receiver " + id + " delivered event");
                     dEvent.processed();
