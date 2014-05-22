@@ -5,8 +5,8 @@
  */
 package de.cebitec.mgx.pevents;
 
-import de.cebitec.mgx.pevents.ParallelPropertyChangeSupport;
 import de.cebitec.mgx.pevents.test.EventTarget;
+import de.cebitec.mgx.pevents.test.Forwarder;
 import de.cebitec.mgx.pevents.test.Sender;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -15,8 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.junit.After;
 import org.junit.AfterClass;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -47,6 +46,27 @@ public class ParallelPropertyChangeSupportTest {
     }
 
     @Test
+    public void testDeadLock() {
+        System.err.println("testRegressionDeadLock");
+        Sender s = new Sender();
+
+        Forwarder fw = null;
+        for (int i = 0; i < 5; i++) {
+            Forwarder f = new Forwarder();
+            if (fw == null) {
+                s.addPropertyChangeListener(f);
+            } else {
+                fw.addPropertyChangeListener(f);
+            }
+            fw = f;
+        }
+        
+        s.firePropertyChange();
+        
+        assertEquals(1, fw.getCount());
+    }
+
+    @Test
     public void testFoo() throws IOException {
         System.err.println("testTiming");
 
@@ -72,6 +92,7 @@ public class ParallelPropertyChangeSupportTest {
             //System.err.println("  sync notification completed after " + start + " ms");
         }
     }
+
     @Test
     public void testListenerCount() {
         System.err.println("listenerCount");
@@ -101,8 +122,8 @@ public class ParallelPropertyChangeSupportTest {
         System.err.println("AllEventsReceived");
         ParallelPropertyChangeSupport apcs = new ParallelPropertyChangeSupport("AllEventsReceived");
         assertEquals(0, apcs.getPropertyChangeListeners().length);
-        
-        int cnt=25;
+
+        int cnt = 25;
 
         List<EventTarget> recvs2 = new ArrayList<>();
         for (int i = 0; i < cnt; i++) {
@@ -121,11 +142,12 @@ public class ParallelPropertyChangeSupportTest {
         }
 
         for (EventTarget r : recvs2) {
-            System.err.println("recv cnt "+ r.getCount());
+            System.err.println("recv cnt " + r.getCount());
             assertEquals(1, r.getCount());
         }
 
     }
+
     @Test
     public void testRemove() {
         System.err.println("testRemove");
@@ -144,6 +166,7 @@ public class ParallelPropertyChangeSupportTest {
         PropertyChangeListener[] listeners = s.getPropertyChangeListeners();
         assertEquals(0, listeners.length);
     }
+
     @Test
     public void testRemoveAfterSend() {
         System.err.println("testRemoveAfterSend");
@@ -164,6 +187,7 @@ public class ParallelPropertyChangeSupportTest {
         PropertyChangeListener[] listeners = s.getPropertyChangeListeners();
         assertEquals(0, listeners.length);
     }
+
     @Test
     public void testTwoEvents() {
         System.err.println("twoEvents");
@@ -192,6 +216,7 @@ public class ParallelPropertyChangeSupportTest {
             s.removePropertyChangeListener(r);
         }
     }
+
     @Test
     public void testDestinations() {
         System.err.println("Destinations");
@@ -212,6 +237,7 @@ public class ParallelPropertyChangeSupportTest {
         assertEquals(1, r1.getCount());
         assertEquals(2, r2.getCount());
     }
+
     @Test
     public void testMultiple() {
         System.err.println("multipleEvents");
@@ -230,6 +256,7 @@ public class ParallelPropertyChangeSupportTest {
         System.err.println("  5 events sent after " + start + " ns");
         assertEquals(5, r1.getCount());
     }
+
     @Test
     public void testCompareToPCS() {
         System.err.println("compareToPCS");
@@ -254,6 +281,7 @@ public class ParallelPropertyChangeSupportTest {
         assertEquals(2, r1.getCount());
         assertEquals(2, r2.getCount());
     }
+
     @Test
     public void testCompareToPCS2() {
         System.err.println("compareToPCS2");
@@ -280,6 +308,7 @@ public class ParallelPropertyChangeSupportTest {
         assertEquals(1, r1.getCount());
         assertEquals(1, r2.getCount());
     }
+
     @Test
     public void testCompareToPCSNullSource() {
         System.err.println("compareToPCSNullSource");
