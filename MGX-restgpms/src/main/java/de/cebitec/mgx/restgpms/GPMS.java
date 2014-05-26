@@ -23,6 +23,7 @@ import de.cebitec.gpms.dto.impl.RoleDTO;
 import de.cebitec.gpms.rest.GPMSClientI;
 import de.cebitec.gpms.rest.RESTMasterI;
 import java.awt.EventQueue;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -130,6 +131,9 @@ public class GPMS implements GPMSClientI {
         } catch (ClientHandlerException che) {
             if (che.getCause() != null && che.getCause() instanceof SSLHandshakeException) {
                 return login(login, password);
+            } else if (che.getCause() != null && che.getCause() instanceof UnknownHostException) {
+                error = "Could not resolve server address. Check your internet connection.";
+                return false;
             }
             // most common cause here: server down
             error = che.getCause().getMessage();
@@ -166,9 +170,12 @@ public class GPMS implements GPMSClientI {
         try {
             return getResource().path("/GPMS/GPMSBean/ping").get(GPMSLong.class).getValue();
         } catch (UniformInterfaceException ufie) {
+            System.err.println("MSG: "+ ufie.getMessage());
         } catch (ClientHandlerException ex ) {
             if (ex.getCause() != null && ex.getCause() instanceof SSLHandshakeException) {
                 return ping(); //retry
+            } else if (ex.getCause() != null && ex.getCause() instanceof UnknownHostException) {
+                error = "Could not resolve server address. Check your internet connection.";
             } else {
                 System.err.println("MSG: "+ ex.getMessage());
                 assert false;
