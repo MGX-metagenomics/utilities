@@ -25,14 +25,17 @@ public class EventTarget implements PropertyChangeListener {
     }
 
     @Override
-    public void propertyChange(PropertyChangeEvent evt) {
+    public void propertyChange(PropertyChangeEvent event) {
+
         try {
             Thread.sleep(0, i);
         } catch (InterruptedException ex) {
             Logger.getLogger(EventReceiver.class.getName()).log(Level.SEVERE, null, ex);
             assert false;
         }
-        count++;
+        synchronized (this) {
+            count++;
+        }
     }
 
     public int getCount() {
