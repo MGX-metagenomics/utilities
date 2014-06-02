@@ -22,11 +22,6 @@ public abstract class MGXFileI extends ModelBase<MGXFileI> {
         return new MGXFileI(m) {
 
             @Override
-            public MGXMasterI getMaster() {
-                return m;
-            }
-
-            @Override
             public void setParent(MGXFileI parent) {
             }
 

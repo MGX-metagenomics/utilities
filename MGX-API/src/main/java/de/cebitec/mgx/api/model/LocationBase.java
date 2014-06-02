@@ -28,19 +28,19 @@ public abstract class LocationBase<T> extends Identifiable<T> {
         max = FastMath.max(start, stop);
     }
 
-    public int getStart() {
+    public final int getStart() {
         return start;
     }
 
-    public int getStop() {
+    public final int getStop() {
         return stop;
     }
 
-    public int getMax() {
+    public final int getMax() {
         return max;
     }
 
-    public int getMin() {
+    public final int getMin() {
         return min;
     }
 }
