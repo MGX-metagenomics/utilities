@@ -16,13 +16,13 @@ public abstract class Identifiable<T> extends ModelBase<T> {
         super(master, df);
     }
 
-    public void setId(long id) {
+    public final void setId(long id) {
         assert this.id == INVALID_IDENTIFIER; // prevent changing of internal ID field
         assert id != INVALID_IDENTIFIER;
         this.id = id;
     }
 
-    public long getId() {
+    public final long getId() {
         return id;
     }
 }

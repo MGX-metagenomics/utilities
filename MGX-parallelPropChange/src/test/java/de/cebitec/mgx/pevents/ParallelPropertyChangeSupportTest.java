@@ -8,6 +8,7 @@ package de.cebitec.mgx.pevents;
 import de.cebitec.mgx.pevents.test.EventTarget;
 import de.cebitec.mgx.pevents.test.Forwarder;
 import de.cebitec.mgx.pevents.test.Sender;
+import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
@@ -60,9 +61,9 @@ public class ParallelPropertyChangeSupportTest {
             }
             fw = f;
         }
-        
+
         s.firePropertyChange();
-        
+
         assertEquals(1, fw.getCount());
     }
 
@@ -257,6 +258,13 @@ public class ParallelPropertyChangeSupportTest {
         assertEquals(5, r1.getCount());
     }
 
+//    @Test
+//    public void testCompareToPCSLoop() {
+//        for (int i=0; i < 5000; i++) {
+//            testCompareToPCS();
+//        }
+//    }
+
     @Test
     public void testCompareToPCS() {
         System.err.println("compareToPCS");
@@ -275,9 +283,9 @@ public class ParallelPropertyChangeSupportTest {
         assertEquals(2, pcs.getPropertyChangeListeners().length);
         assertEquals(2, apcs.getPropertyChangeListeners().length);
 
-        pcs.firePropertyChange("foo", 1, 2);
-        apcs.firePropertyChange("foo", 1, 2);
-
+        pcs.firePropertyChange("PCS", 1, 2);
+        apcs.firePropertyChange("aPCS", 3, 4);
+        
         assertEquals(2, r1.getCount());
         assertEquals(2, r2.getCount());
     }
