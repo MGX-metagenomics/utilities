@@ -77,7 +77,7 @@ public class App {
             BufferedReader br = new BufferedReader(new FileReader(fname));
             Namespace ns = RichObjectFactory.getDefaultNamespace();
             br.mark(10);
-            Character first = Character.valueOf((char) br.read());
+            Character first = (char) br.read();
             br.reset();
             RichSequenceIterator seqs;
             if (first.toString().equals("L")) {

@@ -19,6 +19,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+    
     <build>
         <plugins>
             <plugin>
@@ -65,7 +66,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>3.8.1</version>
+            <version>4.11</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -85,13 +86,13 @@
             <version>9.1-901.jdbc4</version>
         </dependency>
         <dependency>
-            <groupId>org.biojava</groupId>
-            <artifactId>core</artifactId>
-            <version>1.8.2</version>
+            <groupId>de.cebitec.mgx</groupId>
+            <artifactId>MGX-maven-ejb</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>de.cebitec.mgx</groupId>
-            <artifactId>MGX-maven-ejb</artifactId>
+            <artifactId>BioJava-OSGi</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
