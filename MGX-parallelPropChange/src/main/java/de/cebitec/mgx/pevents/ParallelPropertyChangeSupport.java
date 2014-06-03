@@ -52,6 +52,11 @@ public class ParallelPropertyChangeSupport extends PropertyChangeSupport impleme
             return;
         }
 
+        assert event != null;
+        assert event.getPropertyName() != null;
+        assert event.getOldValue() != null;
+        assert event.getNewValue() != null;
+
         AccumulatedEvent aEvent = new AccumulatedEvent(listeners, event);
         distributor.distributeEvent(aEvent);
         aEvent.await();

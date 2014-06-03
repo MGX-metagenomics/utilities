@@ -27,7 +27,7 @@ public abstract class ModelBase<T> implements Transferable, Comparable<T> {
         this.dataflavor = dataflavor;
     }
 
-    public MGXMasterI getMaster() {
+    public final MGXMasterI getMaster() {
         return master;
     }
 

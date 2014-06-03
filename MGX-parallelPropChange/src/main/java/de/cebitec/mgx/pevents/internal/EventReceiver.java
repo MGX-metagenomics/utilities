@@ -5,6 +5,7 @@
  */
 package de.cebitec.mgx.pevents.internal;
 
+import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeListenerProxy;
 import java.util.concurrent.BlockingQueue;
@@ -38,21 +39,28 @@ public class EventReceiver implements Runnable {
                 DistributionEvent dEvent = in.poll(5, TimeUnit.MILLISECONDS);
                 if (dEvent != null) {
                     //Logger.getLogger(EventReceiver.class.getName()).log(Level.INFO, "receiver " + id + " got event");
+                    PropertyChangeEvent event = dEvent.getEvent();
+                    
+//                     // debug code
+//                    assert event != null;
+//                    assert event.getPropertyName() != null;
+//                    assert event.getOldValue() != null;
+//                    assert event.getNewValue() != null;
+                    
                     PropertyChangeListener pcl = dEvent.getTarget();
                     if (pcl instanceof PropertyChangeListenerProxy) {
                         PropertyChangeListenerProxy pclp = (PropertyChangeListenerProxy) pcl;
-                        if (pclp.getPropertyName().equals(dEvent.getEvent().getPropertyName())) {
-                            pclp.propertyChange(dEvent.getEvent());
+                        if (pclp.getPropertyName().equals(event.getPropertyName())) {
+                            pclp.propertyChange(event);
                         }
                     } else {
                         long start = System.currentTimeMillis();
-                        pcl.propertyChange(dEvent.getEvent());
+                        pcl.propertyChange(event);
                         start = System.currentTimeMillis() - start;
                         if (start >= 100) {
                             Logger.getLogger(EventReceiver.class.getName()).log(Level.INFO, "Slow processing of propertyChange ({0} ms) for target {1}", new Object[]{start, pcl.toString()});
                         }
                     }
-                    //Logger.getLogger(EventReceiver.class.getName()).log(Level.INFO, "receiver " + id + " delivered event");
                     dEvent.processed();
                 }
             }
