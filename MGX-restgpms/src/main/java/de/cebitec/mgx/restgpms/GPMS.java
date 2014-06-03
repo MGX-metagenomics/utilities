@@ -22,6 +22,7 @@ import de.cebitec.gpms.dto.impl.ProjectClassDTOList;
 import de.cebitec.gpms.dto.impl.RoleDTO;
 import de.cebitec.gpms.rest.GPMSClientI;
 import de.cebitec.gpms.rest.RESTMasterI;
+import de.cebitec.gpms.rest.RESTUserI;
 import java.awt.EventQueue;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -41,7 +42,7 @@ public class GPMS implements GPMSClientI {
     //private WebResource res = null;
     private final String baseuri;
     private final String servername;
-    private User user;
+    private RESTUserI user;
     private boolean loggedin = false;
     private String error;
 
