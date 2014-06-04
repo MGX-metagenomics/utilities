@@ -198,6 +198,7 @@ public class GPMS implements GPMSClientI {
         return baseuri;
     }
 
+    @Override
     public String getServerName() {
         return servername;
     }
