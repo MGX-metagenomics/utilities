@@ -14,11 +14,11 @@ public class Pair<T, U> {
         this.second = second;
     }
 
-    public T getFirst() {
+    public final T getFirst() {
         return first;
     }
 
-    public U getSecond() {
+    public final U getSecond() {
         return second;
     }
 

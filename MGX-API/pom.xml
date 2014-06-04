@@ -22,12 +22,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.core</artifactId>
-            <version>4.3.0</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>de.cebitec.gpms</groupId>
             <artifactId>GPMS-core-api</artifactId>
             <version>1.0-RELEASE</version>
@@ -63,7 +57,6 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Bundle-Activator>de.cebitec.mgx.api.Activator</Bundle-Activator>
                         <Export-Package>de.cebitec.mgx.api*</Export-Package>
                     </instructions>
                 </configuration>

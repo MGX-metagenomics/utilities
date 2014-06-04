@@ -56,11 +56,11 @@ public abstract class ModelBase<T> implements Transferable, Comparable<T> {
     }
 
     public final void modified() {
-        firePropertyChange(ModelBase.OBJECT_MODIFIED, this, null);
+        firePropertyChange(ModelBase.OBJECT_MODIFIED, 1, 2);
     }
 
     public final void deleted() {
-        firePropertyChange(ModelBase.OBJECT_DELETED, this, null);
+        firePropertyChange(ModelBase.OBJECT_DELETED, 0, 1);
     }
 
     public void addPropertyChangeListener(PropertyChangeListener listener) {

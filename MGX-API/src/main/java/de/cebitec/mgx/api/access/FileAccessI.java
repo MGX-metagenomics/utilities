@@ -7,8 +7,11 @@ package de.cebitec.mgx.api.access;
 
 import de.cebitec.mgx.api.MGXMasterI;
 import de.cebitec.mgx.api.access.datatransfer.DownloadBaseI;
+import de.cebitec.mgx.api.access.datatransfer.UploadBaseI;
+import de.cebitec.mgx.api.exception.MGXException;
 import de.cebitec.mgx.api.misc.TaskI;
 import de.cebitec.mgx.api.model.MGXFileI;
+import java.io.File;
 import java.io.OutputStream;
 import java.util.Iterator;
 
@@ -29,5 +32,9 @@ public interface FileAccessI {
     public DownloadBaseI createPluginDumpDownloader(OutputStream writer);
 
     public DownloadBaseI createDownloader(String fullPath, OutputStream writer);
+
+    public UploadBaseI createUploader(File localFile, MGXFileI targetDir, String name) throws MGXException;
+
+    public boolean createDirectory(MGXFileI newDir) throws MGXException;
 
 }

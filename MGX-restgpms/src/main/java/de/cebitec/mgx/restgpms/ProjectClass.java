@@ -4,6 +4,7 @@ package de.cebitec.mgx.restgpms;
 import de.cebitec.gpms.core.ProjectClassI;
 import de.cebitec.gpms.core.RoleI;
 import java.util.List;
+import java.util.Objects;
 
 /**
  *
@@ -29,4 +30,25 @@ public class ProjectClass implements ProjectClassI {
         return roles;
     }
 
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 71 * hash + Objects.hashCode(this.name);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final ProjectClass other = (ProjectClass) obj;
+        if (!Objects.equals(this.name, other.name)) {
+            return false;
+        }
+        return true;
+    }
 }
