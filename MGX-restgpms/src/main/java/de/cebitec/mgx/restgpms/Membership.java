@@ -3,6 +3,7 @@ package de.cebitec.mgx.restgpms;
 import de.cebitec.gpms.core.MembershipI;
 import de.cebitec.gpms.core.ProjectI;
 import de.cebitec.gpms.core.RoleI;
+import java.util.Objects;
 
 /**
  *
@@ -28,4 +29,29 @@ public class Membership implements MembershipI {
         return role;
     }
 
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 71 * hash + Objects.hashCode(this.project);
+        hash = 71 * hash + Objects.hashCode(this.role);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Membership other = (Membership) obj;
+        if (!Objects.equals(this.project, other.project)) {
+            return false;
+        }
+        if (!Objects.equals(this.role, other.role)) {
+            return false;
+        }
+        return true;
+    }
 }

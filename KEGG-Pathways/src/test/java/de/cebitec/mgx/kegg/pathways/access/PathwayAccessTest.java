@@ -114,7 +114,7 @@ public class PathwayAccessTest {
             return m;
         }
         try {
-            m = KEGGMaster.getInstance(folder.newFolder().getAbsolutePath().toString());
+            m = KEGGMaster.getInstance(folder.newFolder().getAbsolutePath());
             return m;
         } catch (IOException | KEGGException ex) {
             fail();

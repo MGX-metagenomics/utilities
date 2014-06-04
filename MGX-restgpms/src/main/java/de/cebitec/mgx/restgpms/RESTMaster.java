@@ -32,7 +32,7 @@ public class RESTMaster implements RESTMasterI {
     private final ClientConfig cc;
     private Client client = null;
 
-    public RESTMaster(MembershipI m, User u, String baseuri, boolean verifySSL) {
+    public RESTMaster(MembershipI m, RESTUserI u, String baseuri, boolean verifySSL) {
         this.membership = m;
         this.user = u;
 

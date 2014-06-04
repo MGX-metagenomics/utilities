@@ -5,7 +5,7 @@
     <groupId>de.cebitec.mgx</groupId>
     <artifactId>KEGG-Pathways</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <packaging>jar</packaging>
+    <packaging>bundle</packaging>
     
     <parent>
         <artifactId>Utilities</artifactId>
@@ -14,37 +14,37 @@
     </parent>
     
     <name>KEGG-Pathways</name>
-    <url>http://maven.apache.org</url>
+    
     <build>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.5.1</version>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
                 <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
+                    <instructions>
+                        <Import-Package>org.h2,javax.swing,javax.imageio,com.sun.jersey.api.client.config,com.sun.jersey.api.client</Import-Package>
+                        <Export-Package>de.cebitec.mgx.kegg.pathways,de.cebitec.mgx.kegg.pathways.access,de.cebitec.mgx.kegg.pathways.api,de.cebitec.mgx.kegg.pathways.model,de.cebitec.mgx.kegg.pathways.paint</Export-Package>
+                        <Private-Package>de.cebitec.mgx.kegg.pathways.*</Private-Package>
+                    </instructions>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+            </plugin>
+
         </plugins>
     </build>
+    
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
   
-    <distributionManagement>
-        <repository>
-            <id>artifactory</id>
-            <name>local-libs-release</name>
-            <url>http://${artifactory.host}/artifactory/libs-release-local</url>
-        </repository>
-        <snapshotRepository>
-            <id>artifactory</id>
-            <name>local-libs-snapshot</name>
-            <url>http://${artifactory.host}/artifactory/libs-snapshot-local</url>
-        </snapshotRepository>
-    </distributionManagement>
-
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -60,7 +60,7 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <version>1.3.173</version>
+            <version>1.4.178</version>
         </dependency>
     </dependencies>
 </project>
