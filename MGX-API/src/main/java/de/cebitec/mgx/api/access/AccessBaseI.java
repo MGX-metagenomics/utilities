@@ -9,7 +9,7 @@ import java.util.Iterator;
  */
 public interface AccessBaseI<T> {
 
-    public long create(T obj);
+    public T create(T obj);
 
     public T fetch(long id);
 
