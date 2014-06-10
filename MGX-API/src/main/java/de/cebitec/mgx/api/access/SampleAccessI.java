@@ -6,7 +6,9 @@
 
 package de.cebitec.mgx.api.access;
 
+import de.cebitec.mgx.api.model.HabitatI;
 import de.cebitec.mgx.api.model.SampleI;
+import java.util.Date;
 import java.util.Iterator;
 
 /**
@@ -14,6 +16,8 @@ import java.util.Iterator;
  * @author sj
  */
 public interface SampleAccessI  extends AccessBaseI<SampleI> {
+    
+    public SampleI create(HabitatI habitat, Date collectionDate, String material, double temperature, int volume, String volUnit);
 
     public Iterator<SampleI> ByHabitat(long habitat_id);
     

@@ -6,6 +6,7 @@
 package de.cebitec.mgx.api.access;
 
 import de.cebitec.mgx.api.model.DNAExtractI;
+import de.cebitec.mgx.api.model.SampleI;
 import java.util.Iterator;
 
 /**
@@ -13,6 +14,10 @@ import java.util.Iterator;
  * @author sj
  */
 public interface DNAExtractAccessI extends AccessBaseI<DNAExtractI> {
+    
+    public DNAExtractI create(SampleI sample, String name, String method, 
+            String protocol, String primer5, String primer3, 
+            String targetGene, String targetFragment, String description);
 
     public Iterator<DNAExtractI> BySample(long sample_id);
 

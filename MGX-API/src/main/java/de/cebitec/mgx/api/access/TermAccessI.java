@@ -14,6 +14,10 @@ import java.util.Collection;
  */
 public interface TermAccessI {
 
+    // ontology lookup categories
+    public static final String SEQ_METHODS = "seq_methods";
+    public static final String SEQ_PLATFORMS = "seq_platforms";
+
     public Collection<TermI> byCategory(String category);
 
 }
