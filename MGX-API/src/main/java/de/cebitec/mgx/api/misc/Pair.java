@@ -1,5 +1,7 @@
 package de.cebitec.mgx.api.misc;
 
+import java.util.Objects;
+
 /**
  *
  * @author sjaenick
@@ -23,6 +25,14 @@ public class Pair<T, U> {
     }
 
     @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 97 * hash + Objects.hashCode(this.first);
+        hash = 97 * hash + Objects.hashCode(this.second);
+        return hash;
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if (obj == null) {
             return false;
@@ -30,21 +40,13 @@ public class Pair<T, U> {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Pair<T, U> other = (Pair<T, U>) obj;
-        if (this.first != other.first && (this.first == null || !this.first.equals(other.first))) {
+        final Pair<?, ?> other = (Pair<?, ?>) obj;
+        if (!Objects.equals(this.first, other.first)) {
             return false;
         }
-        if (this.second != other.second && (this.second == null || !this.second.equals(other.second))) {
+        if (!Objects.equals(this.second, other.second)) {
             return false;
         }
         return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 5;
-        hash = 53 * hash + (this.first != null ? this.first.hashCode() : 0);
-        hash = 53 * hash + (this.second != null ? this.second.hashCode() : 0);
-        return hash;
     }
 }
