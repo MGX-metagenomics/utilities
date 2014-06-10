@@ -5,6 +5,7 @@ import de.cebitec.mgx.api.access.AccessBaseI;
 import de.cebitec.mgx.api.access.AttributeAccessI;
 import de.cebitec.mgx.api.access.DNAExtractAccessI;
 import de.cebitec.mgx.api.access.FileAccessI;
+import de.cebitec.mgx.api.access.HabitatAccessI;
 import de.cebitec.mgx.api.access.JobAccessI;
 import de.cebitec.mgx.api.access.MappingAccessI;
 import de.cebitec.mgx.api.access.ObservationAccessI;
@@ -17,7 +18,6 @@ import de.cebitec.mgx.api.access.TaskAccessI;
 import de.cebitec.mgx.api.access.TermAccessI;
 import de.cebitec.mgx.api.access.ToolAccessI;
 import de.cebitec.mgx.api.model.AttributeTypeI;
-import de.cebitec.mgx.api.model.HabitatI;
 import de.cebitec.mgx.api.model.ModelBase;
 import java.awt.datatransfer.DataFlavor;
 import java.util.logging.Level;
@@ -41,7 +41,7 @@ public abstract class MGXMasterI extends ModelBase<MGXMasterI> {
 
     public abstract void log(Level lvl, String msg);
 
-    public abstract AccessBaseI<HabitatI> Habitat();
+    public abstract HabitatAccessI Habitat();
 
     public abstract SampleAccessI Sample();
 

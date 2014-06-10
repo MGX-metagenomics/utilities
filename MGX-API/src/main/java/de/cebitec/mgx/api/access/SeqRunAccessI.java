@@ -7,8 +7,10 @@
 package de.cebitec.mgx.api.access;
 
 import de.cebitec.mgx.api.model.AttributeTypeI;
+import de.cebitec.mgx.api.model.DNAExtractI;
 import de.cebitec.mgx.api.model.JobI;
 import de.cebitec.mgx.api.model.SeqRunI;
+import de.cebitec.mgx.api.model.TermI;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -18,6 +20,8 @@ import java.util.Set;
  * @author sj
  */
 public interface SeqRunAccessI extends AccessBaseI<SeqRunI> {
+    
+    public SeqRunI create(DNAExtractI extract, String name, TermI seqMethod, TermI seqTechnology, boolean submittedINSDC, String accession);
 
     public Map<JobI, Set<AttributeTypeI>> getJobsAndAttributeTypes(SeqRunI run);
 
