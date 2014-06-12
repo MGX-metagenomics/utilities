@@ -177,9 +177,6 @@ public class GPMS implements GPMSClientI {
                 return ping(); //retry
             } else if (ex.getCause() != null && ex.getCause() instanceof UnknownHostException) {
                 error = "Could not resolve server address. Check your internet connection.";
-            } else {
-                System.err.println("MSG: "+ ex.getMessage());
-                assert false;
             }
         }
         return -1;
