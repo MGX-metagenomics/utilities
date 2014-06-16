@@ -6,20 +6,30 @@
 package de.cebitec.mgx.sffreader.datatypes;
 
 import de.cebitec.mgx.braf.BufferedRandomAccessFile;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.RandomAccessFile;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 /**
  *
  * @author sj
  */
 public class BrafTest {
+ @Rule
+    public TemporaryFolder folder = new TemporaryFolder();
+    private File f;
 
     public BrafTest() {
     }
@@ -32,20 +42,34 @@ public class BrafTest {
     public static void tearDownClass() {
     }
 
-    @Before
+   @Before
     public void setUp() {
+        try {
+            f = folder.newFile();
+            InputStream is = getClass().getClassLoader().getResourceAsStream("de/cebitec/mgx/oneread.sff");
+            FileOutputStream fos = new FileOutputStream(f);
+            int i;
+            while ((i = is.read()) != -1) {
+                fos.write(i);
+            }
+            fos.close();
+        } catch (IOException ex) {
+            Logger.getLogger(BrafTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @After
     public void tearDown() {
+        f.delete();
+        folder.delete();
     }
 
     @Test
     public void testReadUint8() throws IOException {
         System.err.println("testReadUint8");
-        RandomAccessFile raf = new RandomAccessFile("/home/sj/oneread.sff", "r");
+        RandomAccessFile raf = new RandomAccessFile(f.getAbsolutePath(), "r");
         long read = 0;
-        RandomAccessFile raf2 = new BufferedRandomAccessFile("/home/sj/oneread.sff", "r", 100);
+        RandomAccessFile raf2 = new BufferedRandomAccessFile(f.getAbsolutePath(), "r", 100);
         long read2 = 0;
 
         int d1, d2;
@@ -63,9 +87,9 @@ public class BrafTest {
     @Test
     public void testReadUint16() throws IOException {
         System.err.println("testReadUint16");
-        RandomAccessFile raf = new RandomAccessFile("/home/sj/oneread.sff", "r");
+        RandomAccessFile raf = new RandomAccessFile(f.getAbsolutePath(), "r");
         long read = 0;
-        RandomAccessFile raf2 = new BufferedRandomAccessFile("/home/sj/oneread.sff", "r", 100);
+        RandomAccessFile raf2 = new BufferedRandomAccessFile(f.getAbsolutePath(), "r", 100);
         long read2 = 0;
 
         int d1, d2;
@@ -83,9 +107,9 @@ public class BrafTest {
     @Test
     public void testReadUint32() throws IOException {
         System.err.println("testReadUint32");
-        RandomAccessFile raf = new RandomAccessFile("/home/sj/oneread.sff", "r");
+        RandomAccessFile raf = new RandomAccessFile(f.getAbsolutePath(), "r");
         long read = 0;
-        RandomAccessFile raf2 = new BufferedRandomAccessFile("/home/sj/oneread.sff", "r", 100);
+        RandomAccessFile raf2 = new BufferedRandomAccessFile(f.getAbsolutePath(), "r", 100);
         long read2 = 0;
 
         long d1, d2;
@@ -103,9 +127,9 @@ public class BrafTest {
     @Test
     public void testReadUint64() throws IOException {
         System.err.println("testReadUint64");
-        RandomAccessFile raf = new RandomAccessFile("/home/sj/oneread.sff", "r");
+        RandomAccessFile raf = new RandomAccessFile(f.getAbsolutePath(), "r");
         long read = 0;
-        RandomAccessFile raf2 = new BufferedRandomAccessFile("/home/sj/oneread.sff", "r", 100);
+        RandomAccessFile raf2 = new BufferedRandomAccessFile(f.getAbsolutePath(), "r", 100);
         long read2 = 0;
 
         long d1, d2;
