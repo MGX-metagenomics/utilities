@@ -29,7 +29,7 @@ public class SFFIndex {
 
         byte[] index_version = new byte[4];
         raf.read(index_version);
-        TObjectLongMap<String> reads = new TObjectLongHashMap<>();
+        TObjectLongMap<String> reads = new TObjectLongHashMap<>(10, 0.5f, -1);
         long offset = Util.eightBytePadding(hdr.getHeaderLength());
         while (offset < hdr.getIndexOffset()) {
             raf.seek(offset);
