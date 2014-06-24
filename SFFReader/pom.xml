@@ -53,7 +53,7 @@
                 <configuration>
                     <instructions>
                         <Import-Package>de.cebitec.mgx.braf</Import-Package>
-                        <Export-Package />
+                        <Export-Package>de.cebitec.mgx.sffreader</Export-Package>
                     </instructions>
                 </configuration>
             </plugin>
