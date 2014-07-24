@@ -35,6 +35,6 @@ public interface FileAccessI {
 
     public UploadBaseI createUploader(File localFile, MGXFileI targetDir, String name) throws MGXException;
 
-    public boolean createDirectory(MGXFileI newDir) throws MGXException;
+    public boolean createDirectory(MGXFileI parentDir, String name) throws MGXException;
 
 }
