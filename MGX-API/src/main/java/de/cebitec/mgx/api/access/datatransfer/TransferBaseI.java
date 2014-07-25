@@ -1,6 +1,5 @@
 package de.cebitec.mgx.api.access.datatransfer;
 
-import de.cebitec.mgx.api.exception.MGXException;
 import de.cebitec.mgx.pevents.ParallelPropertyChangeSupport;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -15,6 +14,7 @@ public abstract class TransferBaseI {
     public static final String NUM_ELEMENTS_SENT = "numElementsSent";
     public static final String NUM_ELEMENTS_RECEIVED = "numElementsReceived";
     public static final String TRANSFER_FAILED = "transferFailed";
+    public static final String TRANSFER_COMPLETED = "transferCompleted";
 
     public TransferBaseI() {
         this.pcs = new ParallelPropertyChangeSupport(this);

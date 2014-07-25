@@ -12,6 +12,7 @@ public abstract class DownloadBaseI extends TransferBaseI {
 
     protected void abortTransfer(String reason, long total) {
         setErrorMessage(reason);
+        fireTaskChange(TransferBaseI.NUM_ELEMENTS_SENT, total);
         fireTaskChange(TransferBaseI.TRANSFER_FAILED, 1);
     }
 
