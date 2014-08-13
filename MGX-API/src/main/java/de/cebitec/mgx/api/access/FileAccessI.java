@@ -29,9 +29,9 @@ public interface FileAccessI {
 
     public TaskI delete(MGXFileI obj);
 
-    public DownloadBaseI createPluginDumpDownloader(OutputStream writer);
+    public DownloadBaseI createPluginDumpDownloader(OutputStream writer) throws MGXException;
 
-    public DownloadBaseI createDownloader(String fullPath, OutputStream writer);
+    public DownloadBaseI createDownloader(String fullPath, OutputStream writer) throws MGXException;
 
     public UploadBaseI createUploader(File localFile, MGXFileI targetDir, String name) throws MGXException;
 
