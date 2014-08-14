@@ -21,7 +21,7 @@ public abstract class UploadBaseI extends TransferBaseI {
 
     protected void abortTransfer(String reason, long total) {
         setErrorMessage(reason);
-        fireTaskChange(TransferBaseI.NUM_ELEMENTS_SENT, total);
+        fireTaskChange(TransferBaseI.NUM_ELEMENTS_TRANSFERRED, total);
         fireTaskChange(TransferBaseI.TRANSFER_FAILED, total);
     }
 
