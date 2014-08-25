@@ -6,7 +6,6 @@
 
 package de.cebitec.mgx.api.misc;
 
-import de.cebitec.mgx.api.misc.Point;
 import java.util.List;
 
 /**
