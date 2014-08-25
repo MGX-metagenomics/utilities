@@ -5,6 +5,7 @@
  */
 package de.cebitec.mgx.api.access;
 
+import de.cebitec.mgx.api.exception.MGXException;
 import de.cebitec.mgx.api.model.HabitatI;
 
 /**
@@ -13,5 +14,5 @@ import de.cebitec.mgx.api.model.HabitatI;
  */
 public interface HabitatAccessI extends AccessBaseI<HabitatI> {
 
-    public HabitatI create(String name, double latitude, double longitude, int altitude, String biome, String description);
+    public HabitatI create(String name, double latitude, double longitude, int altitude, String biome, String description) throws MGXException;
 }

@@ -5,6 +5,7 @@
  */
 package de.cebitec.mgx.api.access;
 
+import de.cebitec.mgx.api.exception.MGXException;
 import de.cebitec.mgx.api.misc.DistributionI;
 import de.cebitec.mgx.api.model.AttributeI;
 import de.cebitec.mgx.api.model.SeqRunI;
@@ -18,11 +19,11 @@ import java.util.Iterator;
  */
 public interface AttributeAccessI extends AccessBaseI<AttributeI> {
 
-    public Iterator<AttributeI> BySeqRun(final long seqrun_id);
+    public Iterator<AttributeI> BySeqRun(final long seqrun_id) throws MGXException;
 
-    public DistributionI getDistribution(long attrType_id, long job_id);
+    public DistributionI getDistribution(long attrType_id, long job_id) throws MGXException;
 
-    public TreeI<Long> getHierarchy(long attrType_id, long job_id);
+    public TreeI<Long> getHierarchy(long attrType_id, long job_id) throws MGXException;
 
-    public SequenceI[] search(String term, boolean exact, SeqRunI[] targets);
+    public Iterator<SequenceI> search(String term, boolean exact, SeqRunI[] targets) throws MGXException;
 }

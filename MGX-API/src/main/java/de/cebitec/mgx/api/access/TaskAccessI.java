@@ -5,6 +5,7 @@
  */
 package de.cebitec.mgx.api.access;
 
+import de.cebitec.mgx.api.exception.MGXException;
 import de.cebitec.mgx.api.misc.TaskI;
 import de.cebitec.mgx.api.model.ModelBase;
 import java.util.UUID;
@@ -15,7 +16,7 @@ import java.util.UUID;
  */
 public interface TaskAccessI<T extends ModelBase> {
 
-    public abstract TaskI get(T obj, UUID taskId, TaskI.TaskType tt);
+    public abstract TaskI get(T obj, UUID taskId, TaskI.TaskType tt) throws MGXException;
 
-    public abstract TaskI refresh(TaskI origTask);
+    public abstract TaskI refresh(TaskI origTask) throws MGXException;
 }

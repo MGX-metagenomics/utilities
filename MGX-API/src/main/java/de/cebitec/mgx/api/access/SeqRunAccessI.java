@@ -6,6 +6,7 @@
 
 package de.cebitec.mgx.api.access;
 
+import de.cebitec.mgx.api.exception.MGXException;
 import de.cebitec.mgx.api.model.AttributeTypeI;
 import de.cebitec.mgx.api.model.DNAExtractI;
 import de.cebitec.mgx.api.model.JobI;
@@ -21,10 +22,10 @@ import java.util.Set;
  */
 public interface SeqRunAccessI extends AccessBaseI<SeqRunI> {
     
-    public SeqRunI create(DNAExtractI extract, String name, TermI seqMethod, TermI seqTechnology, boolean submittedINSDC, String accession);
+    public SeqRunI create(DNAExtractI extract, String name, TermI seqMethod, TermI seqTechnology, boolean submittedINSDC, String accession) throws MGXException;
 
-    public Map<JobI, Set<AttributeTypeI>> getJobsAndAttributeTypes(SeqRunI run);
+    public Map<JobI, Set<AttributeTypeI>> getJobsAndAttributeTypes(SeqRunI run) throws MGXException;
 
-    public Iterator<SeqRunI> ByExtract(long extract_id);
+    public Iterator<SeqRunI> ByExtract(long extract_id) throws MGXException;
     
 }

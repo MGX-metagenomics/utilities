@@ -17,7 +17,7 @@ import java.util.Iterator;
  */
 public interface ToolAccessI extends AccessBaseI<ToolI> {
 
-    public ToolI ByJob(long id);
+    public ToolI ByJob(long id) throws MGXException;
 
     public Iterator<ToolI> listGlobalTools() throws MGXException;
 
