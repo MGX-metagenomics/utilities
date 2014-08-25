@@ -22,7 +22,7 @@ import java.util.List;
  */
 public interface StatisticsAccessI {
 
-    public Iterator<Point> Rarefaction(DistributionI dist);
+    public Iterator<Point> Rarefaction(DistributionI dist) throws MGXException;
 
     public PCAResultI PCA(Collection<Pair<VisualizationGroupI, DistributionI>> groups, int pc1, int pc2) throws MGXException;
 

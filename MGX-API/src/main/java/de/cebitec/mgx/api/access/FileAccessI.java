@@ -23,11 +23,11 @@ public interface FileAccessI {
 
     public MGXMasterI getMaster();
 
-    public Iterator<MGXFileI> fetchall();
+    public Iterator<MGXFileI> fetchall() throws MGXException;
 
-    public Iterator<MGXFileI> fetchall(MGXFileI parent);
+    public Iterator<MGXFileI> fetchall(MGXFileI parent) throws MGXException;
 
-    public TaskI delete(MGXFileI obj);
+    public TaskI delete(MGXFileI obj) throws MGXException;
 
     public DownloadBaseI createPluginDumpDownloader(OutputStream writer) throws MGXException;
 

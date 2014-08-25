@@ -19,6 +19,7 @@ public abstract class MappingAccessI implements AccessBaseI<MappingI> {
     public abstract Iterator<MappedSequenceI> byReferenceInterval(UUID uuid, int from, int to);
 
     public abstract UUID openMapping(long id);
+    
     public abstract void closeMapping(UUID uuid);
 
     public abstract Iterator<MappingI> ByReference(long id);

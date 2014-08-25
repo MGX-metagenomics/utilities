@@ -21,21 +21,21 @@ import java.util.List;
  */
 public interface JobAccessI  {
 
-    public JobI create(ToolI tool, SeqRunI seqrun, Collection<JobParameterI> params);
+    public JobI create(ToolI tool, SeqRunI seqrun, Collection<JobParameterI> params) throws MGXException;
 
-    public JobI fetch(long id);
+    public JobI fetch(long id) throws MGXException;
 
-    public Iterator<JobI> fetchall();
+    public Iterator<JobI> fetchall() throws MGXException;
 
-    public void update(JobI obj);
+    public void update(JobI obj) throws MGXException;
 
-    public TaskI delete(JobI obj);
+    public TaskI delete(JobI obj) throws MGXException;
 
-    public List<JobI> BySeqRun(SeqRunI run);
+    public List<JobI> BySeqRun(SeqRunI run) throws MGXException;
 
-    public List<JobI> ByAttributeTypeAndSeqRun(long atype_id, SeqRunI run);
+    public List<JobI> ByAttributeTypeAndSeqRun(long atype_id, SeqRunI run) throws MGXException;
 
-    public String getErrorMessage(JobI job);
+    public String getErrorMessage(JobI job) throws MGXException;
 
     public TaskI restart(JobI job) throws MGXException;
 

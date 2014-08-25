@@ -5,6 +5,7 @@
  */
 package de.cebitec.mgx.api.access;
 
+import de.cebitec.mgx.api.exception.MGXException;
 import de.cebitec.mgx.api.model.TermI;
 import java.util.Collection;
 
@@ -18,6 +19,6 @@ public interface TermAccessI {
     public static final String SEQ_METHODS = "seq_methods";
     public static final String SEQ_PLATFORMS = "seq_platforms";
 
-    public Collection<TermI> byCategory(String category);
+    public Collection<TermI> byCategory(String category) throws MGXException;
 
 }

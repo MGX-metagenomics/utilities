@@ -6,6 +6,7 @@
 
 package de.cebitec.mgx.api.access;
 
+import de.cebitec.mgx.api.exception.MGXException;
 import de.cebitec.mgx.api.model.HabitatI;
 import de.cebitec.mgx.api.model.SampleI;
 import java.util.Date;
@@ -17,8 +18,8 @@ import java.util.Iterator;
  */
 public interface SampleAccessI  extends AccessBaseI<SampleI> {
     
-    public SampleI create(HabitatI habitat, Date collectionDate, String material, double temperature, int volume, String volUnit);
+    public SampleI create(HabitatI habitat, Date collectionDate, String material, double temperature, int volume, String volUnit) throws MGXException;
 
-    public Iterator<SampleI> ByHabitat(long habitat_id);
+    public Iterator<SampleI> ByHabitat(long habitat_id) throws MGXException;
     
 }

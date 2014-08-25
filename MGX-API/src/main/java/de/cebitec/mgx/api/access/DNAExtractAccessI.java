@@ -5,6 +5,7 @@
  */
 package de.cebitec.mgx.api.access;
 
+import de.cebitec.mgx.api.exception.MGXException;
 import de.cebitec.mgx.api.model.DNAExtractI;
 import de.cebitec.mgx.api.model.SampleI;
 import java.util.Iterator;
@@ -17,8 +18,8 @@ public interface DNAExtractAccessI extends AccessBaseI<DNAExtractI> {
     
     public DNAExtractI create(SampleI sample, String name, String method, 
             String protocol, String primer5, String primer3, 
-            String targetGene, String targetFragment, String description);
+            String targetGene, String targetFragment, String description) throws MGXException;
 
-    public Iterator<DNAExtractI> BySample(long sample_id);
+    public Iterator<DNAExtractI> BySample(long sample_id) throws MGXException;
 
 }
