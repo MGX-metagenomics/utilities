@@ -8,6 +8,7 @@ package de.cebitec.mgx.api.access;
 import de.cebitec.mgx.api.exception.MGXException;
 import de.cebitec.mgx.api.groups.VisualizationGroupI;
 import de.cebitec.mgx.api.misc.DistributionI;
+import de.cebitec.mgx.api.misc.PrincipalComponent;
 import de.cebitec.mgx.api.misc.PCAResultI;
 import de.cebitec.mgx.api.misc.Pair;
 import de.cebitec.mgx.api.misc.Point;
@@ -24,7 +25,7 @@ public interface StatisticsAccessI {
 
     public Iterator<Point> Rarefaction(DistributionI dist) throws MGXException;
 
-    public PCAResultI PCA(Collection<Pair<VisualizationGroupI, DistributionI>> groups, int pc1, int pc2) throws MGXException;
+    public PCAResultI PCA(Collection<Pair<VisualizationGroupI, DistributionI>> groups, PrincipalComponent pc1, PrincipalComponent pc2) throws MGXException;
 
     public List<Point> PCoA(Collection<Pair<VisualizationGroupI, DistributionI>> groups) throws MGXException;
 
