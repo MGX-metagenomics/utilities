@@ -293,6 +293,7 @@ public class PathwayAccess extends AccessBase {
             }
         } catch (IOException ex) {
             Logger.getLogger(PathwayAccess.class.getName()).log(Level.SEVERE, null, ex);
+            throw new KEGGException(ex.getMessage());
         }
         // save to db
         Connection conn = getMaster().getConnection();
@@ -356,6 +357,7 @@ public class PathwayAccess extends AccessBase {
             done.await();
         } catch (InterruptedException ex) {
             Logger.getLogger(PathwayAccess.class.getName()).log(Level.SEVERE, null, ex);
+            throw new KEGGException(ex.getMessage());
         }
 
         final Set<PathwayI> ret = new HashSet<>();

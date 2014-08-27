@@ -42,6 +42,10 @@ public class PathwayAccessTest {
 
     @After
     public void tearDown() {
+        if (m != null) {
+            m.close();
+            m = null;
+        }
     }
 
     @Test
