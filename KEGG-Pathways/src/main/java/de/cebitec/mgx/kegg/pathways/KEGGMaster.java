@@ -71,7 +71,7 @@ public class KEGGMaster {
         }
         try {
             Class.forName("org.h2.Driver");
-            conn = DriverManager.getConnection("jdbc:h2:" + cacheDir + File.separator + "kegg");
+            conn = DriverManager.getConnection("jdbc:h2:" + cacheDir + File.separator + "kegg" + ";DEFAULT_TABLE_ENGINE=org.h2.mvstore.db.MVTableEngine");
             checkDBH2();
         } catch (ClassNotFoundException | SQLException ex) {
             throw new KEGGException(ex.getMessage());
@@ -207,6 +207,15 @@ public class KEGGMaster {
         } catch (SQLException ex) {
             Logger.getLogger(AccessBase.class.getName()).log(Level.SEVERE, null, ex.getMessage());
         }
+    }
+    
+    public void close() {
+//        if (conn != null) {
+//            try {
+//                conn.close();
+//            } catch (SQLException ex) {
+//            }
+//        }
     }
 
 }
