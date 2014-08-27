@@ -74,7 +74,7 @@ public class KEGGMaster {
             conn = DriverManager.getConnection("jdbc:h2:" + cacheDir + File.separator + "kegg" + ";DEFAULT_TABLE_ENGINE=org.h2.mvstore.db.MVTableEngine");
             checkDBH2();
         } catch (ClassNotFoundException | SQLException ex) {
-            throw new KEGGException(ex.getMessage());
+            throw new KEGGException(ex);
         }
 //        try {
 //            Class.forName("org.hsqldb.jdbc.JDBCDriver");

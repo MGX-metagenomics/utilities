@@ -61,7 +61,7 @@ public class KEGGPanel extends JPanel {
             image = worker.get();
         } catch (InterruptedException | ExecutionException ex) {
             Logger.getLogger(KEGGPanel.class.getName()).log(Level.SEVERE, null, ex);
-            throw new KEGGException(ex.getMessage());
+            throw new KEGGException(ex);
         }
         int width = image.getWidth();
         int height = image.getHeight();

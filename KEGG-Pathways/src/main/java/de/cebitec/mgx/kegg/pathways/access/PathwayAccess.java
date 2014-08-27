@@ -70,7 +70,7 @@ public class PathwayAccess extends AccessBase {
                 }
             }
         } catch (SQLException ex) {
-            throw new KEGGException(ex.getMessage());
+            throw new KEGGException(ex);
         }
 
         return all;
@@ -95,13 +95,13 @@ public class PathwayAccess extends AccessBase {
                     }
                     stmt.executeBatch();
                 } catch (SQLException ex) {
-                    throw new KEGGException(ex.getMessage());
+                    throw new KEGGException(ex);
                 }
 
                 setValid(PATHWAYS);
             }
         } catch (IOException | SQLException ex) {
-            throw new KEGGException(ex.getMessage());
+            throw new KEGGException(ex);
         }
     }
 
@@ -130,7 +130,7 @@ public class PathwayAccess extends AccessBase {
             if (cacheFile.exists()) {
                 cacheFile.delete();
             }
-            throw new KEGGException(ex.getMessage());
+            throw new KEGGException(ex);
         }
     }
     
@@ -145,7 +145,7 @@ public class PathwayAccess extends AccessBase {
         try {
             img = ImageIO.read(cacheFile);
         } catch (IOException ex) {
-            throw new KEGGException(ex.getMessage());
+            throw new KEGGException(ex);
         }
         return img;
     }
@@ -231,7 +231,7 @@ public class PathwayAccess extends AccessBase {
                 }
             }
         } catch (SQLException ex) {
-            throw new KEGGException(ex.getMessage());
+            throw new KEGGException(ex);
         }
         return ret;
     }
@@ -293,7 +293,7 @@ public class PathwayAccess extends AccessBase {
             }
         } catch (IOException ex) {
             Logger.getLogger(PathwayAccess.class.getName()).log(Level.SEVERE, null, ex);
-            throw new KEGGException(ex.getMessage());
+            throw new KEGGException(ex);
         }
         // save to db
         Connection conn = getMaster().getConnection();
@@ -305,7 +305,7 @@ public class PathwayAccess extends AccessBase {
             stmt1.setString(1, COORDS + "_" + pw.getMapNum());
             stmt1.executeUpdate();
         } catch (SQLException ex) {
-            throw new KEGGException(ex.getMessage());
+            throw new KEGGException(ex);
         }
 
         try {
@@ -326,7 +326,7 @@ public class PathwayAccess extends AccessBase {
 
             setValid(COORDS + "_" + pw.getMapNum());
         } catch (SQLException ex) {
-            throw new KEGGException(ex.getMessage());
+            throw new KEGGException(ex);
         }
     }
 
@@ -357,7 +357,7 @@ public class PathwayAccess extends AccessBase {
             done.await();
         } catch (InterruptedException ex) {
             Logger.getLogger(PathwayAccess.class.getName()).log(Level.SEVERE, null, ex);
-            throw new KEGGException(ex.getMessage());
+            throw new KEGGException(ex);
         }
 
         final Set<PathwayI> ret = new HashSet<>();
@@ -371,7 +371,7 @@ public class PathwayAccess extends AccessBase {
                 }
             }
         } catch (SQLException ex) {
-            throw new KEGGException(ex.getMessage());
+            throw new KEGGException(ex);
         }
         return ret;
     }
@@ -420,7 +420,7 @@ public class PathwayAccess extends AccessBase {
                 }
             }
         } catch (SQLException ex) {
-            throw new KEGGException(ex.getMessage());
+            throw new KEGGException(ex);
         }
         return ret;
     }
