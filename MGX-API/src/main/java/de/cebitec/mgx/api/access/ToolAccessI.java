@@ -6,6 +6,7 @@
 package de.cebitec.mgx.api.access;
 
 import de.cebitec.mgx.api.exception.MGXException;
+import de.cebitec.mgx.api.model.JobI;
 import de.cebitec.mgx.api.model.JobParameterI;
 import de.cebitec.mgx.api.model.ToolI;
 import java.util.Collection;
@@ -17,7 +18,7 @@ import java.util.Iterator;
  */
 public interface ToolAccessI extends AccessBaseI<ToolI> {
 
-    public ToolI ByJob(long id) throws MGXException;
+    public ToolI ByJob(JobI job) throws MGXException;
 
     public Iterator<ToolI> listGlobalTools() throws MGXException;
 
