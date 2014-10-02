@@ -20,6 +20,6 @@ public interface DNAExtractAccessI extends AccessBaseI<DNAExtractI> {
             String protocol, String primer5, String primer3, 
             String targetGene, String targetFragment, String description) throws MGXException;
 
-    public Iterator<DNAExtractI> BySample(long sample_id) throws MGXException;
+    public Iterator<DNAExtractI> BySample(SampleI sample) throws MGXException;
 
 }

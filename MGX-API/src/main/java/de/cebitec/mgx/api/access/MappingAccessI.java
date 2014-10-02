@@ -5,8 +5,10 @@
  */
 package de.cebitec.mgx.api.access;
 
+import de.cebitec.mgx.api.model.MGXReferenceI;
 import de.cebitec.mgx.api.model.MappedSequenceI;
 import de.cebitec.mgx.api.model.MappingI;
+import de.cebitec.mgx.api.model.SeqRunI;
 import java.util.Iterator;
 import java.util.UUID;
 
@@ -22,9 +24,9 @@ public abstract class MappingAccessI implements AccessBaseI<MappingI> {
     
     public abstract void closeMapping(UUID uuid);
 
-    public abstract Iterator<MappingI> ByReference(long id);
+    public abstract Iterator<MappingI> ByReference(MGXReferenceI reference);
 
-    public abstract Iterator<MappingI> BySeqRun(long id);
+    public abstract Iterator<MappingI> BySeqRun(SeqRunI run);
 
     public abstract long getMaxCoverage(UUID sessionUUID);
 }

@@ -8,6 +8,7 @@ package de.cebitec.mgx.api.access;
 import de.cebitec.mgx.api.access.datatransfer.DownloadBaseI;
 import de.cebitec.mgx.api.access.datatransfer.UploadBaseI;
 import de.cebitec.mgx.api.model.AttributeI;
+import de.cebitec.mgx.api.model.SeqRunI;
 import de.cebitec.mgx.api.model.SequenceI;
 import de.cebitec.mgx.sequence.DNASequenceI;
 import de.cebitec.mgx.sequence.SeqReaderI;
@@ -21,10 +22,14 @@ import java.util.Set;
 public interface SequenceAccessI extends AccessBaseI<SequenceI> {
 
     public void fetchSeqData(Iterable<SequenceI> sequences);
+    
+    public void sendSequences(SeqRunI seqrun, SeqReaderI reader);
+    
+    public void downloadSequencesForAttributes(Set<AttributeI> attrs, SeqWriterI writer, boolean closeWriter);
 
     public DownloadBaseI createDownloaderByAttributes(Set<AttributeI> value, SeqWriterI<DNASequenceI> writer, boolean closeWriter);
 
-    public UploadBaseI createUploader(long seqrun_id, SeqReaderI<DNASequenceI> reader);
+    public UploadBaseI createUploader(SeqRunI seqrun, SeqReaderI<DNASequenceI> reader);
 
-    public DownloadBaseI createDownloader(long seqrun_id, SeqWriterI<DNASequenceI> writer, boolean closeWriter);
+    public DownloadBaseI createDownloader(SeqRunI seqrun, SeqWriterI<DNASequenceI> writer, boolean closeWriter);
 }

@@ -68,6 +68,7 @@ public interface VisualizationGroupI extends PropertyChangeListener {
 
     boolean isActive();
 
+    @Override
     void propertyChange(PropertyChangeEvent evt);
 
     void removePropertyChangeListener(PropertyChangeListener p);

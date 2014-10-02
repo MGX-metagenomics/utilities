@@ -26,6 +26,6 @@ public interface SeqRunAccessI extends AccessBaseI<SeqRunI> {
 
     public Map<JobI, Set<AttributeTypeI>> getJobsAndAttributeTypes(SeqRunI run) throws MGXException;
 
-    public Iterator<SeqRunI> ByExtract(long extract_id) throws MGXException;
+    public Iterator<SeqRunI> ByExtract(DNAExtractI extract) throws MGXException;
     
 }
