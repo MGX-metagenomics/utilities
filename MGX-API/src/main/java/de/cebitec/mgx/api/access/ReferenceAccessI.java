@@ -20,7 +20,7 @@ public interface ReferenceAccessI extends AccessBaseI<MGXReferenceI> {
 
     public String getSequence(final MGXReferenceI ref, int from, int to) throws MGXException;
 
-    public Iterator<RegionI> byReferenceInterval(Long id, int from, int to) throws MGXException;
+    public Iterator<RegionI> byReferenceInterval(MGXReferenceI ref, int from, int to) throws MGXException;
 
     public Iterator<MGXReferenceI> listGlobalReferences() throws MGXException;
     

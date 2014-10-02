@@ -7,6 +7,7 @@ package de.cebitec.mgx.api.access;
 
 import de.cebitec.mgx.api.exception.MGXException;
 import de.cebitec.mgx.api.misc.TaskI;
+import de.cebitec.mgx.api.model.AttributeTypeI;
 import de.cebitec.mgx.api.model.JobI;
 import de.cebitec.mgx.api.model.JobParameterI;
 import de.cebitec.mgx.api.model.SeqRunI;
@@ -33,7 +34,7 @@ public interface JobAccessI  {
 
     public List<JobI> BySeqRun(SeqRunI run) throws MGXException;
 
-    public List<JobI> ByAttributeTypeAndSeqRun(long atype_id, SeqRunI run) throws MGXException;
+    public List<JobI> ByAttributeTypeAndSeqRun(AttributeTypeI attrType, SeqRunI run) throws MGXException;
 
     public String getErrorMessage(JobI job) throws MGXException;
 

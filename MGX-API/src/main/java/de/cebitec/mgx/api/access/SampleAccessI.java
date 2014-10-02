@@ -20,6 +20,6 @@ public interface SampleAccessI  extends AccessBaseI<SampleI> {
     
     public SampleI create(HabitatI habitat, Date collectionDate, String material, double temperature, int volume, String volUnit) throws MGXException;
 
-    public Iterator<SampleI> ByHabitat(long habitat_id) throws MGXException;
+    public Iterator<SampleI> ByHabitat(HabitatI habitat) throws MGXException;
     
 }
