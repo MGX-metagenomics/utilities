@@ -28,4 +28,6 @@ public interface AttributeAccessI extends AccessBaseI<AttributeI> {
     public TreeI<Long> getHierarchy(AttributeTypeI attrType, JobI job) throws MGXException;
 
     public Iterator<SequenceI> search(String term, boolean exact, SeqRunI[] targets) throws MGXException;
+    
+    public Iterator<String> find(String term, SeqRunI[] targets) throws MGXException;
 }
