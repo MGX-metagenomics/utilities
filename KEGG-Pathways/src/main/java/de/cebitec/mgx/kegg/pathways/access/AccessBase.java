@@ -46,7 +46,7 @@ public class AccessBase {
     }
 
     protected final void catchException(final ClientResponse res) throws KEGGException {
-        if (res.getClientResponseStatus() != ClientResponse.Status.OK) {
+        if (ClientResponse.Status.fromStatusCode(res.getStatus()) != ClientResponse.Status.OK) {
             StringBuilder msg = new StringBuilder();
             try (InputStreamReader isr = new InputStreamReader(res.getEntityInputStream())) {
                 try (BufferedReader r = new BufferedReader(isr)) {
@@ -57,7 +57,7 @@ public class AccessBase {
                     }
                 }
             } catch (IOException ex) {
-                Logger.getLogger(AccessBase.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
             }
             throw new KEGGException(msg.toString());
         }
