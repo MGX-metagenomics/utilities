@@ -50,6 +50,9 @@
         <module>MGX-API</module>
         <module>SFFReader</module>
         <module>MGX-BufferedRandomAccessFile</module>
+        <module>MGX-isequences</module>
+        <module>MGX-seqholder</module>
+        <module>MGX-seqstorage</module>
     </modules>
     
     <build>
