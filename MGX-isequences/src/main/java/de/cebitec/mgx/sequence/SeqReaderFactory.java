@@ -28,7 +28,7 @@ public class SeqReaderFactory {
 
     private static <T> FactoryI<T> get() {
         Iterator<FactoryI> ps = loader.iterator();
-        while (ps.hasNext()) {
+        while (ps != null && ps.hasNext()) {
             FactoryI<T> sr = ps.next();
             if (sr != null) {
                 return sr;
