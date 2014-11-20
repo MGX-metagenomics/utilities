@@ -25,7 +25,7 @@
                     <instructions>
                         <Import-Package>de.cebitec.mgx.sffreader,de.cebitec.mgx.sequence,de.cebitec.mgx.seqholder</Import-Package>
                         <Export-Package>de.cebitec.mgx.seqstorage,de.cebitec.mgx.seqstorage.encoding</Export-Package>
-                        <Require-Capability>osgi.extender; filter:="osgi.extender=osgi.serviceloader.registrar)"</Require-Capability>
+                        <Require-Capability>osgi.extender; filter:="(osgi.extender=osgi.serviceloader.registrar)"</Require-Capability>
                         <Provide-Capability>osgi.serviceloader; osgi.serviceloader=de.cebitec.mgx.sequence.FactoryI</Provide-Capability>
                         <Private-Package>de.cebitec.mgx.seqstorage.encoding</Private-Package>
                         <Embed-Dependency>trove4j;scope=compile;inline=true</Embed-Dependency>
