@@ -309,7 +309,7 @@ message JobDTO {
 
   required JobState state = 7;
 
-  optional JobParameterListDTO parameters = 8;
+  required JobParameterListDTO parameters = 8;
 }
 
 message JobDTOList  {
