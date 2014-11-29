@@ -12,4 +12,6 @@ public interface SeqReaderI<T> extends Enumeration<T>, AutoCloseable {
     public void delete();
 
     public Set<T> fetch(long[] ids) throws SeqStoreException;
+    
+    public boolean hasQuality();
 }

@@ -239,6 +239,11 @@ public class CSFReader implements SeqReaderI<DNASequenceHolder> {
 
     }
 
+    @Override
+    public boolean hasQuality() {
+        return false;
+    }
+
     private class NMSReader {
 
         final TLongLongMap idx;
