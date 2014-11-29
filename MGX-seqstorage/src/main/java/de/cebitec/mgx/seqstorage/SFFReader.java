@@ -95,4 +95,8 @@ public class SFFReader implements SeqReaderI<DNAQualitySequenceHolder> {
         reader.close();
     }
 
+    @Override
+    public boolean hasQuality() {
+        return true;
+    }
 }

@@ -137,4 +137,9 @@ public class FastaReader implements SeqReaderI<DNASequenceHolder> {
         }
         return res;
     }
+
+    @Override
+    public boolean hasQuality() {
+        return false;
+    }
 }

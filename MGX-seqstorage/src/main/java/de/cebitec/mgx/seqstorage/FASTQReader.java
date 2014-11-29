@@ -105,4 +105,9 @@ public class FASTQReader implements SeqReaderI<DNAQualitySequenceHolder> {
         // FIXME convert to transport encoding
         return in;
     }
+
+    @Override
+    public boolean hasQuality() {
+        return true;
+    }
 }
