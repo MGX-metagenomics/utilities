@@ -26,6 +26,10 @@ message MGXDoubleList {
   repeated double value = 1;
 }
 
+message MGXFloatList {
+  repeated float value = 1;
+}
+
 message MGXBoolean {
   required bool value = 1;
 }
@@ -464,6 +468,22 @@ message PCAResultDTO {
     repeated PointDTO datapoint = 1;
     repeated PointDTO loading = 2;
     repeated double variance = 3;
+}
+
+// QC
+
+message DataRowDTO {
+    required string name = 1;
+    repeated float value = 2;
+}
+
+message QCResultDTO {
+    required string name = 1;
+    repeated DataRowDTO row = 2;
+}
+
+message QCResultDTOList {
+    repeated QCResultDTO result = 1;
 }
 
 
