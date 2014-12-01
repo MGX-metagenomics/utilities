@@ -19,7 +19,7 @@ import java.util.List;
  */
 public class Loader {
 
-    public QCResult load(String fName) throws IOException {
+    public static QCResult load(String fName) throws IOException {
         try (BufferedReader br = new BufferedReader(new FileReader(fName))) {
             String title = br.readLine();
             String line;
