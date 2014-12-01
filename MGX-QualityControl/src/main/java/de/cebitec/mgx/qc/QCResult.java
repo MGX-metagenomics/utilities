@@ -9,7 +9,7 @@ package de.cebitec.mgx.qc;
  *
  * @author sj
  */
-public class QCResult {
+public class QCResult implements Comparable<QCResult> {
     
     private final String name;
     private final DataRow[] data;
@@ -25,6 +25,11 @@ public class QCResult {
 
     public DataRow[] getData() {
         return data;
+    }
+
+    @Override
+    public int compareTo(QCResult o) {
+        return name.compareTo(o.getName());
     }
     
 }
