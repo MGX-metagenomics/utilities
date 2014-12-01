@@ -23,6 +23,7 @@ public class NucleotideDistribution implements Analyzer<DNASequenceI> {
     private final int[] G = new int[LEN];
     private final int[] C = new int[LEN];
     private final int[] N = new int[LEN];
+    private int maxLen = 0;
 
     public NucleotideDistribution() {
         Arrays.fill(A, 0);
@@ -35,6 +36,9 @@ public class NucleotideDistribution implements Analyzer<DNASequenceI> {
     @Override
     public void add(DNASequenceI seq) {
         byte[] dna = seq.getSequence();
+        if (dna.length > maxLen) {
+            maxLen = dna.length;
+        }
         int len = Math.min(LEN, dna.length);
         for (int i = 0; i < len; i++) {
             switch (dna[i]) {
@@ -61,13 +65,15 @@ public class NucleotideDistribution implements Analyzer<DNASequenceI> {
 
     @Override
     public QCResult get() {
-        float[] a = new float[LEN];
-        float[] t = new float[LEN];
-        float[] g = new float[LEN];
-        float[] c = new float[LEN];
-        float[] n = new float[LEN];
+        int max = Math.min(LEN, maxLen);
+        
+        float[] a = new float[max];
+        float[] t = new float[max];
+        float[] g = new float[max];
+        float[] c = new float[max];
+        float[] n = new float[max];
 
-        for (int i = 0; i < LEN; i++) {
+        for (int i = 0; i < max; i++) {
             int sum = A[i] + T[i] + G[i] + C[i] + N[i];
 
             a[i] = 1f * A[i] / sum;
