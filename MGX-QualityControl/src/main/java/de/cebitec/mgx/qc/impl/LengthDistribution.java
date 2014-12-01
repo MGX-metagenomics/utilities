@@ -19,6 +19,7 @@ public class LengthDistribution implements Analyzer<DNASequenceI> {
 
     private final static int LEN = 50;
     private int[] l = new int[LEN];
+    private int maxLen = 0;
 
     public LengthDistribution() {
         Arrays.fill(l, 0);
@@ -27,6 +28,9 @@ public class LengthDistribution implements Analyzer<DNASequenceI> {
     @Override
     public void add(DNASequenceI seq) {
         byte[] dna = seq.getSequence();
+        if (dna.length > maxLen) {
+            maxLen = dna.length;
+        }
 
         // extend if necessary
         if (dna.length > l.length) {
@@ -38,9 +42,9 @@ public class LengthDistribution implements Analyzer<DNASequenceI> {
 
     @Override
     public QCResult get() {
-        float[] res = new float[l.length];
+        float[] res = new float[maxLen];
         long sum = 0;
-        for (int i = 0; i < l.length; i++) {
+        for (int i = 0; i < maxLen; i++) {
             sum += l[i];
         }
         for (int i = 0; i < res.length; i++) {

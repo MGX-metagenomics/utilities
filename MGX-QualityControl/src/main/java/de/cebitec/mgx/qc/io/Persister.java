@@ -11,6 +11,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -21,7 +23,7 @@ public class Persister {
     public static boolean persist(String prefix, QCResult qc) {
         File f = null;
         try {
-            f = File.createTempFile(prefix, "tmp");
+            f = new File(prefix + qc.getName() + ".tmp");
             try (BufferedWriter bw = new BufferedWriter(new FileWriter(f))) {
                 bw.write(qc.getName());
                 bw.newLine();
@@ -34,6 +36,7 @@ public class Persister {
             }
 
         } catch (IOException ex) {
+            Logger.getLogger(Persister.class.getName()).log(Level.SEVERE, null, ex);
             if (f != null && f.exists()) {
                 f.delete();
                 return false;
@@ -46,10 +49,10 @@ public class Persister {
         if (d == null || d.length == 0) {
             return "";
         }
-        int i=0;
+        int i = 0;
         StringBuilder sb = new StringBuilder(String.valueOf(d[i++]));
         while (i < d.length) {
-            sb.append(separator).append(String.valueOf(d[i]));
+            sb.append(separator).append(String.valueOf(d[i++]));
         }
         return sb.toString();
     }

@@ -20,6 +20,7 @@ public class GCDistribution implements Analyzer<DNASequenceI> {
     private final static int LEN = 50;
     private int[] AT = new int[LEN];
     private int[] GC = new int[LEN];
+    private int maxLen = 0;
 
     public GCDistribution() {
         Arrays.fill(AT, 0);
@@ -29,6 +30,9 @@ public class GCDistribution implements Analyzer<DNASequenceI> {
     @Override
     public void add(DNASequenceI seq) {
         byte[] dna = seq.getSequence();
+        if (dna.length > maxLen) {
+            maxLen = dna.length;
+        }
 
         // extend if necessary
         if (dna.length > AT.length) {
@@ -52,8 +56,8 @@ public class GCDistribution implements Analyzer<DNASequenceI> {
 
     @Override
     public QCResult get() {
-        float[] res = new float[AT.length];
-        for (int i = 0; i < AT.length; i++) {
+        float[] res = new float[maxLen];
+        for (int i = 0; i < maxLen; i++) {
             res[i] = 1f * GC[i] / (GC[i] + AT[i]);
         }
         DataRow dr = new DataRow("GC", res);
