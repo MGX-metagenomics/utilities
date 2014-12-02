@@ -5,8 +5,8 @@
  */
 package de.cebitec.mgx.qc.io;
 
-import de.cebitec.mgx.qc.DataRow;
-import de.cebitec.mgx.qc.QCResult;
+import de.cebitec.mgx.qc.DataRowI;
+import de.cebitec.mgx.qc.QCResultI;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -20,14 +20,14 @@ import java.util.logging.Logger;
  */
 public class Persister {
 
-    public static boolean persist(String prefix, QCResult qc) {
+    public static boolean persist(String prefix, QCResultI qc) {
         File f = null;
         try {
             f = new File(prefix + qc.getName() + ".tmp");
             try (BufferedWriter bw = new BufferedWriter(new FileWriter(f))) {
                 bw.write(qc.getName());
                 bw.newLine();
-                for (DataRow dr : qc.getData()) {
+                for (DataRowI dr : qc.getData()) {
                     bw.write(dr.getName());
                     bw.write("\t");
                     bw.write(join(dr.getData(), ","));

@@ -9,26 +9,28 @@ package de.cebitec.mgx.qc;
  *
  * @author sj
  */
-public class QCResult implements Comparable<QCResult> {
+public class QCResult implements QCResultI {
     
     private final String name;
-    private final DataRow[] data;
+    private final DataRowI[] data;
 
-    public QCResult(String name, DataRow[] data) {
+    public QCResult(String name, DataRowI[] data) {
         this.name = name;
         this.data = data;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
-    public DataRow[] getData() {
+    @Override
+    public DataRowI[] getData() {
         return data;
     }
 
     @Override
-    public int compareTo(QCResult o) {
+    public int compareTo(QCResultI o) {
         return name.compareTo(o.getName());
     }
     
