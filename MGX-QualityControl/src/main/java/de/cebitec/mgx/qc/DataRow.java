@@ -9,7 +9,7 @@ package de.cebitec.mgx.qc;
  *
  * @author sj
  */
-public class DataRow {
+public class DataRow implements DataRowI {
 
     private final String name;
     private final float[] data;
@@ -19,10 +19,12 @@ public class DataRow {
         this.data = data;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public float[] getData() {
         return data;
     }
