@@ -12,7 +12,9 @@ import de.cebitec.mgx.api.model.DNAExtractI;
 import de.cebitec.mgx.api.model.JobI;
 import de.cebitec.mgx.api.model.SeqRunI;
 import de.cebitec.mgx.api.model.TermI;
+import de.cebitec.mgx.api.model.qc.QCResultI;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -27,5 +29,7 @@ public interface SeqRunAccessI extends AccessBaseI<SeqRunI> {
     public Map<JobI, Set<AttributeTypeI>> getJobsAndAttributeTypes(SeqRunI run) throws MGXException;
 
     public Iterator<SeqRunI> ByExtract(DNAExtractI extract) throws MGXException;
+    
+    public List<QCResultI> getQC(SeqRunI run) throws MGXException;
     
 }
