@@ -34,6 +34,9 @@ public class ReaderFactory implements FactoryI {
         if (!file.exists()) {
             throw new SeqStoreException("No such file: " + uri);
         }
+        if (file.length() == 0) {
+            throw new SeqStoreException(uri + " is empty.");
+        }
 
         char[] cbuf = new char[4];
         try (FileReader fr = new FileReader(uri)) {
