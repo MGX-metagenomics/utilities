@@ -64,6 +64,41 @@ public class CSFWriterTest {
         f.delete();
     }
 
+    @Test
+    public void testCSFReader() throws Exception {
+        System.out.println("testCSFReader");
+        File f = copyTestData();
+        File target = File.createTempFile("testout", "");
+        target.delete();
+        try (FastaReader fr = new FastaReader(f.getAbsolutePath(), false)) {
+            try (CSFWriter csf = new CSFWriter(target)) {
+                while (fr.hasMoreElements()) {
+                    DNASequenceHolder holder = fr.nextElement();
+                    assertNotNull(holder);
+                    assertNotNull(holder.getSequence());
+                    csf.addSequence(holder.getSequence());
+                }
+            }
+            
+            try (CSFReader r = new CSFReader(target.getAbsolutePath(), false)) {
+                while (r.hasMoreElements()) {
+                    DNASequenceHolder h = r.nextElement();
+                    assertNotNull(h);
+                    DNASequenceI s = h.getSequence();
+                    assertNotNull(s);
+                    String seq = new String(s.getSequence());
+                    // all sequences have to be uppercase
+                    assertEquals(seq.toUpperCase(), seq);
+                }
+                r.delete();
+            }
+            
+        } catch (SeqStoreException ex) {
+            fail(ex.getMessage());
+        }
+        f.delete();
+    }
+
     private File copyTestData() {
         File f = null;
         try (BufferedInputStream is = new BufferedInputStream(getClass().getClassLoader().getResourceAsStream("de/cebitec/mgx/seqstorage/test.fas"))) {
