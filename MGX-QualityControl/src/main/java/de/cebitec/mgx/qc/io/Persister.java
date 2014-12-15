@@ -5,8 +5,9 @@
  */
 package de.cebitec.mgx.qc.io;
 
+import de.cebitec.mgx.qc.Analyzer;
 import de.cebitec.mgx.qc.DataRowI;
-import de.cebitec.mgx.qc.QCResultI;
+import de.cebitec.mgx.qc.QCResult;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -20,11 +21,12 @@ import java.util.logging.Logger;
  */
 public class Persister {
 
-    public static boolean persist(String prefix, QCResultI qc) {
+    public static boolean persist(String prefix, Analyzer a) {
         File f = null;
         try {
-            f = new File(prefix + qc.getName() + ".tmp");
+            f = new File(prefix + a.getName() + ".tmp");
             try (BufferedWriter bw = new BufferedWriter(new FileWriter(f))) {
+                QCResult qc = a.get();
                 bw.write(qc.getName());
                 bw.newLine();
                 for (DataRowI dr : qc.getData()) {
@@ -42,7 +44,7 @@ public class Persister {
                 return false;
             }
         }
-        return f.renameTo(new File(prefix + qc.getName()));
+        return f.renameTo(new File(prefix + a.getName()));
     }
 
     private static String join(float[] d, String separator) {
