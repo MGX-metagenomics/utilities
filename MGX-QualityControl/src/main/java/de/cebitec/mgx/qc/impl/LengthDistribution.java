@@ -20,37 +20,53 @@ public class LengthDistribution implements Analyzer<DNASequenceI> {
     private final static int LEN = 50;
     private int[] l = new int[LEN];
     private int maxLen = 0;
+    private long cnt = 0;
 
     public LengthDistribution() {
         Arrays.fill(l, 0);
     }
 
     @Override
-    public void add(DNASequenceI seq) {
-        byte[] dna = seq.getSequence();
-        if (dna.length > maxLen) {
-            maxLen = dna.length;
+    public synchronized void add(DNASequenceI seq) {
+        int dnaLen = seq.getSequence().length;
+        if (dnaLen > maxLen) {
+            maxLen = dnaLen;
         }
 
         // extend if necessary
-        if (dna.length > l.length) {
-            l = Arrays.copyOf(l, dna.length);
+        if (dnaLen >= l.length) {
+            l = Arrays.copyOf(l, dnaLen + 1);
         }
 
-        l[dna.length]++;
+        l[dnaLen]++;
+        cnt++;
     }
 
     @Override
     public QCResult get() {
-        float[] res = new float[maxLen];
+        float[] res = new float[maxLen + 1];
         long sum = 0;
-        for (int i = 0; i < maxLen; i++) {
-            sum += l[i];
+        for (int i : l) {
+            sum += i;
         }
-        for (int i = 0; i < res.length; i++) {
-            res[i] = 1f*l[i]/sum;
+        if (sum == 0 && maxLen == 0) {
+            res[0] = 0f;
+        } else {
+            for (int i = 0; i < res.length; i++) {
+                res[i] = 1f * l[i] / sum;
+            }
         }
         DataRow dr = new DataRow("Read length", res);
-        return new QCResult("length", new DataRow[]{dr});
+        return new QCResult(getName(), new DataRow[]{dr});
+    }
+
+    @Override
+    public String getName() {
+        return "Read length";
+    }
+
+    @Override
+    public long getNumberOfSequences() {
+        return cnt;
     }
 }
