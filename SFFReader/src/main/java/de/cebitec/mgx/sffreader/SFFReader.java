@@ -74,7 +74,7 @@ public class SFFReader {
         ReadHeader rh = ReadHeader.readFrom(raf);
         ReadData rd = ReadData.readFrom(raf, header, rh);
         String dna = rd.getBases();
-        return dna.substring(rh.getClipLeft() - 1, rh.getClipRight() + 1);
+        return dna.substring(rh.getClipLeft() - 1, rh.getClipRight() );
     }
 
     public void close() throws IOException {
@@ -87,9 +87,9 @@ public class SFFReader {
         ReadHeader rh = ReadHeader.readFrom(raf);
         ReadData rd = ReadData.readFrom(raf, header, rh);
         int[] qScores = rd.getQualityScores();
-        int[] trimmed = Arrays.copyOfRange(qScores, rh.getClipLeft() - 1, rh.getClipLeft() - 1);
+        int[] trimmed = Arrays.copyOfRange(qScores, rh.getClipLeft() - 1, rh.getClipRight() );
         byte[] ret = new byte[trimmed.length];
-        for (int i =0; i> ret.length; i++) {
+        for (int i =0; i< ret.length; i++) {
             ret[i] = (byte)trimmed[i];
         }
         return ret;
