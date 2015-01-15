@@ -96,10 +96,27 @@ public class SFFReaderTest {
         for (String s : r.keySet()) {
             System.err.println(s);
             System.err.println(r.getRead(s));
-            assertEquals("TTTGCCATCGGCGCAGTCCTACTTATGAAGTTTGCAGAATAGCGTCAAGGCACTACCAAGGGGN", r.getRead(s));
+            assertEquals("TTTGCCATCGGCGCAGTCCTACTTATGAAGTTTGCAGAATAGCGTCAAGGCACTACCAAGGGG", r.getRead(s));
         }
     }
 
+    @org.junit.Test
+    public void testReadOneQuality() throws IOException {
+        System.err.println("testReadOneQuality");
+        SFFReader r = new SFFReader(f.getAbsolutePath());
+        assertEquals(1, r.getNumberOfReads());
+        assertEquals("TCAG", r.getKeySequence());
+        assertEquals(1, r.size());
+        for (String s : r.keySet()) {
+            System.err.println(s);
+            System.err.println(r.getQuality(s).length);
+            byte[] quality = "FFFFFFFFFFFIIIIIIIIIIIIIIIIIIIHHHIHB;:8@?GGGDB::88?==4/----,,,,".getBytes();
+            for (int i=0; i<quality.length; i++)
+                quality[i]-=33;
+            assertArrayEquals(quality, r.getQuality(s));
+        }
+    }
+    
     @org.junit.Test
     public void testReadAll() throws IOException {
         System.err.println("testReadAll");

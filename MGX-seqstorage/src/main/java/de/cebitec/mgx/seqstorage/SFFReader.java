@@ -64,21 +64,26 @@ public class SFFReader implements SeqReaderI<DNAQualitySequenceHolder> {
 
     @Override
     public boolean hasMoreElements() {
-        boolean ret = iter.hasNext();
-        String name = iter.next();
+        if (iter.hasNext()){
+            String name = iter.next();
 
-        QualityDNASequence seq = null;
-        try {
-            seq = new QualityDNASequence();
-            seq.setName(name.getBytes());
-            seq.setSequence(reader.getRead(name).getBytes());
-            seq.setQuality(reader.getQuality(name));
-        } catch (IOException ex) {
-            Logger.getLogger(SFFReader.class.getName()).log(Level.SEVERE, null, ex);
+            QualityDNASequence seq = null;
+            try {
+                seq = new QualityDNASequence();
+                seq.setName(name.getBytes());
+                seq.setSequence(reader.getRead(name).getBytes());
+                seq.setQuality(reader.getQuality(name));
+            } catch (IOException ex) {
+                Logger.getLogger(SFFReader.class.getName()).log(Level.SEVERE, null, ex);
+                return false;
+            }
+            holder = new DNAQualitySequenceHolder(seq);
+            return seq != null;
+        } else {
             return false;
         }
-        holder = new DNAQualitySequenceHolder(seq);
-        return ret && seq != null;
+        
+        
     }
 
     private DNAQualitySequenceHolder holder = null;
