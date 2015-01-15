@@ -53,7 +53,7 @@ public class FASTQReader implements SeqReaderI<DNAQualitySequenceHolder> {
         seq = new QualityDNASequence();
         seq.setName(seqname);
         seq.setSequence(l2);
-        seq.setQuality(convertQuality(l4));
+        seq.setQuality(convertQuality(l4));     //quality as phred scores
 
         return true;
     }
@@ -102,8 +102,13 @@ public class FASTQReader implements SeqReaderI<DNAQualitySequenceHolder> {
     }
     
     private byte[] convertQuality(byte[] in) {
-        // FIXME convert to transport encoding
-        return in;
+        
+        byte[] out = new byte[in.length];
+        for (int i = 0; i<in.length; i++){
+            out[i] = (byte) (in[i]-33);
+        }
+        
+        return out;
     }
 
     @Override

@@ -46,7 +46,7 @@ public class SFFIndex {
         }
 
         Util.pad8(raf);
-
+        
         raf.seek(hdr.getIndexOffset() + hdr.getIndexLength());
         return new SFFIndex(reads);
     }
