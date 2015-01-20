@@ -5,13 +5,11 @@
  */
 package de.cebitec.mgx.sffreader;
 
-import de.cebitec.mgx.braf.BufferedRandomAccessFile;
-import de.cebitec.mgx.sffreader.datatypes.Util;
+import de.cebitec.mgx.sffreader.datatypes.SFFRead;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.RandomAccessFile;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.junit.After;
@@ -30,7 +28,7 @@ public class SFFReaderTest {
 
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
-    private File f;
+    private File fileWithIndex, fileWithoutIndex;
 
     public SFFReaderTest() {
     }
@@ -46,10 +44,17 @@ public class SFFReaderTest {
     @Before
     public void setUp() {
         try {
-            f = folder.newFile();
+            fileWithIndex = folder.newFile();
             InputStream is = getClass().getClassLoader().getResourceAsStream("de/cebitec/mgx/oneread.sff");
-            FileOutputStream fos = new FileOutputStream(f);
+            FileOutputStream fos = new FileOutputStream(fileWithIndex);
             int i;
+            while ((i = is.read()) != -1) {
+                fos.write(i);
+            }
+            fos.close();
+            fileWithoutIndex = folder.newFile();
+            is = getClass().getClassLoader().getResourceAsStream("de/cebitec/mgx/multipleRead.sff");
+            fos = new FileOutputStream(fileWithoutIndex);
             while ((i = is.read()) != -1) {
                 fos.write(i);
             }
@@ -61,75 +66,103 @@ public class SFFReaderTest {
 
     @After
     public void tearDown() {
-        f.delete();
+        fileWithIndex.delete();
+        fileWithoutIndex.delete();
         folder.delete();
     }
 
-    @org.junit.Test
-    public void testIndex() throws IOException {
-        System.err.println("testIndex");
-        SFFReader r = new SFFReader(f.getAbsolutePath());
-        assertEquals(1, r.getNumberOfReads());
-        assertEquals("TCAG", r.getKeySequence());
-        assertEquals(1, r.size());
-        assertEquals(4256, r.getIndexOffset());
-        long offset = r.getOffset("FI5LW4G01DZDXZ");
-        assertEquals(840, offset);
-    }
+//    Index is optional
+//    @org.junit.Test
+//    public void testIndex() throws IOException {
+//        System.err.println("testIndex");
+//        SFFReader r = new SFFReader(f.getAbsolutePath());
+//        assertEquals(1, r.getNumberOfReads());
+//        assertEquals("TCAG", r.getKeySequence());
+//        assertEquals(1, r.size());
+//        assertEquals(4256, r.getIndexOffset());
+//        long offset = r.getOffset("FI5LW4G01DZDXZ");
+//        assertEquals(840, offset);
+//    }
 
     @org.junit.Test
     public void testInvalidName() throws IOException {
         System.err.println("testInvalidName");
-        SFFReader r = new SFFReader(f.getAbsolutePath());
-        assertEquals(4256, r.getIndexOffset());
-        long offset = r.getOffset("DoesNotExist");
-        assertEquals(-1, offset);
+        System.err.println("With index:");
+        SFFReader r = new SFFReader(fileWithIndex.getAbsolutePath());
+//        assertEquals(4256, r.getIndexOffset());
+        SFFRead read = r.getRead("DoesNotExist");
+        assertEquals(null, read);
+        System.err.println("Without index:");
+        r = new SFFReader(fileWithoutIndex.getAbsolutePath());
+//        assertEquals(4256, r.getIndexOffset());
+        read = r.getRead("DoesNotExist");
+        assertEquals(null, read);
     }
 
     @org.junit.Test
     public void testReadOneRead() throws IOException {
         System.err.println("testReadOneRead");
-        SFFReader r = new SFFReader(f.getAbsolutePath());
+        SFFReader r = new SFFReader(fileWithIndex.getAbsolutePath());
         assertEquals(1, r.getNumberOfReads());
         assertEquals("TCAG", r.getKeySequence());
-        assertEquals(1, r.size());
-        for (String s : r.keySet()) {
-            System.err.println(s);
-            System.err.println(r.getRead(s));
-            assertEquals("TTTGCCATCGGCGCAGTCCTACTTATGAAGTTTGCAGAATAGCGTCAAGGCACTACCAAGGGG", r.getRead(s));
+        assertEquals(1, r.getNumberOfReads());
+        while(r.hasMoreElements()) {
+            SFFRead s = r.nextElement();
+            System.err.println(s.getName());
+            System.err.println(s.getBases());
+            assertEquals("TTTGCCATCGGCGCAGTCCTACTTATGAAGTTTGCAGAATAGCGTCAAGGCACTACCAAGGGG", s.getBases());
         }
     }
 
     @org.junit.Test
     public void testReadOneQuality() throws IOException {
         System.err.println("testReadOneQuality");
-        SFFReader r = new SFFReader(f.getAbsolutePath());
+        SFFReader r = new SFFReader(fileWithIndex.getAbsolutePath());
         assertEquals(1, r.getNumberOfReads());
         assertEquals("TCAG", r.getKeySequence());
-        assertEquals(1, r.size());
-        for (String s : r.keySet()) {
-            System.err.println(s);
-            System.err.println(r.getQuality(s).length);
+        assertEquals(1, r.getNumberOfReads());
+        while (r.hasMoreElements()) {
+            SFFRead s = r.nextElement();
+            System.err.println(s.getName());
+            System.err.println(s.getQuality().length);
             byte[] quality = "FFFFFFFFFFFIIIIIIIIIIIIIIIIIIIHHHIHB;:8@?GGGDB::88?==4/----,,,,".getBytes();
             for (int i=0; i<quality.length; i++)
                 quality[i]-=33;
-            assertArrayEquals(quality, r.getQuality(s));
+            assertArrayEquals(quality, s.getQuality());
         }
     }
     
     @org.junit.Test
     public void testReadAll() throws IOException {
         System.err.println("testReadAll");
-        SFFReader r = new SFFReader(f.getAbsolutePath());
+        SFFReader r = new SFFReader(fileWithIndex.getAbsolutePath());
         assertEquals(1, r.getNumberOfReads());
         assertEquals("TCAG", r.getKeySequence());
-        assertEquals(1, r.size());
+        assertEquals(1, r.getNumberOfReads());
 
-        for (String s : r.keySet()) {
-            String read = r.getRead(s);
+        while (r.hasMoreElements()) {
+            SFFRead read = r.nextElement();
         }
     }
 
+    @org.junit.Test
+    public void testGetSpecificRead() throws IOException {
+        System.err.println("testGetSpecificRead");
+        System.err.println("With index:");
+        SFFReader r = new SFFReader(fileWithIndex.getAbsolutePath());
+        SFFRead s = r.getRead("FI5LW4G01DZDXZ");
+        System.err.println(s.getName());
+        System.err.println(s.getBases());
+        assertEquals("TTTGCCATCGGCGCAGTCCTACTTATGAAGTTTGCAGAATAGCGTCAAGGCACTACCAAGGGG", s.getBases());
+        System.err.println("Without index:");
+        r = new SFFReader(fileWithoutIndex.getAbsolutePath());
+        s = r.getRead("E4AIXVY07D52JT");
+        System.err.println(s.getName());
+        System.err.println(s.getBases());
+        assertEquals("CAGTTTGGACATAGCAAGAAGCGAATTGGCTATTAACGGTAAAGAAATTTTTAAAACAGTTATTAATATGGCAGACTATGCTAGAAAAGAAGTTAATAAAATAGGCGATTATTATGCATTCGGTGAAGAGATAATAAATAATGATGATATATATTCTTTTGATAATACAAAGCTATGCATACAT", s.getBases());
+    }
+    
+    
 //    @org.junit.Test
 //    public void testIdxOffset() throws IOException {
 //        System.err.println("testIdxOffset");
