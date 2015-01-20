@@ -8,13 +8,11 @@ package de.cebitec.mgx.seqstorage;
 import de.cebitec.mgx.seqholder.DNAQualitySequenceHolder;
 import de.cebitec.mgx.sequence.SeqReaderI;
 import de.cebitec.mgx.sequence.SeqStoreException;
+import de.cebitec.mgx.sffreader.datatypes.SFFRead;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -24,12 +22,15 @@ public class SFFReader implements SeqReaderI<DNAQualitySequenceHolder> {
 
     private final de.cebitec.mgx.sffreader.SFFReader reader;
     private final String file;
-    private final Iterator<String> iter;
+    private DNAQualitySequenceHolder holder = null;
 
-    public SFFReader(String uri) throws IOException {
-        this.file = uri;
-        reader = new de.cebitec.mgx.sffreader.SFFReader(uri);
-        iter = reader.keySet().iterator();
+    public SFFReader(String uri) throws SeqStoreException{
+        this.file = uri;        
+        try {
+            reader = new de.cebitec.mgx.sffreader.SFFReader(uri);
+        } catch (IOException ex) {
+            throw new SeqStoreException("File not found or unreadable: " + file + "\n" + ex.getMessage());
+        }                
     }
 
     @Override
@@ -39,54 +40,44 @@ public class SFFReader implements SeqReaderI<DNAQualitySequenceHolder> {
 
     @Override
     public Set<DNAQualitySequenceHolder> fetch(long[] ids) throws SeqStoreException {
-        Set<DNAQualitySequenceHolder> ret = new HashSet<>();
-        for (long id : ids) {
-            String name = String.valueOf(id);
-            String dna;
-            try {
-                dna = reader.getRead(name);
-            } catch (IOException ex) {
-                throw new SeqStoreException(ex.getMessage());
-            }
-            QualityDNASequence seq = new QualityDNASequence();
-            seq.setName(name.getBytes());
-            seq.setSequence(dna.getBytes());
-            try {
-                seq.setQuality(reader.getQuality(name));
-            } catch (IOException ex) {
-                throw new SeqStoreException(ex.getMessage());
-            }
-            DNAQualitySequenceHolder h = new DNAQualitySequenceHolder(seq);
-            ret.add(h);
+        Set<DNAQualitySequenceHolder> res = new HashSet<>(ids.length);
+        Set<Long> idList = new HashSet<>(ids.length);
+        for (int i =0; i< ids.length; i++) {
+            idList.add(ids[i]);
         }
-        return ret;
-    }
+        while (hasMoreElements() && !idList.isEmpty()) {
+            DNAQualitySequenceHolder elem = nextElement();
+            if (idList.contains(elem.getSequence().getId())) {
+                res.add(elem);
+                idList.remove(elem.getSequence().getId());
+            }
+        }
 
+        if (!idList.isEmpty()) {
+            throw new SeqStoreException("Could not retrieve all sequences.");
+        }
+        return res;
+    }
+    
+    
     @Override
     public boolean hasMoreElements() {
-        if (iter.hasNext()){
-            String name = iter.next();
+        if (reader.hasMoreElements()){
+            SFFRead read = reader.nextElement();
 
-            QualityDNASequence seq = null;
-            try {
-                seq = new QualityDNASequence();
-                seq.setName(name.getBytes());
-                seq.setSequence(reader.getRead(name).getBytes());
-                seq.setQuality(reader.getQuality(name));
-            } catch (IOException ex) {
-                Logger.getLogger(SFFReader.class.getName()).log(Level.SEVERE, null, ex);
-                return false;
-            }
+            QualityDNASequence seq;
+            
+            seq = new QualityDNASequence();
+            seq.setName(read.getName().getBytes());
+            seq.setSequence(read.getBases().getBytes());
+            seq.setQuality(read.getQuality());
+            
             holder = new DNAQualitySequenceHolder(seq);
-            return seq != null;
+            return true;
         } else {
             return false;
-        }
-        
-        
+        }        
     }
-
-    private DNAQualitySequenceHolder holder = null;
 
     @Override
     public DNAQualitySequenceHolder nextElement() {
@@ -96,7 +87,7 @@ public class SFFReader implements SeqReaderI<DNAQualitySequenceHolder> {
     }
 
     @Override
-    public void close() throws Exception {
+    public void close() throws IOException {
         reader.close();
     }
 

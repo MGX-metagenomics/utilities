@@ -75,9 +75,9 @@ public class ReaderFactory implements FactoryI {
                 if (cbuf[1] == 's' && cbuf[2] == 'f' && cbuf[3] == 'f') {
                     try {
                         ret = new SFFReader(uri);
-                    } catch (IOException ex) {
+                    } catch (SeqStoreException ex) {
                         Logger.getLogger(ReaderFactory.class.getName()).log(Level.SEVERE, null, ex);
-                        throw new SeqStoreException(ex.getMessage());
+                        throw ex;
                     }
                 }
                 break;

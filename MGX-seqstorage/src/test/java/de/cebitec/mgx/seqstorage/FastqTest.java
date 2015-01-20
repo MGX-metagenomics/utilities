@@ -1,8 +1,10 @@
 package de.cebitec.mgx.seqstorage;
 
+import de.cebitec.mgx.seqholder.DNAQualitySequenceHolder;
 import de.cebitec.mgx.sequence.SeqStoreException;
 import java.io.*;
 import org.junit.*;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
@@ -35,7 +37,7 @@ public class FastqTest {
     }
 
     @Test
-    public void testreadFasta() {
+    public void testReadFastq() {
         System.out.println("readFastq");
         f = copyTestData();
         int seqCnt = 0;
@@ -51,6 +53,26 @@ public class FastqTest {
 
         assertEquals(20, seqCnt);
     }
+    
+    @Test
+    public void testFirstReadInFastq() throws SeqStoreException {
+        System.out.println("FirstReadInFastq");        
+        f = copyTestData();
+        try (FASTQReader fr = new FASTQReader(f.getAbsolutePath(), false)) {
+            fr.hasMoreElements();
+            DNAQualitySequenceHolder entry = fr.nextElement();
+            Assert.assertArrayEquals("IRIS:7:1:17:394#0/1".getBytes(), entry.getSequence().getName());
+            Assert.assertArrayEquals("GTCAGGACAAGAAAGACAANTCCAATTNACATTATG".getBytes(), entry.getSequence().getSequence());
+            byte[] quality = "aaabaa`]baaaaa_aab]D^^`b`aYDW]abaa`^".getBytes();
+            for (int i=0; i<quality.length; i++)
+                quality[i]-=33;
+            assertArrayEquals(quality, entry.getSequence().getQuality());            
+        } catch (SeqStoreException ex) {
+            fail(ex.getMessage());
+        }
+        f.delete();        
+    }
+
 
     private File copyTestData() {
         File f = null;
