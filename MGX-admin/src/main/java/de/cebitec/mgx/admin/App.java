@@ -2,9 +2,9 @@ package de.cebitec.mgx.admin;
 
 import com.jolbox.bonecp.BoneCPConfig;
 import com.jolbox.bonecp.BoneCPDataSource;
-import de.cebitec.mgx.model.db.Reference;
-import de.cebitec.mgx.model.db.Region;
-import de.cebitec.mgx.util.Pair;
+import de.cebitec.mgx.admin.misc.Pair;
+import de.cebitec.mgx.admin.misc.Reference;
+import de.cebitec.mgx.admin.misc.Region;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.Console;
