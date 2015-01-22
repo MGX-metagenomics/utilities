@@ -5,8 +5,6 @@
  */
 package de.cebitec.mgx.seqstorage;
 
-import de.cebitec.mgx.seqholder.ReadSequenceI;
-import de.cebitec.mgx.sequence.SeqReaderI;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -14,7 +12,6 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
