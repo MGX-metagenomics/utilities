@@ -24,6 +24,7 @@ public class NucleotideDistribution implements Analyzer<DNASequenceI> {
     private final int[] C = new int[LEN];
     private final int[] N = new int[LEN];
     private int maxLen = 0;
+    private long cnt = 0;
 
     public NucleotideDistribution() {
         Arrays.fill(A, 0);
@@ -34,7 +35,7 @@ public class NucleotideDistribution implements Analyzer<DNASequenceI> {
     }
 
     @Override
-    public void add(DNASequenceI seq) {
+    public synchronized void add(DNASequenceI seq) {
         byte[] dna = seq.getSequence();
         if (dna.length > maxLen) {
             maxLen = dna.length;
@@ -61,12 +62,13 @@ public class NucleotideDistribution implements Analyzer<DNASequenceI> {
                     assert false;
             }
         }
+        cnt++;
     }
 
     @Override
     public QCResult get() {
         int max = Math.min(LEN, maxLen);
-        
+
         float[] a = new float[max];
         float[] t = new float[max];
         float[] g = new float[max];
@@ -88,7 +90,17 @@ public class NucleotideDistribution implements Analyzer<DNASequenceI> {
             new DataRow("G", g),
             new DataRow("C", c),
             new DataRow("N", n)};
-        return new QCResult("Nucleotide distribution", dr);
+        return new QCResult(getName(), dr);
+    }
+
+    @Override
+    public String getName() {
+        return "Nucleotide distribution";
+    }
+
+    @Override
+    public long getNumberOfSequences() {
+        return cnt;
     }
 
 }
