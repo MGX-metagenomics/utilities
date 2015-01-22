@@ -17,51 +17,60 @@ import java.util.Arrays;
  */
 public class GCDistribution implements Analyzer<DNASequenceI> {
 
-    private final static int LEN = 50;
-    private int[] AT = new int[LEN];
-    private int[] GC = new int[LEN];
-    private int maxLen = 0;
+    private final static int LEN = 101;  // 0-100
+    private final float[] GC = new float[LEN];
+    private long cnt = 0;
 
     public GCDistribution() {
-        Arrays.fill(AT, 0);
         Arrays.fill(GC, 0);
     }
 
     @Override
-    public void add(DNASequenceI seq) {
+    public synchronized void add(DNASequenceI seq) {
         byte[] dna = seq.getSequence();
-        if (dna.length > maxLen) {
-            maxLen = dna.length;
-        }
 
-        // extend if necessary
-        if (dna.length > AT.length) {
-            AT = Arrays.copyOf(AT, dna.length);
-            GC = Arrays.copyOf(GC, dna.length);
-        }
-
+        float at = 0;
+        float gc = 0;
         for (int i = 0; i < dna.length; i++) {
             switch (dna[i]) {
                 case 'A':
+                    at++;
+                    break;
                 case 'T':
-                    AT[i]++;
+                    at++;
                     break;
                 case 'G':
-                case 'C':
-                    GC[i]++;
+                    gc++;
                     break;
+                case 'C':
+                    gc++;
+                    break;
+                case 'N':
+                    break;
+                default:
+                    System.err.println(new String(dna));
             }
         }
+        float f = 100f * (gc / (at + gc));
+        GC[Math.round(f)]++;
+        cnt++;
+
     }
 
     @Override
     public QCResult get() {
-        float[] res = new float[maxLen];
-        for (int i = 0; i < maxLen; i++) {
-            res[i] = 1f * GC[i] / (GC[i] + AT[i]);
-        }
-        DataRow dr = new DataRow("GC", res);
-        return new QCResult("GC", new DataRow[]{dr});
+        DataRow dr = new DataRow("GC", GC);
+        return new QCResult(getName(), new DataRow[]{dr});
+    }
+
+    @Override
+    public String getName() {
+        return "GC";
+    }
+
+    @Override
+    public long getNumberOfSequences() {
+        return cnt;
     }
 
 }
