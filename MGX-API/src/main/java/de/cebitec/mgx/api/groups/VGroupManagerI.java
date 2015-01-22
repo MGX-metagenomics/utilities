@@ -6,8 +6,6 @@
 
 package de.cebitec.mgx.api.groups;
 
-import de.cebitec.mgx.api.groups.ConflictingJobsException;
-import de.cebitec.mgx.api.groups.VisualizationGroupI;
 import de.cebitec.mgx.api.misc.AttributeRank;
 import de.cebitec.mgx.api.misc.DistributionI;
 import de.cebitec.mgx.api.misc.Pair;

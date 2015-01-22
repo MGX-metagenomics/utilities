@@ -54,6 +54,7 @@
         <module>MGX-seqholder</module>
         <module>MGX-seqstorage</module>
         <module>MGX-QualityControl</module>
+        <module>MGX-ExecutorService</module>
     </modules>
     
     <build>
