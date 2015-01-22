@@ -13,8 +13,12 @@ import de.cebitec.mgx.sequence.DNASequenceI;
  */
 public interface Analyzer<T extends DNASequenceI> {
     
+    public String getName();
+    
     public void add(T seq);
 
     public QCResult get();
+    
+    public long getNumberOfSequences();
     
 }

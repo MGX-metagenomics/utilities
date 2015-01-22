@@ -292,7 +292,6 @@ public class PathwayAccess extends AccessBase {
                 }
             }
         } catch (IOException ex) {
-            Logger.getLogger(PathwayAccess.class.getName()).log(Level.SEVERE, null, ex);
             throw new KEGGException(ex);
         }
         // save to db
@@ -356,7 +355,6 @@ public class PathwayAccess extends AccessBase {
         try {
             done.await();
         } catch (InterruptedException ex) {
-            Logger.getLogger(PathwayAccess.class.getName()).log(Level.SEVERE, null, ex);
             throw new KEGGException(ex);
         }
 
@@ -401,7 +399,7 @@ public class PathwayAccess extends AccessBase {
         try {
             done.await();
         } catch (InterruptedException ex) {
-            Logger.getLogger(PathwayAccess.class.getName()).log(Level.SEVERE, null, ex);
+            throw new KEGGException(ex);
         }
 
 

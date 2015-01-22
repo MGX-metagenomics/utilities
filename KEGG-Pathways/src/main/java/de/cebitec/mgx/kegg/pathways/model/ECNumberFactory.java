@@ -14,10 +14,10 @@ public class ECNumberFactory {
     private final static ConcurrentMap<String, ECNumber> cache = new ConcurrentHashMap<>();
 
     public static ECNumberI fromString(String s) throws KEGGException {
-        if (s.split("[.]").length != 4) {
-            throw new KEGGException("invalid EC number: " + s);
-        }
         if (!cache.containsKey(s)) {
+            if (s.split("[.]").length != 4) {
+                throw new KEGGException("invalid EC number: " + s);
+            }
             synchronized (cache) {
                 if (!cache.containsKey(s)) {
                     cache.put(s, new ECNumber(s));
