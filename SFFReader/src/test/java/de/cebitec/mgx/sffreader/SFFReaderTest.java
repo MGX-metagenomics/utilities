@@ -12,18 +12,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.junit.After;
-import org.junit.AfterClass;
+import org.junit.*;
 import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
 
 /**
  *
  * @author sj
  */
+@Ignore
 public class SFFReaderTest {
 
     @Rule
