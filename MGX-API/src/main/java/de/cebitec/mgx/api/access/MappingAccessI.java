@@ -5,6 +5,7 @@
  */
 package de.cebitec.mgx.api.access;
 
+import de.cebitec.mgx.api.exception.MGXException;
 import de.cebitec.mgx.api.model.MGXReferenceI;
 import de.cebitec.mgx.api.model.MappedSequenceI;
 import de.cebitec.mgx.api.model.MappingI;
@@ -18,15 +19,15 @@ import java.util.UUID;
  */
 public abstract class MappingAccessI implements AccessBaseI<MappingI> {
 
-    public abstract Iterator<MappedSequenceI> byReferenceInterval(UUID uuid, int from, int to);
+    public abstract Iterator<MappedSequenceI> byReferenceInterval(UUID uuid, int from, int to) throws MGXException;
 
-    public abstract UUID openMapping(long id);
-    
-    public abstract void closeMapping(UUID uuid);
+    public abstract UUID openMapping(long id) throws MGXException;
 
-    public abstract Iterator<MappingI> ByReference(MGXReferenceI reference);
+    public abstract void closeMapping(UUID uuid) throws MGXException;
 
-    public abstract Iterator<MappingI> BySeqRun(SeqRunI run);
+    public abstract Iterator<MappingI> ByReference(MGXReferenceI reference) throws MGXException;
 
-    public abstract long getMaxCoverage(UUID sessionUUID);
+    public abstract Iterator<MappingI> BySeqRun(SeqRunI run) throws MGXException;
+
+    public abstract long getMaxCoverage(UUID sessionUUID) throws MGXException;
 }
