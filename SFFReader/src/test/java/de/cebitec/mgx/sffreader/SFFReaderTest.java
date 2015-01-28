@@ -20,7 +20,6 @@ import org.junit.rules.TemporaryFolder;
  *
  * @author sj
  */
-@Ignore
 public class SFFReaderTest {
 
     @Rule
@@ -84,12 +83,12 @@ public class SFFReaderTest {
     @org.junit.Test
     public void testInvalidName() throws IOException {
         System.err.println("testInvalidName");
-        System.err.println("With index:");
+//        System.err.println("With index:");
         SFFReader r = new SFFReader(fileWithIndex.getAbsolutePath());
 //        assertEquals(4256, r.getIndexOffset());
         SFFRead read = r.getRead("DoesNotExist");
         assertEquals(null, read);
-        System.err.println("Without index:");
+//        System.err.println("Without index:");
         r = new SFFReader(fileWithoutIndex.getAbsolutePath());
 //        assertEquals(4256, r.getIndexOffset());
         read = r.getRead("DoesNotExist");
@@ -105,8 +104,8 @@ public class SFFReaderTest {
         assertEquals(1, r.getNumberOfReads());
         while(r.hasMoreElements()) {
             SFFRead s = r.nextElement();
-            System.err.println(s.getName());
-            System.err.println(s.getBases());
+//            System.err.println(s.getName());
+//            System.err.println(s.getBases());
             assertEquals("TTTGCCATCGGCGCAGTCCTACTTATGAAGTTTGCAGAATAGCGTCAAGGCACTACCAAGGGG", s.getBases());
         }
     }
@@ -120,8 +119,8 @@ public class SFFReaderTest {
         assertEquals(1, r.getNumberOfReads());
         while (r.hasMoreElements()) {
             SFFRead s = r.nextElement();
-            System.err.println(s.getName());
-            System.err.println(s.getQuality().length);
+//            System.err.println(s.getName());
+//            System.err.println(s.getQuality().length);
             byte[] quality = "FFFFFFFFFFFIIIIIIIIIIIIIIIIIIIHHHIHB;:8@?GGGDB::88?==4/----,,,,".getBytes();
             for (int i=0; i<quality.length; i++)
                 quality[i]-=33;
@@ -145,17 +144,17 @@ public class SFFReaderTest {
     @org.junit.Test
     public void testGetSpecificRead() throws IOException {
         System.err.println("testGetSpecificRead");
-        System.err.println("With index:");
+//        System.err.println("With index:");
         SFFReader r = new SFFReader(fileWithIndex.getAbsolutePath());
         SFFRead s = r.getRead("FI5LW4G01DZDXZ");
-        System.err.println(s.getName());
-        System.err.println(s.getBases());
+//        System.err.println(s.getName());
+//        System.err.println(s.getBases());
         assertEquals("TTTGCCATCGGCGCAGTCCTACTTATGAAGTTTGCAGAATAGCGTCAAGGCACTACCAAGGGG", s.getBases());
-        System.err.println("Without index:");
+//        System.err.println("Without index:");
         r = new SFFReader(fileWithoutIndex.getAbsolutePath());
         s = r.getRead("E4AIXVY07D52JT");
-        System.err.println(s.getName());
-        System.err.println(s.getBases());
+//        System.err.println(s.getName());
+//        System.err.println(s.getBases());
         assertEquals("CAGTTTGGACATAGCAAGAAGCGAATTGGCTATTAACGGTAAAGAAATTTTTAAAACAGTTATTAATATGGCAGACTATGCTAGAAAAGAAGTTAATAAAATAGGCGATTATTATGCATTCGGTGAAGAGATAATAAATAATGATGATATATATTCTTTTGATAATACAAAGCTATGCATACAT", s.getBases());
     }
     

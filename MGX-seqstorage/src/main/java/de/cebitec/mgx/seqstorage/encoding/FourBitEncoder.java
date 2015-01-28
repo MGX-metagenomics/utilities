@@ -6,8 +6,6 @@ package de.cebitec.mgx.seqstorage.encoding;
  */
 public class FourBitEncoder {
 
-    public static final byte[] CSF_MAGIC = {'C', 'S', 'F', '\n'};
-    public static final byte[] NMS_MAGIC = {'N', 'M', 'S', '\n'};
     public static final byte RECORD_SEPARATOR = '\0';
 
     public static byte[] encode(byte[] seq) {

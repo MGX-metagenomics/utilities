@@ -6,6 +6,14 @@ public class QualityDNASequence extends DNASequence implements DNAQualitySequenc
 
     private byte[] quality = null;
 
+    public QualityDNASequence() {
+        super();
+    }    
+
+    public QualityDNASequence(long seqid) {
+        super(seqid);
+    }
+
     @Override
     public byte[] getQuality() {
         return quality;
