@@ -55,6 +55,7 @@
         <module>MGX-seqstorage</module>
         <module>MGX-QualityControl</module>
         <module>MGX-ExecutorService</module>
+        <module>MGX-ParallelSortedProcessing</module>
     </modules>
     
     <build>

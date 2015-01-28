@@ -7,6 +7,7 @@ package de.cebitec.mgx.api.access;
 
 import de.cebitec.mgx.api.access.datatransfer.DownloadBaseI;
 import de.cebitec.mgx.api.access.datatransfer.UploadBaseI;
+import de.cebitec.mgx.api.exception.MGXException;
 import de.cebitec.mgx.api.model.AttributeI;
 import de.cebitec.mgx.api.model.SeqRunI;
 import de.cebitec.mgx.api.model.SequenceI;
@@ -21,15 +22,15 @@ import java.util.Set;
  */
 public interface SequenceAccessI extends AccessBaseI<SequenceI> {
 
-    public void fetchSeqData(Iterable<SequenceI> sequences);
-    
-    public void sendSequences(SeqRunI seqrun, SeqReaderI reader);
-    
-    public void downloadSequencesForAttributes(Set<AttributeI> attrs, SeqWriterI writer, boolean closeWriter);
+    public void fetchSeqData(Iterable<SequenceI> sequences) throws MGXException;
 
-    public DownloadBaseI createDownloaderByAttributes(Set<AttributeI> value, SeqWriterI<DNASequenceI> writer, boolean closeWriter);
+    public void sendSequences(SeqRunI seqrun, SeqReaderI reader) throws MGXException;
 
-    public UploadBaseI createUploader(SeqRunI seqrun, SeqReaderI<DNASequenceI> reader);
+    public void downloadSequencesForAttributes(Set<AttributeI> attrs, SeqWriterI writer, boolean closeWriter) throws MGXException;
 
-    public DownloadBaseI createDownloader(SeqRunI seqrun, SeqWriterI<DNASequenceI> writer, boolean closeWriter);
+    public DownloadBaseI createDownloaderByAttributes(Set<AttributeI> value, SeqWriterI<DNASequenceI> writer, boolean closeWriter) throws MGXException;
+
+    public UploadBaseI createUploader(SeqRunI seqrun, SeqReaderI<DNASequenceI> reader) throws MGXException;
+
+    public DownloadBaseI createDownloader(SeqRunI seqrun, SeqWriterI<DNASequenceI> writer, boolean closeWriter) throws MGXException;
 }
