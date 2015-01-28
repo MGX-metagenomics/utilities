@@ -96,6 +96,11 @@ public class ParallelProcessor<T, U> {
         public ParallelWorkerI<?, U> next() {
             return it.next();
         }
+
+        @Override
+        public void remove() {
+            return;
+        }
     }
 
 }
