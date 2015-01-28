@@ -1,7 +1,6 @@
 package de.cebitec.mgx.seqstorage;
 
-import de.cebitec.mgx.seqstorage.encoding.ByteUtils;
-import de.cebitec.mgx.seqstorage.encoding.FourBitEncoder;
+import de.cebitec.mgx.seqstorage.encoding.*;
 import de.cebitec.mgx.sequence.DNASequenceI;
 import de.cebitec.mgx.sequence.SeqStoreException;
 import de.cebitec.mgx.sequence.SeqWriterI;
@@ -51,11 +50,11 @@ public class CSFWriter implements SeqWriterI<DNASequenceI> {
         fname = filename;
 
         seqout = new BufferedOutputStream(new FileOutputStream(filename + ".csf", false));
-        seqout.write(FourBitEncoder.CSF_MAGIC);
-        seqout_offset = FourBitEncoder.CSF_MAGIC.length;
+        seqout.write(FileMagic.CSF_MAGIC);
+        seqout_offset = FileMagic.CSF_MAGIC.length;
 
         nameout = new BufferedOutputStream(new FileOutputStream(filename, false));
-        nameout.write(FourBitEncoder.NMS_MAGIC);
+        nameout.write(FileMagic.NMS_MAGIC);
     }
 
     @Override
