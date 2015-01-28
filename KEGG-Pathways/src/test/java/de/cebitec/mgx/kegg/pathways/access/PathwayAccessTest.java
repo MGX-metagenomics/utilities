@@ -18,7 +18,6 @@ import org.junit.rules.TemporaryFolder;
  *
  * @author sj
  */
-@Ignore
 public class PathwayAccessTest {
 
     @Rule

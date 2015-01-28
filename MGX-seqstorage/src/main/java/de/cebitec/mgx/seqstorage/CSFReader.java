@@ -2,8 +2,7 @@ package de.cebitec.mgx.seqstorage;
 
 import de.cebitec.mgx.braf.BufferedRandomAccessFile;
 import de.cebitec.mgx.seqholder.DNASequenceHolder;
-import de.cebitec.mgx.seqstorage.encoding.ByteUtils;
-import de.cebitec.mgx.seqstorage.encoding.FourBitEncoder;
+import de.cebitec.mgx.seqstorage.encoding.*;
 import de.cebitec.mgx.sequence.DNASequenceI;
 import de.cebitec.mgx.sequence.SeqReaderI;
 import de.cebitec.mgx.sequence.SeqStoreException;
@@ -32,6 +31,8 @@ public class CSFReader implements SeqReaderI<DNASequenceHolder> {
     private final String csffile;
     private final String namefile;
     private DNASequenceHolder holder = null;
+    private NMSReader idx = null;
+    private BufferedRandomAccessFile raf = null;
 
     public CSFReader(String filename, boolean gzipCompressed) throws SeqStoreException {
         if (filename == null) {
@@ -44,16 +45,16 @@ public class CSFReader implements SeqReaderI<DNASequenceHolder> {
         csffile = filename + ".csf";
         namefile = filename;
         try {
-            validateMagic(namefile, FourBitEncoder.NMS_MAGIC);
-            validateMagic(csffile, FourBitEncoder.CSF_MAGIC);
-            seqin = new ByteStreamTokenizer(csffile, gzipCompressed, FourBitEncoder.RECORD_SEPARATOR, FourBitEncoder.CSF_MAGIC.length);
+            FileMagic.validateMagic(namefile, FileMagic.NMS_MAGIC);
+            FileMagic.validateMagic(csffile, FileMagic.CSF_MAGIC);
+            seqin = new ByteStreamTokenizer(csffile, gzipCompressed, FourBitEncoder.RECORD_SEPARATOR, FileMagic.CSF_MAGIC.length);
             if (gzipCompressed) {
                 InputStream gzstream = new GZIPInputStream(new FileInputStream(namefile));
                 namein = new BufferedInputStream(gzstream);
             } else {
                 namein = new BufferedInputStream(new FileInputStream(namefile));
             }
-            if (namein.skip(FourBitEncoder.CSF_MAGIC.length) < FourBitEncoder.CSF_MAGIC.length) {
+            if (namein.skip(FileMagic.CSF_MAGIC.length) < FileMagic.CSF_MAGIC.length) {
                 throw new SeqStoreException("Corrupted file " + csffile);
             }
         } catch (SeqStoreException | IOException ex) {
@@ -136,31 +137,6 @@ public class CSFReader implements SeqReaderI<DNASequenceHolder> {
         }
     }
 
-    private void validateMagic(String filename, final byte[] magic) throws SeqStoreException {
-        // validate magic
-        FileInputStream fis = null;
-        try {
-            fis = new FileInputStream(filename);
-            byte[] tmp = new byte[magic.length];
-            if (fis.read(tmp, 0, magic.length) < magic.length) {
-                throw new SeqStoreException("Truncated file " + filename + "?");
-            };
-            if (!Arrays.equals(magic, tmp)) {
-                throw new SeqStoreException(filename + ": Invalid magic: " + new String(tmp));
-            }
-        } catch (IOException e) {
-            throw new SeqStoreException(filename + ": Invalid magic");
-        } finally {
-            if (fis != null) {
-                try {
-                    fis.close();
-                } catch (IOException ex) {
-                    throw new SeqStoreException(ex.getMessage());
-                }
-            }
-        }
-    }
-
     @Override
     public void delete() {
         close();
@@ -173,8 +149,6 @@ public class CSFReader implements SeqReaderI<DNASequenceHolder> {
             g.delete();
         }
     }
-    private NMSReader idx = null;
-    private BufferedRandomAccessFile raf = null;
 
     @Override
     public Set<DNASequenceHolder> fetch(long[] ids) throws SeqStoreException {
@@ -235,8 +209,6 @@ public class CSFReader implements SeqReaderI<DNASequenceHolder> {
             }
         }
         return -1;
-
-
     }
 
     @Override
@@ -244,51 +216,4 @@ public class CSFReader implements SeqReaderI<DNASequenceHolder> {
         return false;
     }
 
-    private class NMSReader {
-
-        final TLongLongMap idx;
-        final InputStream nmsStream;
-
-        public NMSReader(InputStream nmsStream) throws IOException {
-            this.idx = new TLongLongHashMap(100, 1.0F, -1, -1);
-            this.nmsStream = nmsStream;
-        }
-
-        public long getOffset(long id) throws SeqStoreException {
-            if (!idx.containsKey(id)) {
-                try {
-                    readRequired(id);
-                } catch (IOException ex) {
-                    throw new SeqStoreException(ex.getMessage());
-                }
-            }
-            return idx.get(id);
-        }
-
-        private void readRequired(long id) throws IOException {
-            byte[] buf = new byte[16];
-            while (16 == nmsStream.read(buf)) {
-                long curId = ByteUtils.bytesToLong(ByteUtils.substring(buf, 0, 7));
-                long offset = ByteUtils.bytesToLong(ByteUtils.substring(buf, 8, 15));
-                idx.put(curId, offset);
-
-                if (curId == id) {
-                    return;
-                }
-            }
-        }
-
-        public void close() {
-            try {
-                if (nmsStream != null) {
-                    nmsStream.close();
-                }
-                if (idx != null) {
-                    idx.clear();
-                }
-            } catch (IOException ex) {
-                Logger.getLogger(CSFReader.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-    }
 }
