@@ -89,6 +89,11 @@ public class RingBuffer<T> {
             return b[curPos++];
         }
 
+        @Override
+        public void remove() {
+            return;
+        }
+
     }
 
 }
