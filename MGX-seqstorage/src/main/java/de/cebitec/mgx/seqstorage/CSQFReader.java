@@ -196,11 +196,11 @@ public class CSQFReader implements SeqReaderI<DNAQualitySequenceHolder>{
         }
         byte[] encoded = ByteUtils.substring(buf, 0, sepPos - 1);
         byte[] decoded = FourBitEncoder.decode(encoded);
-        byte[] quality = ByteUtils.substring(buf, sepPos+1, decoded.length+sepPos);
+        byte[] quality = ByteUtils.substring(buf, sepPos+1, (int)(decoded.length*buf[sepPos+1]/8.0+2.9)+sepPos);
 
         QualityDNASequence seq = new QualityDNASequence(id);
         seq.setSequence(decoded);
-        seq.setQuality(quality);
+        seq.setQuality(QualityEncoder.decode(quality));
         return new DNAQualitySequenceHolder(seq);
     }
 }

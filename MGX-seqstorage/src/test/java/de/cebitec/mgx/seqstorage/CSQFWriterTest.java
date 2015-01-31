@@ -1,16 +1,12 @@
 package de.cebitec.mgx.seqstorage;
 
 import de.cebitec.mgx.seqholder.DNAQualitySequenceHolder;
-import de.cebitec.mgx.seqholder.DNASequenceHolder;
 import de.cebitec.mgx.sequence.*;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import java.util.ArrayList;
+import org.junit.*;
 import static org.junit.Assert.*;
 
 /**
@@ -65,6 +61,7 @@ public class CSQFWriterTest {
         File f = copyTestData();
         File target = File.createTempFile("testout", "");
         target.delete();
+        ArrayList<DNAQualitySequenceHolder> writer = new ArrayList<>();
         try (FASTQReader fr = new FASTQReader(f.getAbsolutePath(), false)) {
             try (CSQFWriter csq = new CSQFWriter(target)) {
                 while (fr.hasMoreElements()) {
@@ -72,20 +69,27 @@ public class CSQFWriterTest {
                     assertNotNull(holder);
                     assertNotNull(holder.getSequence());
                     csq.addSequence(holder.getSequence());
+                    writer.add(holder);
                 }
             }
-            
+            ArrayList<DNAQualitySequenceHolder> reader = new ArrayList<>();
             try (CSQFReader r = new CSQFReader(target.getAbsolutePath(), false)) {
+                int i=0;
                 while (r.hasMoreElements()) {
                     DNAQualitySequenceHolder h = r.nextElement();
+                    reader.add(h);
                     assertNotNull(h);
                     DNAQualitySequenceI s = h.getSequence();
                     assertNotNull(s);
                     String seq = new String(s.getSequence());
                     // all sequences have to be uppercase
-                    assertEquals(seq.toUpperCase(), seq);
+                    assertEquals(seq.toUpperCase(), seq);                    
                 }
                 r.delete();
+            }
+            for(int i=0; i<writer.size(); i++){
+                Assert.assertArrayEquals(writer.get(i).getSequence().getSequence(), reader.get(i).getSequence().getSequence());
+                Assert.assertArrayEquals(writer.get(i).getSequence().getQuality(), reader.get(i).getSequence().getQuality());
             }
             
         } catch (SeqStoreException ex) {

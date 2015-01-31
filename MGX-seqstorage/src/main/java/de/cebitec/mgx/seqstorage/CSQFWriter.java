@@ -54,7 +54,7 @@ public class CSQFWriter implements SeqWriterI<DNAQualitySequenceI>{
         seqout.write(FourBitEncoder.RECORD_SEPARATOR);
 
         //write quality to seqout
-        byte[] quality = seq.getQuality();
+        byte[] quality = QualityEncoder.encode(seq.getQuality());
         seqout.write(quality);
         
         // update offset
