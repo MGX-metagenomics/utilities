@@ -1,6 +1,8 @@
 package de.cebitec.mgx.seqstorage.encoding;
 
+import de.cebitec.mgx.sequence.SeqStoreException;
 import java.util.Arrays;
+import org.apache.commons.math3.util.FastMath;
 
 /**
  *
@@ -47,17 +49,21 @@ public class QualityEncoder {
         return decoded;
     }
 
-    public static byte[] encode(byte[] quality) {
+    public static byte[] encode(byte[] quality) throws SeqStoreException {
         int max = quality[0];
         int min = quality[0];
         for (int i = 1; i < quality.length; i++) {
             max = (max < quality[i]) ? quality[i] : max;
             min = (min > quality[i]) ? quality[i] : min;
         }
+        
+        if (max > 93 || min < 0) //biggest possible phred values in sanger format
+            throw new SeqStoreException("Qualities in no valid Sanger format");
+        
         min--;              //value 0 is used for padding
         max = max-min;
-        byte compressedSize = (byte) (Math.log(max)/Math.log(2)+1);
-        
+        byte compressedSize = (byte) (FastMath.log(max)/FastMath.log(2)+1);
+
         int encodedSize = (int) (quality.length*compressedSize/8.0+2.9);        
         byte[] encoded = new byte[encodedSize];
         encoded[0] = (byte) compressedSize;
