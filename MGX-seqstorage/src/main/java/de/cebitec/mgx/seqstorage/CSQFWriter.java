@@ -9,6 +9,7 @@ import java.nio.file.attribute.PosixFilePermission;
 import java.util.EnumSet;
 import java.util.Set;
 
+
 /**
  *
  * @author Patrick Blumenkamp
@@ -41,26 +42,30 @@ public class CSQFWriter implements SeqWriterI<DNAQualitySequenceI>{
     }
 
     @Override
-    public void addSequence(DNAQualitySequenceI seq) throws IOException {
-        // save sequence id and offset
-        byte[] id = ByteUtils.longToBytes(seq.getId());
-        byte[] encoded_offset = ByteUtils.longToBytes(seqout_offset);
-        nameout.write(id);
-        nameout.write(encoded_offset);
-
-        // encode sequence and write to seqout
-        byte[] sequence = FourBitEncoder.encode(seq.getSequence());
-        seqout.write(sequence);
-        seqout.write(FourBitEncoder.RECORD_SEPARATOR);
-
-        //write quality to seqout
-        byte[] quality = QualityEncoder.encode(seq.getQuality());
-        seqout.write(quality);
-        
-        // update offset
-        seqout_offset += sequence.length;
-        seqout_offset++; // separator char
-        seqout_offset += quality.length;
+    public void addSequence(DNAQualitySequenceI seq) throws IOException{
+        try {
+            // save sequence id and offset
+            byte[] id = ByteUtils.longToBytes(seq.getId());
+            byte[] encoded_offset = ByteUtils.longToBytes(seqout_offset);
+            nameout.write(id);
+            nameout.write(encoded_offset);
+            
+            // encode sequence and write to seqout
+            byte[] sequence = FourBitEncoder.encode(seq.getSequence());
+            seqout.write(sequence);
+            seqout.write(FourBitEncoder.RECORD_SEPARATOR);
+            
+            //write quality to seqout
+            byte[] quality = QualityEncoder.encode(seq.getQuality());
+            seqout.write(quality);
+            
+            // update offset
+            seqout_offset += sequence.length;
+            seqout_offset++; // separator char
+            seqout_offset += quality.length;
+        } catch (SeqStoreException ex) {
+            throw new IOException(ex);
+        }
     }
 
     @Override
