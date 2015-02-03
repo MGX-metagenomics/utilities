@@ -6,8 +6,6 @@ import de.cebitec.mgx.seqstorage.encoding.*;
 import de.cebitec.mgx.sequence.DNASequenceI;
 import de.cebitec.mgx.sequence.SeqReaderI;
 import de.cebitec.mgx.sequence.SeqStoreException;
-import gnu.trove.map.TLongLongMap;
-import gnu.trove.map.hash.TLongLongHashMap;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,8 +14,6 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 
 /**
@@ -57,7 +53,7 @@ public class CSFReader implements SeqReaderI<DNASequenceHolder> {
             if (namein.skip(FileMagic.CSF_MAGIC.length) < FileMagic.CSF_MAGIC.length) {
                 throw new SeqStoreException("Corrupted file " + csffile);
             }
-        } catch (SeqStoreException | IOException ex) {
+        } catch (IOException ex) {
             throw new SeqStoreException(ex.getMessage());
         }
     }
@@ -171,7 +167,7 @@ public class CSFReader implements SeqReaderI<DNASequenceHolder> {
 
         try {
             byte[] buf = new byte[200];
-            int bytesRead = 0;
+            int bytesRead;
             for (long id : ids) {
                 long offset = idx.getOffset(id);
                 if (offset == -1) {
