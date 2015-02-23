@@ -31,7 +31,7 @@ public class Pair<T,U> {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Pair<T, U> other = (Pair<T, U>) obj;
+        final Pair other = (Pair) obj;
         if (this.first != other.first && (this.first == null || !this.first.equals(other.first))) {
             return false;
         }
