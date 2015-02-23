@@ -13,8 +13,8 @@ public final class VisFilterSupport {
     private VisFilterSupport() {
     }
 
-    public static <V, T, U> VisFilterI append(VisFilterI<T> first, VisFilterI<T> second) {
-        return new VFCombinedImpl(first, second);
+    public static <T> VisFilterI<T> append(VisFilterI<T> first, VisFilterI<T> second) {
+        return new VFCombinedImpl<>(first, second);
     }
     
     private final static class VFCombinedImpl<T> implements VisFilterI<T> {
