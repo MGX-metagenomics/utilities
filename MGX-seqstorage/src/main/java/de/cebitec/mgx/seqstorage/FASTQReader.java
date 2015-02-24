@@ -1,6 +1,6 @@
 package de.cebitec.mgx.seqstorage;
 
-import de.cebitec.mgx.seqholder.DNAQualitySequenceHolder;
+import de.cebitec.mgx.sequence.DNAQualitySequenceI;
 import de.cebitec.mgx.sequence.SeqReaderI;
 import de.cebitec.mgx.sequence.SeqStoreException;
 import java.io.File;
@@ -12,7 +12,7 @@ import java.util.Set;
  *
  * @author sjaenick
  */
-public class FASTQReader implements SeqReaderI<DNAQualitySequenceHolder> {
+public class FASTQReader implements SeqReaderI<DNAQualitySequenceI> {
 
     private QualityDNASequence seq = null;
     private ByteStreamTokenizer stream = null;
@@ -59,8 +59,8 @@ public class FASTQReader implements SeqReaderI<DNAQualitySequenceHolder> {
     }
 
     @Override
-    public DNAQualitySequenceHolder nextElement() {
-        return new DNAQualitySequenceHolder(seq);
+    public DNAQualitySequenceI nextElement() {
+        return seq;
     }
 
     @Override
@@ -81,17 +81,17 @@ public class FASTQReader implements SeqReaderI<DNAQualitySequenceHolder> {
     }
 
     @Override
-    public Set<DNAQualitySequenceHolder> fetch(long[] ids) throws SeqStoreException {
-        Set<DNAQualitySequenceHolder> res = new HashSet<>(ids.length);
+    public Set<DNAQualitySequenceI> fetch(long[] ids) throws SeqStoreException {
+        Set<DNAQualitySequenceI> res = new HashSet<>(ids.length);
         Set<Long> idList = new HashSet<>(ids.length);
         for (int i =0; i< ids.length; i++) {
             idList.add(ids[i]);
         }
         while (hasMoreElements() && !idList.isEmpty()) {
-            DNAQualitySequenceHolder elem = nextElement();
-            if (idList.contains(elem.getSequence().getId())) {
+            DNAQualitySequenceI elem = nextElement();
+            if (idList.contains(elem.getId())) {
                 res.add(elem);
-                idList.remove(elem.getSequence().getId());
+                idList.remove(elem.getId());
             }
         }
 

@@ -1,11 +1,11 @@
 package de.cebitec.mgx.seqstorage;
 
-import de.cebitec.mgx.seqholder.DNAQualitySequenceHolder;
 import de.cebitec.mgx.sequence.*;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.List;
 import org.junit.*;
 import static org.junit.Assert.*;
 
@@ -43,10 +43,10 @@ public class CSQFWriterTest {
         try (FASTQReader fr = new FASTQReader(f.getAbsolutePath(), false)) {
             try (CSQFWriter csq = new CSQFWriter(target)) {
                 while (fr.hasMoreElements()) {
-                    DNAQualitySequenceHolder holder = fr.nextElement();
+                    DNAQualitySequenceI holder = fr.nextElement();
                     assertNotNull(holder);
                     assertNotNull(holder.getSequence());
-                    csq.addSequence(holder.getSequence());
+                    csq.addSequence(holder);
                 }
             }
         } catch (SeqStoreException ex) {
@@ -61,25 +61,23 @@ public class CSQFWriterTest {
         File f = copyTestData();
         File target = File.createTempFile("testout", "");
         target.delete();
-        ArrayList<DNAQualitySequenceHolder> writer = new ArrayList<>();
+        List<DNAQualitySequenceI> writer = new ArrayList<>();
         try (FASTQReader fr = new FASTQReader(f.getAbsolutePath(), false)) {
             try (CSQFWriter csq = new CSQFWriter(target)) {
                 while (fr.hasMoreElements()) {
-                    DNAQualitySequenceHolder holder = fr.nextElement();
+                    DNAQualitySequenceI holder = fr.nextElement();
                     assertNotNull(holder);
                     assertNotNull(holder.getSequence());
-                    csq.addSequence(holder.getSequence());
+                    csq.addSequence(holder);
                     writer.add(holder);
                 }
             }
-            ArrayList<DNAQualitySequenceHolder> reader = new ArrayList<>();
+            List<DNAQualitySequenceI> reader = new ArrayList<>();
             try (CSQFReader r = new CSQFReader(target.getAbsolutePath(), false)) {
                 int i=0;
                 while (r.hasMoreElements()) {
-                    DNAQualitySequenceHolder h = r.nextElement();
-                    reader.add(h);
-                    assertNotNull(h);
-                    DNAQualitySequenceI s = h.getSequence();
+                    DNAQualitySequenceI s = r.nextElement();
+                    reader.add(s);
                     assertNotNull(s);
                     String seq = new String(s.getSequence());
                     // all sequences have to be uppercase
@@ -88,8 +86,8 @@ public class CSQFWriterTest {
                 r.delete();
             }
             for(int i=0; i<writer.size(); i++){
-                Assert.assertArrayEquals(writer.get(i).getSequence().getSequence(), reader.get(i).getSequence().getSequence());
-                Assert.assertArrayEquals(writer.get(i).getSequence().getQuality(), reader.get(i).getSequence().getQuality());
+                Assert.assertArrayEquals(writer.get(i).getSequence(), reader.get(i).getSequence());
+                Assert.assertArrayEquals(writer.get(i).getQuality(), reader.get(i).getQuality());
             }
             
         } catch (SeqStoreException ex) {
