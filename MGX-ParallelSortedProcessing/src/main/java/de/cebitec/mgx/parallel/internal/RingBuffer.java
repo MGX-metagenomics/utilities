@@ -51,6 +51,7 @@ public class RingBuffer<T> {
         return buf[getOffset];
     }
 
+    @SuppressWarnings("unchecked")
     public synchronized void add(T t) {
         if (buf == null) {
             buf = (T[]) Array.newInstance(t.getClass(), capacity);
