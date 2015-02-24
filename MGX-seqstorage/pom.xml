@@ -23,7 +23,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Import-Package>de.cebitec.mgx.sffreader,de.cebitec.mgx.sequence,de.cebitec.mgx.seqholder</Import-Package>
+                        <Import-Package>de.cebitec.mgx.sffreader,de.cebitec.mgx.sequence</Import-Package>
                         <Export-Package>de.cebitec.mgx.seqstorage,de.cebitec.mgx.seqstorage.encoding</Export-Package>
                         <Require-Capability>osgi.extender; filter:="(osgi.extender=osgi.serviceloader.registrar)"</Require-Capability>
                         <Provide-Capability>osgi.serviceloader; osgi.serviceloader=de.cebitec.mgx.sequence.FactoryI</Provide-Capability>
@@ -106,11 +106,6 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>MGX-isequences</artifactId>
             <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>de.cebitec.mgx</groupId>
-            <artifactId>MGX-seqholder</artifactId>
-            <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>de.cebitec.mgx</groupId>

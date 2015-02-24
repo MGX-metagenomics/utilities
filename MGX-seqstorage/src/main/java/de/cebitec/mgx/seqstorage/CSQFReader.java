@@ -1,7 +1,6 @@
 package de.cebitec.mgx.seqstorage;
 
 import de.cebitec.mgx.braf.BufferedRandomAccessFile;
-import de.cebitec.mgx.seqholder.DNAQualitySequenceHolder;
 import de.cebitec.mgx.seqstorage.encoding.*;
 import de.cebitec.mgx.sequence.*;
 import java.io.*;
@@ -12,13 +11,13 @@ import java.util.zip.GZIPInputStream;
  *
  * @author Patrick Blumenkamp
  */
-public class CSQFReader implements SeqReaderI<DNAQualitySequenceHolder>{
+public class CSQFReader implements SeqReaderI<DNAQualitySequenceI>{
 
     private InputStream seqin;
     private InputStream namein;
     private final String csqfile;
     private final String namefile;
-    private DNAQualitySequenceHolder holder = null;
+    private DNAQualitySequenceI holder = null;
     private NMSReader idx = null;
     private BufferedRandomAccessFile raf = null;
     
@@ -64,8 +63,8 @@ public class CSQFReader implements SeqReaderI<DNAQualitySequenceHolder>{
     }
 
     @Override
-    public Set<DNAQualitySequenceHolder> fetch(long[] ids) throws SeqStoreException {
-        Set<DNAQualitySequenceHolder> result = new HashSet<>(ids.length);
+    public Set<DNAQualitySequenceI> fetch(long[] ids) throws SeqStoreException {
+        Set<DNAQualitySequenceI> result = new HashSet<>(ids.length);
         if (ids.length == 0) {
             return result;
         }
@@ -144,9 +143,9 @@ public class CSQFReader implements SeqReaderI<DNAQualitySequenceHolder>{
     }
 
     @Override
-    public DNAQualitySequenceHolder nextElement() {
+    public DNAQualitySequenceI nextElement() {
         assert holder != null;
-        DNAQualitySequenceHolder ret = holder;
+        DNAQualitySequenceI ret = holder;
         holder = null;
         return ret;
     }
@@ -183,7 +182,7 @@ public class CSQFReader implements SeqReaderI<DNAQualitySequenceHolder>{
         return -1;
     }
     
-    private DNAQualitySequenceHolder getEntry(long id, long offset) throws IOException{
+    private DNAQualitySequenceI getEntry(long id, long offset) throws IOException{
         raf.seek(offset);
         byte[] buf = new byte[600];
         int bytesRead = raf.read(buf);
@@ -201,6 +200,6 @@ public class CSQFReader implements SeqReaderI<DNAQualitySequenceHolder>{
         QualityDNASequence seq = new QualityDNASequence(id);
         seq.setSequence(decoded);
         seq.setQuality(QualityEncoder.decode(quality));
-        return new DNAQualitySequenceHolder(seq);
+        return seq;
     }
 }
