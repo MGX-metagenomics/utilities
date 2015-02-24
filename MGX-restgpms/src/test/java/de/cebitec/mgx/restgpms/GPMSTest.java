@@ -8,6 +8,7 @@ import de.cebitec.gpms.core.MembershipI;
 import de.cebitec.gpms.core.ProjectClassI;
 import de.cebitec.gpms.core.ProjectI;
 import de.cebitec.gpms.rest.RESTMasterI;
+import de.cebitec.gpms.rest.RESTMembershipI;
 import java.util.Iterator;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -58,7 +59,7 @@ public class GPMSTest {
     @Test
     public void testGetMemberships() {
         System.out.println("getMemberships");
-        Iterator<MembershipI> memberships = gpms.getMemberships();
+        Iterator<RESTMembershipI> memberships = gpms.getMemberships();
         assertNotNull(memberships);
         int cnt = 0;
         while (memberships.hasNext()) {
@@ -91,11 +92,11 @@ public class GPMSTest {
     @Test
     public void testCreateMaster() {
         System.out.println("createMaster");
-        Iterator<MembershipI> memberships = gpms.getMemberships();
+        Iterator<RESTMembershipI> memberships = gpms.getMemberships();
         assertNotNull(memberships);
         int cnt = 0;
         while (memberships.hasNext()) {
-            MembershipI m = memberships.next();
+            RESTMembershipI m = memberships.next();
             ProjectI project = m.getProject();
             assertNotNull(project);
             RESTMasterI result = gpms.createMaster(m);
