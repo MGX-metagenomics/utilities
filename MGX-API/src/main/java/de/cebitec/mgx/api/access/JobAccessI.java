@@ -30,7 +30,7 @@ public interface JobAccessI  {
 
     public void update(JobI obj) throws MGXException;
 
-    public TaskI delete(JobI obj) throws MGXException;
+    public TaskI<JobI> delete(JobI obj) throws MGXException;
 
     public List<JobI> BySeqRun(SeqRunI run) throws MGXException;
 
@@ -38,7 +38,7 @@ public interface JobAccessI  {
 
     public String getErrorMessage(JobI job) throws MGXException;
 
-    public TaskI restart(JobI job) throws MGXException;
+    public TaskI<JobI> restart(JobI job) throws MGXException;
 
     public boolean cancel(JobI job) throws MGXException;
 

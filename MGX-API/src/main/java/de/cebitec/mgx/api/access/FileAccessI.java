@@ -27,7 +27,7 @@ public interface FileAccessI {
 
     public Iterator<MGXFileI> fetchall(MGXFileI parent) throws MGXException;
 
-    public TaskI delete(MGXFileI obj) throws MGXException;
+    public TaskI<MGXFileI> delete(MGXFileI obj) throws MGXException;
 
     public DownloadBaseI createPluginDumpDownloader(OutputStream writer) throws MGXException;
 

@@ -1,12 +1,19 @@
 
 package de.cebitec.mgx.api.misc;
 
-import javax.swing.SwingWorker;
+import java.util.concurrent.Callable;
 
 /**
  *
  * @author sjaenick
  */
-public abstract class Fetcher<T> extends SwingWorker<T, Void> {
+public abstract class Fetcher<T> implements Callable<T> {
+    
+    protected abstract T doInBackground() throws Exception;
+    
+    @Override
+    public T call() throws Exception {
+        return doInBackground();
+    }
     
 }
