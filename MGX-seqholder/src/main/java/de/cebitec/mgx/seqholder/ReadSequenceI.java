@@ -7,6 +7,7 @@ import de.cebitec.mgx.sequence.DNASequenceI;
  *
  * @author sjaenick
  */
+@Deprecated
 public interface ReadSequenceI<T extends DNASequenceI> {
 
     public T getSequence();
