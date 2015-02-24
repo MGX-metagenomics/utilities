@@ -1,26 +1,26 @@
 package de.cebitec.mgx.restgpms;
 
-import de.cebitec.gpms.core.MembershipI;
-import de.cebitec.gpms.core.ProjectI;
 import de.cebitec.gpms.core.RoleI;
+import de.cebitec.gpms.rest.RESTMembershipI;
+import de.cebitec.gpms.rest.RESTProjectI;
 import java.util.Objects;
 
 /**
  *
  * @author sjaenick
  */
-public class Membership implements MembershipI {
+public class Membership implements RESTMembershipI {
 
-    private final ProjectI project;
+    private final RESTProjectI project;
     private final RoleI role;
 
-    public Membership(ProjectI project, RoleI role) {
+    public Membership(RESTProjectI project, RoleI role) {
         this.project = project;
         this.role = role;
     }
 
     @Override
-    public ProjectI getProject() {
+    public RESTProjectI getProject() {
         return project;
     }
 

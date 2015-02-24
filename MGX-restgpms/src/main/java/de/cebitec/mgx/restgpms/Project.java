@@ -1,21 +1,23 @@
 package de.cebitec.mgx.restgpms;
 
 import de.cebitec.gpms.core.ProjectClassI;
-import de.cebitec.gpms.core.ProjectI;
+import de.cebitec.gpms.rest.RESTProjectI;
 import java.util.Objects;
 
 /**
  *
  * @author sjaenick
  */
-public class Project implements ProjectI {
+public class Project implements RESTProjectI {
 
     private final String name;
     private final ProjectClassI projClass;
     private final boolean isPublic;
+    private final String baseURI;
 
-    public Project(String name, ProjectClassI pclass, boolean isPublic) {
+    public Project(String name, String baseURI, ProjectClassI pclass, boolean isPublic) {
         this.name = name;
+        this.baseURI = baseURI;
         this.projClass = pclass;
         this.isPublic = isPublic;
     }
@@ -23,6 +25,11 @@ public class Project implements ProjectI {
     @Override
     public String getName() {
         return name;
+    }
+
+    @Override
+    public String getRESTURI() {
+        return baseURI;
     }
 
     @Override
@@ -64,4 +71,5 @@ public class Project implements ProjectI {
         }
         return true;
     }
+
 }
