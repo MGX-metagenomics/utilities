@@ -5,7 +5,6 @@
  */
 package de.cebitec.mgx.seqstorage;
 
-import de.cebitec.mgx.seqholder.DNASequenceHolder;
 import de.cebitec.mgx.sequence.DNASequenceI;
 import de.cebitec.mgx.sequence.SeqStoreException;
 import java.io.BufferedInputStream;
@@ -52,10 +51,10 @@ public class CSFWriterTest {
         try (FastaReader fr = new FastaReader(f.getAbsolutePath(), false)) {
             try (CSFWriter csf = new CSFWriter(target)) {
                 while (fr.hasMoreElements()) {
-                    DNASequenceHolder holder = fr.nextElement();
+                    DNASequenceI holder = fr.nextElement();
                     assertNotNull(holder);
                     assertNotNull(holder.getSequence());
-                    csf.addSequence(holder.getSequence());
+                    csf.addSequence(holder);
                 }
             }
         } catch (SeqStoreException ex) {
@@ -73,18 +72,16 @@ public class CSFWriterTest {
         try (FastaReader fr = new FastaReader(f.getAbsolutePath(), false)) {
             try (CSFWriter csf = new CSFWriter(target)) {
                 while (fr.hasMoreElements()) {
-                    DNASequenceHolder holder = fr.nextElement();
+                    DNASequenceI holder = fr.nextElement();
                     assertNotNull(holder);
                     assertNotNull(holder.getSequence());
-                    csf.addSequence(holder.getSequence());
+                    csf.addSequence(holder);
                 }
             }
             
             try (CSFReader r = new CSFReader(target.getAbsolutePath(), false)) {
                 while (r.hasMoreElements()) {
-                    DNASequenceHolder h = r.nextElement();
-                    assertNotNull(h);
-                    DNASequenceI s = h.getSequence();
+                    DNASequenceI s = r.nextElement();
                     assertNotNull(s);
                     String seq = new String(s.getSequence());
                     // all sequences have to be uppercase

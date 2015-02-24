@@ -1,7 +1,6 @@
 package de.cebitec.mgx.seqstorage;
 
 import de.cebitec.mgx.braf.BufferedRandomAccessFile;
-import de.cebitec.mgx.seqholder.DNASequenceHolder;
 import de.cebitec.mgx.seqstorage.encoding.*;
 import de.cebitec.mgx.sequence.DNASequenceI;
 import de.cebitec.mgx.sequence.SeqReaderI;
@@ -20,13 +19,13 @@ import java.util.zip.GZIPInputStream;
  *
  * @author sjaenick
  */
-public class CSFReader implements SeqReaderI<DNASequenceHolder> {
+public class CSFReader implements SeqReaderI<DNASequenceI> {
 
     private ByteStreamTokenizer seqin;
     private InputStream namein;
     private final String csffile;
     private final String namefile;
-    private DNASequenceHolder holder = null;
+    private DNASequenceI holder = null;
     private NMSReader idx = null;
     private BufferedRandomAccessFile raf = null;
 
@@ -96,16 +95,16 @@ public class CSFReader implements SeqReaderI<DNASequenceHolder> {
             DNASequenceI seq = new DNASequence(sequence_id);
             seq.setSequence(FourBitEncoder.decode(dnasequence));
 
-            holder = new DNASequenceHolder(seq);
+            holder = seq;
             return true;
         }
         return false;
     }
 
     @Override
-    public DNASequenceHolder nextElement() {
+    public DNASequenceI nextElement() {
         assert holder != null;
-        DNASequenceHolder ret = holder;
+        DNASequenceI ret = holder;
         holder = null;
         return ret;
     }
@@ -147,8 +146,8 @@ public class CSFReader implements SeqReaderI<DNASequenceHolder> {
     }
 
     @Override
-    public Set<DNASequenceHolder> fetch(long[] ids) throws SeqStoreException {
-        Set<DNASequenceHolder> result = new HashSet<>(ids.length);
+    public Set<DNASequenceI> fetch(long[] ids) throws SeqStoreException {
+        Set<DNASequenceI> result = new HashSet<>(ids.length);
         if (ids.length == 0) {
             return result;
         }
@@ -186,7 +185,7 @@ public class CSFReader implements SeqReaderI<DNASequenceHolder> {
 
                 DNASequenceI seq = new DNASequence(id);
                 seq.setSequence(FourBitEncoder.decode(encoded));
-                result.add(new DNASequenceHolder(seq));
+                result.add(seq);
             }
         } catch (IOException ex) {
             throw new SeqStoreException("Internal error: " + ex.getMessage());

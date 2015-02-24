@@ -5,7 +5,7 @@
  */
 package de.cebitec.mgx.seqstorage;
 
-import de.cebitec.mgx.seqholder.DNAQualitySequenceHolder;
+import de.cebitec.mgx.sequence.DNAQualitySequenceI;
 import de.cebitec.mgx.sequence.SeqReaderI;
 import de.cebitec.mgx.sequence.SeqStoreException;
 import de.cebitec.mgx.sffreader.datatypes.SFFRead;
@@ -18,11 +18,11 @@ import java.util.Set;
  *
  * @author sjaenick
  */
-public class SFFReader implements SeqReaderI<DNAQualitySequenceHolder> {
+public class SFFReader implements SeqReaderI<DNAQualitySequenceI> {
 
     private final de.cebitec.mgx.sffreader.SFFReader reader;
     private final String file;
-    private DNAQualitySequenceHolder holder = null;
+    private DNAQualitySequenceI holder = null;
 
     public SFFReader(String uri) throws SeqStoreException{
         this.file = uri;        
@@ -39,17 +39,17 @@ public class SFFReader implements SeqReaderI<DNAQualitySequenceHolder> {
     }
 
     @Override
-    public Set<DNAQualitySequenceHolder> fetch(long[] ids) throws SeqStoreException {
-        Set<DNAQualitySequenceHolder> res = new HashSet<>(ids.length);
+    public Set<DNAQualitySequenceI> fetch(long[] ids) throws SeqStoreException {
+        Set<DNAQualitySequenceI> res = new HashSet<>(ids.length);
         Set<Long> idList = new HashSet<>(ids.length);
         for (int i =0; i< ids.length; i++) {
             idList.add(ids[i]);
         }
         while (hasMoreElements() && !idList.isEmpty()) {
-            DNAQualitySequenceHolder elem = nextElement();
-            if (idList.contains(elem.getSequence().getId())) {
+            DNAQualitySequenceI elem = nextElement();
+            if (idList.contains(elem.getId())) {
                 res.add(elem);
-                idList.remove(elem.getSequence().getId());
+                idList.remove(elem.getId());
             }
         }
 
@@ -72,7 +72,7 @@ public class SFFReader implements SeqReaderI<DNAQualitySequenceHolder> {
             seq.setSequence(read.getBases().getBytes());
             seq.setQuality(read.getQuality());
             
-            holder = new DNAQualitySequenceHolder(seq);
+            holder = seq;
             return true;
         } else {
             return false;
@@ -80,8 +80,8 @@ public class SFFReader implements SeqReaderI<DNAQualitySequenceHolder> {
     }
 
     @Override
-    public DNAQualitySequenceHolder nextElement() {
-        DNAQualitySequenceHolder ret = holder;
+    public DNAQualitySequenceI nextElement() {
+        DNAQualitySequenceI ret = holder;
         holder = null;
         return ret;
     }
