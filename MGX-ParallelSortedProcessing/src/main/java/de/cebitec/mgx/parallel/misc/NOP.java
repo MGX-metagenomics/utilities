@@ -7,17 +7,15 @@ package de.cebitec.mgx.parallel.misc;
 
 import de.cebitec.mgx.parallel.ParallelWorker;
 import de.cebitec.mgx.parallel.api.ParallelWorkerI;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
  * @author sj
  */
-public class NOP<T> extends ParallelWorker<T, T> {
+public class NOP extends ParallelWorker<String, String> {
 
     @Override
-    public T process(T t) {
+    public String process(String t) {
 //        try {
 //            //System.err.println(Thread.currentThread().getId() + " processes "+ t);
 //            //Thread.sleep(1);
@@ -29,8 +27,8 @@ public class NOP<T> extends ParallelWorker<T, T> {
     }
 
     @Override
-    public ParallelWorkerI<T, T> clone() {
-        return new NOP<>();
+    public ParallelWorkerI<String, String> clone() {
+        return new NOP();
     }
 
 }
