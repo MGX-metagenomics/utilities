@@ -11,7 +11,7 @@ public class SeqReaderFactory {
 
     private static final ServiceLoader<FactoryI> loader = ServiceLoader.<FactoryI>load(FactoryI.class);
 
-    public static <T> SeqReaderI<T> getReader(String filename) throws SeqStoreException {
+    public static <T extends DNASequenceI> SeqReaderI<T> getReader(String filename) throws SeqStoreException {
         FactoryI<T> fac = SeqReaderFactory.<T>get();
         if (fac == null) {
             throw new SeqStoreException("No SeqReaderFactory found.");
@@ -27,7 +27,7 @@ public class SeqReaderFactory {
     }
 
     @SuppressWarnings("unchecked")
-    private static <T> FactoryI<T> get() {
+    private static <T extends DNASequenceI> FactoryI<T> get() {
         Iterator<FactoryI> ps = loader.iterator();
         while (ps != null && ps.hasNext()) {
             FactoryI<T> sr = ps.next();
