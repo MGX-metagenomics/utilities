@@ -8,12 +8,14 @@ package de.cebitec.mgx.api.groups;
 
 import de.cebitec.mgx.api.misc.AttributeRank;
 import de.cebitec.mgx.api.misc.DistributionI;
+import de.cebitec.mgx.api.misc.Fetcher;
 import de.cebitec.mgx.api.misc.Pair;
 import de.cebitec.mgx.api.model.tree.TreeI;
 import de.cebitec.mgx.api.visualization.ConflictResolver;
 import java.beans.PropertyChangeListener;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.Future;
 
 /**
  *
@@ -48,5 +50,7 @@ public interface VGroupManagerI extends PropertyChangeListener {
     boolean selectAttributeType(AttributeRank rank, String aType);
 
     void setSelectedGroup(VisualizationGroupI group);
+    
+    <T> Future<T> submit(Fetcher<T> f);
     
 }

@@ -16,7 +16,7 @@ import java.util.UUID;
  */
 public interface TaskAccessI<T extends ModelBase> {
 
-    public abstract TaskI get(T obj, UUID taskId, TaskI.TaskType tt) throws MGXException;
+    public abstract TaskI<T> get(T obj, UUID taskId, TaskI.TaskType tt) throws MGXException;
 
-    public abstract TaskI refresh(TaskI origTask) throws MGXException;
+    public abstract void refresh(TaskI<T> origTask) throws MGXException;
 }
