@@ -3,6 +3,7 @@ package de.cebitec.mgx.seqholder;
 import de.cebitec.mgx.dto.dto.SequenceDTO;
 import de.cebitec.mgx.sequence.DNASequenceI;
 
+@Deprecated
 public class DNASequenceHolder implements ReadSequenceI<DNASequenceI> {
 
     private final DNASequenceI seq;

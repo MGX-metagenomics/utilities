@@ -8,6 +8,7 @@ import de.cebitec.mgx.sequence.DNAQualitySequenceI;
  *
  * @author sjaenick
  */
+@Deprecated
 public class DNAQualitySequenceHolder implements ReadSequenceI<DNAQualitySequenceI> {
 
     private final DNAQualitySequenceI seq;
