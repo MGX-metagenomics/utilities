@@ -9,9 +9,7 @@ import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
-import de.cebitec.gpms.core.MembershipI;
 import de.cebitec.gpms.core.ProjectClassI;
-import de.cebitec.gpms.core.ProjectI;
 import de.cebitec.gpms.core.RoleI;
 import de.cebitec.gpms.dto.impl.GPMSLong;
 import de.cebitec.gpms.dto.impl.GPMSString;
@@ -22,6 +20,8 @@ import de.cebitec.gpms.dto.impl.ProjectClassDTOList;
 import de.cebitec.gpms.dto.impl.RoleDTO;
 import de.cebitec.gpms.rest.GPMSClientI;
 import de.cebitec.gpms.rest.RESTMasterI;
+import de.cebitec.gpms.rest.RESTMembershipI;
+import de.cebitec.gpms.rest.RESTProjectI;
 import de.cebitec.gpms.rest.RESTUserI;
 import java.awt.EventQueue;
 import java.net.UnknownHostException;
@@ -81,13 +81,13 @@ public class GPMS implements GPMSClientI {
     }
 
     @Override
-    public RESTMasterI createMaster(final MembershipI m) {
-        return new RESTMaster(m, user, baseuri, true);
+    public RESTMasterI createMaster(final RESTMembershipI m) {
+        return new RESTMaster(m, user, m.getProject().getRESTURI() != null ? m.getProject().getRESTURI() : baseuri, true);
     }
 
     @Override
-    public Iterator<MembershipI> getMemberships() {
-        List<MembershipI> ret = new ArrayList<>();
+    public Iterator<RESTMembershipI> getMemberships() {
+        List<RESTMembershipI> ret = new ArrayList<>();
         assert !EventQueue.isDispatchThread();
         ClientResponse response = getResource().path("/GPMS/GPMSBean/listMemberships").get(ClientResponse.class);
         if (Status.OK == response.getClientResponseStatus()) {
@@ -100,7 +100,7 @@ public class GPMS implements GPMSClientI {
                 }
 
                 ProjectClassI pclass = new ProjectClass(mdto.getProject().getProjectClass().getName(), roles);
-                ProjectI proj = new Project(mdto.getProject().getName(), pclass, false);
+                RESTProjectI proj = new Project(mdto.getProject().getName(), baseuri, pclass, false);
                 RoleI role = new Role(mdto.getRole().getName());
 
                 ret.add(new Membership(proj, role));
