@@ -70,7 +70,7 @@ public class GCDistributionTest {
         FastaReader r = new FastaReader("/homes/sjaenick/testdata.fas", false);
         GCDistribution gc = new GCDistribution();
         while (r.hasMoreElements()) {
-            gc.add(r.nextElement().getSequence());
+            gc.add(r.nextElement());
         }
         QCResult qc = gc.get();
         assertNotNull(qc);
