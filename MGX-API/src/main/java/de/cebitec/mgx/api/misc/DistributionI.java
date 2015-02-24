@@ -14,7 +14,7 @@ import java.util.Map;
  *
  * @author sj
  */
-public interface DistributionI extends Map<AttributeI, Number> {
+public interface DistributionI extends Map<AttributeI, Number> , Visualizable {
 
     public MGXMasterI getMaster();
 

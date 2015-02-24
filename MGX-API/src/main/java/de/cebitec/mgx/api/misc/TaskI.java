@@ -48,11 +48,11 @@ public abstract class TaskI<T extends ModelBase> {
 
     public abstract String getStatusMessage();
 
-    public abstract TaskI setStatusMessage(String statusMessage);
+    public abstract TaskI<T> setStatusMessage(String statusMessage);
 
     public abstract State getState();
 
-    public abstract TaskI setState(State state);
+    public abstract TaskI<T> setState(State state);
 
     public abstract boolean done();
 
