@@ -71,7 +71,7 @@ public class NucleotideDistributionTest {
         FastaReader r = new FastaReader("/homes/sjaenick/testdata.fas", false);
         NucleotideDistribution ld = new NucleotideDistribution();
         while (r.hasMoreElements()) {
-            ld.add(r.nextElement().getSequence());
+            ld.add(r.nextElement());
         }
         ld.get();
 

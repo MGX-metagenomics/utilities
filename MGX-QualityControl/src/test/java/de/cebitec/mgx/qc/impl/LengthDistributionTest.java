@@ -66,7 +66,7 @@ public class LengthDistributionTest {
         FastaReader r = new FastaReader("/homes/sjaenick/testdata.fas", false);
         LengthDistribution ld = new LengthDistribution();
         while (r.hasMoreElements()) {
-            ld.add(r.nextElement().getSequence());
+            ld.add(r.nextElement());
         }
         ld.get();
     }
