@@ -21,11 +21,11 @@
     </properties>
 
     <dependencies>
-        <dependency>
+        <!-- <dependency>
             <groupId>de.cebitec.gpms</groupId>
             <artifactId>GPMS-core-api</artifactId>
             <version>1.0-RELEASE</version>
-        </dependency>
+        </dependency> -->
         <dependency>
             <groupId>de.cebitec.mgx</groupId>
             <artifactId>MGX-parallelPropChange</artifactId>
@@ -51,6 +51,11 @@
             <artifactId>MGX-isequences</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>de.cebitec.gpms</groupId>
+            <artifactId>GPMS-rest-api</artifactId>
+            <version>1.0-RELEASE</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -62,7 +67,7 @@
                 <configuration>
                     <instructions>
                         <Export-Package>de.cebitec.mgx.api*</Export-Package>
-                        <Import-Package>javax.swing,org.apache.commons.math3.util,de.cebitec.mgx.pevents,de.cebitec.mgx.sequence</Import-Package>
+                        <Import-Package>javax.swing,org.apache.commons.math3.util,de.cebitec.mgx.pevents,de.cebitec.mgx.sequence,de.cebitec.gpms.rest</Import-Package>
                     </instructions>
                 </configuration>
             </plugin>

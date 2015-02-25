@@ -1,6 +1,6 @@
 package de.cebitec.mgx.api;
 
-import de.cebitec.gpms.core.MembershipI;
+import de.cebitec.gpms.rest.RESTMembershipI;
 import de.cebitec.mgx.api.access.AccessBaseI;
 import de.cebitec.mgx.api.access.AttributeAccessI;
 import de.cebitec.mgx.api.access.DNAExtractAccessI;
@@ -33,7 +33,7 @@ public abstract class MGXMasterI extends ModelBase<MGXMasterI> {
         super.master = this;
     }
 
-    public abstract MembershipI getMembership();
+    public abstract RESTMembershipI getMembership();
 
     public abstract String getProject();
 
