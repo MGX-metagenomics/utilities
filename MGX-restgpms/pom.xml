@@ -17,13 +17,22 @@
     
     <build>
         <plugins>
-             <plugin>
+            <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Import-Package>javax.net.ssl</Import-Package>
+                        <Import-Package>
+                            javax.net.ssl,
+                            com.sun.jersey.api.client,
+                            com.sun.jersey.api.client.filter,
+                            com.sun.jersey.api.client.config,
+                            de.cebitec.gpms.core,
+                            de.cebitec.gpms.rest,
+                            de.cebitec.gpms.dto,
+                            de.cebitec.mgx.protobuf.serializer
+                        </Import-Package>
                         <Export-Package>de.cebitec.mgx.restgpms</Export-Package>
                         <Private-Package>de.cebitec.mgx.restgpms.*</Private-Package>
                     </instructions>
