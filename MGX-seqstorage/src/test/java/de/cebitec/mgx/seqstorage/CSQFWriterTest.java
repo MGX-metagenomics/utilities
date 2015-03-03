@@ -1,5 +1,6 @@
 package de.cebitec.mgx.seqstorage;
 
+import de.cebitec.mgx.osgiutils.MGXOptions;
 import de.cebitec.mgx.sequence.*;
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -8,30 +9,36 @@ import java.util.ArrayList;
 import java.util.List;
 import org.junit.*;
 import static org.junit.Assert.*;
+import org.junit.runner.RunWith;
+import org.ops4j.pax.exam.Configuration;
+import static org.ops4j.pax.exam.CoreOptions.bundle;
+import static org.ops4j.pax.exam.CoreOptions.junitBundles;
+import static org.ops4j.pax.exam.CoreOptions.options;
+import static org.ops4j.pax.exam.CoreOptions.systemProperty;
+import static org.ops4j.pax.exam.CoreOptions.url;
+import org.ops4j.pax.exam.Option;
+import org.ops4j.pax.exam.junit.PaxExam;
 
 /**
  *
  * @author sj
  */
+@RunWith(PaxExam.class)
 public class CSQFWriterTest {
 
-    public CSQFWriterTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
+    @Configuration
+    public static Option[] configuration() {
+        return options(
+                junitBundles(),
+                url("link:classpath:de.cebitec.mgx.MGX-isequences.link"),
+                url("link:classpath:de.cebitec.mgx.Trove-OSGi.link"),
+                url("link:classpath:de.cebitec.mgx.MGX-BufferedRandomAccessFile.link"),
+                url("link:classpath:de.cebitec.mgx.SFFReader.link"),
+                url("link:classpath:org.apache.commons.math3.link"),
+                MGXOptions.serviceLoaderBundles(),
+                systemProperty("org.ops4j.pax.logging.DefaultServiceLog.level").value("WARN"),
+                bundle("reference:file:target/classes")
+        );
     }
 
     @Test
@@ -74,22 +81,22 @@ public class CSQFWriterTest {
             }
             List<DNAQualitySequenceI> reader = new ArrayList<>();
             try (CSQFReader r = new CSQFReader(target.getAbsolutePath(), false)) {
-                int i=0;
+                int i = 0;
                 while (r.hasMoreElements()) {
                     DNAQualitySequenceI s = r.nextElement();
                     reader.add(s);
                     assertNotNull(s);
                     String seq = new String(s.getSequence());
                     // all sequences have to be uppercase
-                    assertEquals(seq.toUpperCase(), seq);                    
+                    assertEquals(seq.toUpperCase(), seq);
                 }
                 r.delete();
             }
-            for(int i=0; i<writer.size(); i++){
+            for (int i = 0; i < writer.size(); i++) {
                 Assert.assertArrayEquals(writer.get(i).getSequence(), reader.get(i).getSequence());
                 Assert.assertArrayEquals(writer.get(i).getQuality(), reader.get(i).getQuality());
             }
-            
+
         } catch (SeqStoreException ex) {
             fail(ex.getMessage());
         }
@@ -98,7 +105,7 @@ public class CSQFWriterTest {
 
     private File copyTestData() {
         File f = null;
-        try (BufferedInputStream is = new BufferedInputStream(getClass().getClassLoader().getResourceAsStream("de/cebitec/mgx/seqstorage/sample_1.fq"))) {
+        try (BufferedInputStream is = new BufferedInputStream(CSQFWriter.class.getClassLoader().getResourceAsStream("de/cebitec/mgx/seqstorage/sample_1.fq"))) {
             f = File.createTempFile("seq", "fq");
             try (FileOutputStream fos = new FileOutputStream(f)) {
                 byte[] buffer = new byte[1024];
