@@ -33,12 +33,22 @@
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
                 <extensions>true</extensions>
+                <executions>
+                    <!-- This execution makes sure that the manifest is available 
+                    when the tests are executed -->
+                    <execution>
+                        <goals>
+                            <goal>manifest</goal>
+                        </goals>
+                    </execution>
+                </executions>
                 <configuration>
                     <instructions>
                         <Embed-Dependency>swingx-all;scope=compile|runtime</Embed-Dependency>
                         <Embed-Transitive>true</Embed-Transitive>
                         <_exportcontents>org.jdesktop.beans,org.jdesktop.swingx,org.jdesktop.swingx.*</_exportcontents>
                         <Export-Package />
+                        <Private-Package/>
                     </instructions>
                 </configuration>
             </plugin>
