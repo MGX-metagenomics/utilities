@@ -15,16 +15,39 @@ import java.util.logging.Logger;
 import org.junit.*;
 import static org.junit.Assert.*;
 import org.junit.rules.TemporaryFolder;
+import org.junit.runner.RunWith;
+import org.ops4j.pax.exam.Configuration;
+import static org.ops4j.pax.exam.CoreOptions.bundle;
+import static org.ops4j.pax.exam.CoreOptions.junitBundles;
+import static org.ops4j.pax.exam.CoreOptions.maven;
+import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
+import static org.ops4j.pax.exam.CoreOptions.options;
+import static org.ops4j.pax.exam.CoreOptions.systemProperty;
+import static org.ops4j.pax.exam.CoreOptions.url;
+import org.ops4j.pax.exam.Option;
+import org.ops4j.pax.exam.junit.PaxExam;
 
 /**
  *
  * @author sj
  */
+@RunWith(PaxExam.class)
 public class SFFReaderTest {
 
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
     private File fileWithIndex, fileWithoutIndex;
+
+    @Configuration
+    public static Option[] configuration() {
+        return options(
+                junitBundles(),
+                url("link:classpath:de.cebitec.mgx.MGX-BufferedRandomAccessFile.link"),
+                url("link:classpath:de.cebitec.mgx.Trove-OSGi.link"),
+                systemProperty("org.ops4j.pax.logging.DefaultServiceLog.level").value("WARN"),
+                bundle("reference:file:target/classes")
+        );
+    }
 
     public SFFReaderTest() {
     }
@@ -41,7 +64,7 @@ public class SFFReaderTest {
     public void setUp() {
         try {
             fileWithIndex = folder.newFile();
-            InputStream is = getClass().getClassLoader().getResourceAsStream("de/cebitec/mgx/oneread.sff");
+            InputStream is = SFFReader.class.getClassLoader().getResourceAsStream("de/cebitec/mgx/oneread.sff");
             FileOutputStream fos = new FileOutputStream(fileWithIndex);
             int i;
             while ((i = is.read()) != -1) {
@@ -49,7 +72,7 @@ public class SFFReaderTest {
             }
             fos.close();
             fileWithoutIndex = folder.newFile();
-            is = getClass().getClassLoader().getResourceAsStream("de/cebitec/mgx/multipleRead.sff");
+            is = SFFReader.class.getClassLoader().getResourceAsStream("de/cebitec/mgx/multipleRead.sff");
             fos = new FileOutputStream(fileWithoutIndex);
             while ((i = is.read()) != -1) {
                 fos.write(i);
@@ -79,7 +102,6 @@ public class SFFReaderTest {
 //        long offset = r.getOffset("FI5LW4G01DZDXZ");
 //        assertEquals(840, offset);
 //    }
-
     @org.junit.Test
     public void testInvalidName() throws IOException {
         System.err.println("testInvalidName");
@@ -102,7 +124,7 @@ public class SFFReaderTest {
         assertEquals(1, r.getNumberOfReads());
         assertEquals("TCAG", r.getKeySequence());
         assertEquals(1, r.getNumberOfReads());
-        while(r.hasMoreElements()) {
+        while (r.hasMoreElements()) {
             SFFRead s = r.nextElement();
 //            System.err.println(s.getName());
 //            System.err.println(s.getBases());
@@ -122,12 +144,13 @@ public class SFFReaderTest {
 //            System.err.println(s.getName());
 //            System.err.println(s.getQuality().length);
             byte[] quality = "FFFFFFFFFFFIIIIIIIIIIIIIIIIIIIHHHIHB;:8@?GGGDB::88?==4/----,,,,".getBytes();
-            for (int i=0; i<quality.length; i++)
-                quality[i]-=33;
+            for (int i = 0; i < quality.length; i++) {
+                quality[i] -= 33;
+            }
             assertArrayEquals(quality, s.getQuality());
         }
     }
-    
+
     @org.junit.Test
     public void testReadAll() throws IOException {
         System.err.println("testReadAll");
@@ -157,8 +180,7 @@ public class SFFReaderTest {
 //        System.err.println(s.getBases());
         assertEquals("CAGTTTGGACATAGCAAGAAGCGAATTGGCTATTAACGGTAAAGAAATTTTTAAAACAGTTATTAATATGGCAGACTATGCTAGAAAAGAAGTTAATAAAATAGGCGATTATTATGCATTCGGTGAAGAGATAATAAATAATGATGATATATATTCTTTTGATAATACAAAGCTATGCATACAT", s.getBases());
     }
-    
-    
+
 //    @org.junit.Test
 //    public void testIdxOffset() throws IOException {
 //        System.err.println("testIdxOffset");
