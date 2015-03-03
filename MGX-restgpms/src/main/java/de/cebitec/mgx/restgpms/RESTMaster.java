@@ -5,10 +5,10 @@ import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 import com.sun.jersey.client.urlconnection.HTTPSProperties;
-import de.cebitec.gpms.core.MembershipI;
 import de.cebitec.gpms.core.ProjectI;
 import de.cebitec.gpms.core.RoleI;
 import de.cebitec.gpms.rest.RESTMasterI;
+import de.cebitec.gpms.rest.RESTMembershipI;
 import de.cebitec.gpms.rest.RESTUserI;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
@@ -27,12 +27,12 @@ import javax.net.ssl.X509TrustManager;
  */
 public class RESTMaster implements RESTMasterI {
 
-    private final MembershipI membership;
+    private final RESTMembershipI membership;
     private final RESTUserI user;
     private final ClientConfig cc;
     private Client client = null;
 
-    public RESTMaster(MembershipI m, RESTUserI u, String baseuri, boolean verifySSL) {
+    public RESTMaster(RESTMembershipI m, RESTUserI u, String baseuri, boolean verifySSL) {
         this.membership = m;
         this.user = u;
 

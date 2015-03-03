@@ -39,7 +39,6 @@ public class GPMS implements GPMSClientI {
 
     private ClientConfig cc = null;
     private Client client;
-    //private WebResource res = null;
     private final String baseuri;
     private final String servername;
     private RESTUserI user;
@@ -47,7 +46,9 @@ public class GPMS implements GPMSClientI {
     private String error;
 
     public GPMS(String servername, String baseuri) {
-
+        if (baseuri == null) {
+            throw new IllegalArgumentException("No base URI supplied.");
+        }
         if (!baseuri.endsWith("/")) {
             baseuri += "/";
         }
@@ -63,8 +64,8 @@ public class GPMS implements GPMSClientI {
     public Iterator<ProjectClassI> getProjectClasses() {
         assert !EventQueue.isDispatchThread();
         List<ProjectClassI> ret = new LinkedList<>();
-        ClientResponse response = getResource().path("/GPMS/GPMSBean/listProjectClasses").get(ClientResponse.class);
-        if (response.getClientResponseStatus() == Status.OK) {
+        ClientResponse response = getResource().path("GPMS").path("GPMSBean").path("listProjectClasses").get(ClientResponse.class);
+        if (Status.fromStatusCode(response.getStatus()) == Status.OK) {
             ProjectClassDTOList list = response.<ProjectClassDTOList>getEntity(ProjectClassDTOList.class);
             for (ProjectClassDTO dto : list.getProjectclassList()) {
                 List<RoleI> roles = new ArrayList<>(3);
@@ -74,7 +75,7 @@ public class GPMS implements GPMSClientI {
                 ret.add(new ProjectClass(dto.getName(), roles));
             }
         } else {
-            error = response.getClientResponseStatus().toString();
+            error = Status.fromStatusCode(response.getStatus()).getReasonPhrase();
             return null;
         }
         return ret.iterator();
@@ -82,6 +83,9 @@ public class GPMS implements GPMSClientI {
 
     @Override
     public RESTMasterI createMaster(final RESTMembershipI m) {
+        if (m == null) {
+            throw new IllegalArgumentException("RESTMembershipI is null");
+        }
         return new RESTMaster(m, user, m.getProject().getRESTURI() != null ? m.getProject().getRESTURI() : baseuri, true);
     }
 
@@ -89,8 +93,8 @@ public class GPMS implements GPMSClientI {
     public Iterator<RESTMembershipI> getMemberships() {
         List<RESTMembershipI> ret = new ArrayList<>();
         assert !EventQueue.isDispatchThread();
-        ClientResponse response = getResource().path("/GPMS/GPMSBean/listMemberships").get(ClientResponse.class);
-        if (Status.OK == response.getClientResponseStatus()) {
+        ClientResponse response = getResource().path("GPMS").path("GPMSBean").path("listMemberships").get(ClientResponse.class);
+        if (Status.fromStatusCode(response.getStatus()) == Status.OK) {
             MembershipDTOList list = response.<MembershipDTOList>getEntity(MembershipDTOList.class);
             for (MembershipDTO mdto : list.getMembershipList()) {
 
@@ -106,29 +110,34 @@ public class GPMS implements GPMSClientI {
                 ret.add(new Membership(proj, role));
             }
         } else {
-            error = response.getClientResponseStatus().toString();
+            error = Status.fromStatusCode(response.getStatus()).getReasonPhrase();
             return null;
         }
         return ret.iterator();
     }
-    
+
     private WebResource getResource() {
+        if (client == null) {
+            return null;
+        }
         return client.resource(baseuri);
     }
 
     @Override
-    public boolean login(String login, String password) {
+    public synchronized boolean login(String login, String password) {
         if (login == null || password == null) {
             return false;
         }
-        if (client == null) {
-            client = Client.create(cc);
-        }
+        client = Client.create(cc);
         client.removeAllFilters();
         client.addFilter(new HTTPBasicAuthFilter(login, password));
+        loggedin = false;
+        user = null;
+        error = null;
+
         ClientResponse response;
         try {
-            response = getResource().path("/GPMS/GPMSBean/login").get(ClientResponse.class);
+            response = getResource().path("GPMS").path("GPMSBean").path("login").get(ClientResponse.class);
         } catch (ClientHandlerException che) {
             if (che.getCause() != null && che.getCause() instanceof SSLHandshakeException) {
                 return login(login, password);
@@ -141,7 +150,7 @@ public class GPMS implements GPMSClientI {
             return false;
         }
 
-        switch (response.getClientResponseStatus()) {
+        switch (Status.fromStatusCode(response.getStatus())) {
             case OK:
                 GPMSString reply = response.<GPMSString>getEntity(GPMSString.class);
                 if ("MGX".equals(reply.getValue())) {
@@ -156,7 +165,7 @@ public class GPMS implements GPMSClientI {
                 error = "Connection refused, server down?";
                 break;
             default:
-                error = response.getClientResponseStatus().toString();
+                error = Status.fromStatusCode(response.getStatus()).getReasonPhrase();
                 break;
         }
 
@@ -169,10 +178,14 @@ public class GPMS implements GPMSClientI {
 
     public long ping() {
         try {
-            return getResource().path("/GPMS/GPMSBean/ping").get(GPMSLong.class).getValue();
+            WebResource wr = getResource();
+            if (wr == null) { // e.g. after logging out
+                return -1;
+            }
+            return wr.path("GPMS").path("GPMSBean").path("ping").get(GPMSLong.class).getValue();
         } catch (UniformInterfaceException ufie) {
-            System.err.println("MSG: "+ ufie.getMessage());
-        } catch (ClientHandlerException ex ) {
+            System.err.println("MSG: " + ufie.getMessage());
+        } catch (ClientHandlerException ex) {
             if (ex.getCause() != null && ex.getCause() instanceof SSLHandshakeException) {
                 return ping(); //retry
             } else if (ex.getCause() != null && ex.getCause() instanceof UnknownHostException) {

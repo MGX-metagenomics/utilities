@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
+import org.junit.Test;
 
 /**
  *
@@ -28,7 +29,6 @@ public class TestMaster {
         }
         
         GPMS gpms = new GPMS("MyServer", serverURI);
-        gpms.login("mgx_unittestRO", "gut-isM5iNt");
         return gpms;
     }
 }
