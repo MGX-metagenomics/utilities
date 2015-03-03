@@ -18,6 +18,8 @@
     <url>http://maven.apache.org</url>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <exam.version>4.4.0</exam.version>
+        <url.version>2.3.0</url.version>
     </properties>
     
     <build>
@@ -26,11 +28,21 @@
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
                 <extensions>true</extensions>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>wrap</goal>
+                        </goals>
+                        <configuration>
+                            <wrapImportPackage>;</wrapImportPackage>
+                        </configuration>
+                    </execution>
+                </executions>
                 <configuration>
                     <instructions>
                         <Export-Package>de.cebitec.mgx.sequence</Export-Package>
-                        <!-- <Import-Package>org.osgi.service.log</Import-Package> -->
-                        <Require-Capability>osgi.extender; filter:="(osgi.extender=osgi.serviceloader.processor)", osgi.serviceloader; filter:="(osgi.serviceloader=de.cebitec.mgx.sequence.FactoryI)"; cardinality:=multiple</Require-Capability>
+                        <Import-Package>org.osgi.service.log</Import-Package>
+                        <Require-Capability>osgi.serviceloader; filter:="(osgi.serviceloader=de.cebitec.mgx.sequence.FactoryI)";cardinality:=multiple,osgi.extender; filter:="(osgi.extender=osgi.serviceloader.processor)"</Require-Capability>
                     </instructions>
                 </configuration>
             </plugin>
@@ -39,19 +51,67 @@
     
     <dependencies>
         <dependency>
+            <groupId>org.ops4j.pax.exam</groupId>
+            <artifactId>pax-exam-container-forked</artifactId>
+            <version>${exam.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.exam</groupId>
+            <artifactId>pax-exam-junit4</artifactId>
+            <version>${exam.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.exam</groupId>
+            <artifactId>pax-exam-link-mvn</artifactId>
+            <version>${exam.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.url</groupId>
+            <artifactId>pax-url-aether</artifactId>
+            <version>${url.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.framework</artifactId>
+            <version>4.6.0</version>
+            <scope>test</scope>
+        </dependency>
+        <!--
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>0.9.29</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>0.9.29</version>
+            <scope>test</scope>
+        </dependency>
+        -->
+        
+        <dependency>
             <groupId>org.apache.aries.spifly</groupId>
             <artifactId>org.apache.aries.spifly.dynamic.bundle</artifactId>
             <version>1.0.1</version>
-        </dependency>
+            <scope>runtime</scope>
+        </dependency> 
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>osgi-over-slf4j</artifactId>
             <version>1.7.7</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-jdk14</artifactId>
             <version>1.7.7</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -59,6 +119,12 @@
             <version>4.12</version>
             <scope>test</scope>
         </dependency>
+        <!-- <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+            <version>4.3.1</version>
+            <scope>provided</scope>
+        </dependency> -->
     </dependencies>
 
 </project>
