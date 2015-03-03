@@ -35,7 +35,7 @@ public class KEGGMaster {
     private final static String REST_BASE = "http://rest.kegg.jp/";
     private final static String KEGG_BASE = "http://www.genome.jp/";
     private final static String CACHEDIR = "/tmp/kegg/";
-    private final long timeout = 1000L * 60L * 60L * 24L * 7L * 4L; // 4 weeks
+    private final long timeout = 1000L * 60L * 60L * 24L * 7L * 12L; // 12 weeks
     private PathwayAccess pwacc = null;
     private ECNumberAccess ecacc = null;
     private final Connection conn;
