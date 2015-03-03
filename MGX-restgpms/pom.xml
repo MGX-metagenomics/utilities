@@ -23,6 +23,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
+                        <Import-Package>javax.net.ssl</Import-Package>
                         <Export-Package>de.cebitec.mgx.restgpms</Export-Package>
                         <Private-Package>de.cebitec.mgx.restgpms.*</Private-Package>
                     </instructions>
