@@ -12,7 +12,8 @@ import org.ops4j.pax.exam.options.DefaultCompositeOption;
 
 /**
  *
- * Utility class with predefined aggregations for PAX Exam-based Unit/integration testing
+ * Utility class with predefined aggregations for PAX Exam-based
+ * Unit/integration testing
  *
  * @author sj
  */
@@ -23,8 +24,6 @@ public class MGXOptions {
                 gpmsBundles(),
                 seqIOBundles(),
                 serviceLoaderBundles(),
-                mavenBundle().groupId("com.google.protobuf").artifactId("protobuf-java").version("2.5.0"),
-                mavenBundle().groupId("de.cebitec.mgx").artifactId("ProtoBuf-Serializer"),
                 mavenBundle().groupId("de.cebitec.mgx").artifactId("Trove-OSGi"),
                 mavenBundle().groupId("de.cebitec.mgx").artifactId("BioJava-OSGi"),
                 mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-DTO"),
@@ -37,10 +36,12 @@ public class MGXOptions {
                 // 1.19.x will additionally need javax.ws.rs:jsr311-api:1.1.1
                 mavenBundle().groupId("com.sun.jersey").artifactId("jersey-client").version("1.18.2"),
                 mavenBundle().groupId("com.sun.jersey").artifactId("jersey-core").version("1.18.2"),
+                mavenBundle().groupId("com.google.protobuf").artifactId("protobuf-java").version("2.5.0"),
                 mavenBundle().groupId("de.cebitec.gpms").artifactId("GPMS-DTO"),
                 mavenBundle().groupId("de.cebitec.gpms").artifactId("GPMS-core-api"),
                 mavenBundle().groupId("de.cebitec.gpms").artifactId("GPMS-rest-api"),
-                mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-restgpms")
+                mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-restgpms"),
+                mavenBundle().groupId("de.cebitec.mgx").artifactId("ProtoBuf-Serializer")
         );
     }
 
