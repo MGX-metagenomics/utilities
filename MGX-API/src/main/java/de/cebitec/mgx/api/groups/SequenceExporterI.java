@@ -6,5 +6,9 @@ package de.cebitec.mgx.api.groups;
  */
 public interface SequenceExporterI {
 
-    public void export();
+    /*
+     * returns: false if export was aborted/cancelled
+     *          true otherwise
+    */
+    public boolean export();
 }
