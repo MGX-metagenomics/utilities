@@ -10,7 +10,7 @@ package de.cebitec.mgx.api.model;
  *
  * @author sj
  */
-public abstract class TermI {
+public abstract class TermI implements Comparable<TermI> {
 
     public abstract long getId();
 
@@ -30,5 +30,9 @@ public abstract class TermI {
 
     @Override
     public abstract String toString();
-    
+
+    @Override
+    public int compareTo(TermI o) {
+        return getName().compareTo(o.getName());
+    }
 }
