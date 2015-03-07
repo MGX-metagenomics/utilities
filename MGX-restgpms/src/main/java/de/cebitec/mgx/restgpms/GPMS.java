@@ -23,7 +23,6 @@ import de.cebitec.gpms.rest.RESTMasterI;
 import de.cebitec.gpms.rest.RESTMembershipI;
 import de.cebitec.gpms.rest.RESTProjectI;
 import de.cebitec.gpms.rest.RESTUserI;
-import java.awt.EventQueue;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -62,7 +61,6 @@ public class GPMS implements GPMSClientI {
 
     @Override
     public Iterator<ProjectClassI> getProjectClasses() {
-        assert !EventQueue.isDispatchThread();
         List<ProjectClassI> ret = new LinkedList<>();
         ClientResponse response = getResource().path("GPMS").path("GPMSBean").path("listProjectClasses").get(ClientResponse.class);
         if (Status.fromStatusCode(response.getStatus()) == Status.OK) {
@@ -92,7 +90,6 @@ public class GPMS implements GPMSClientI {
     @Override
     public Iterator<RESTMembershipI> getMemberships() {
         List<RESTMembershipI> ret = new ArrayList<>();
-        assert !EventQueue.isDispatchThread();
         ClientResponse response = getResource().path("GPMS").path("GPMSBean").path("listMemberships").get(ClientResponse.class);
         if (Status.fromStatusCode(response.getStatus()) == Status.OK) {
             MembershipDTOList list = response.<MembershipDTOList>getEntity(MembershipDTOList.class);
