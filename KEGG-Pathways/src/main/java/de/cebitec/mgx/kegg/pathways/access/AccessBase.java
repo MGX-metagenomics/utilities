@@ -6,7 +6,6 @@ import de.cebitec.mgx.kegg.pathways.KEGGException;
 import de.cebitec.mgx.kegg.pathways.KEGGMaster;
 import static de.cebitec.mgx.kegg.pathways.access.PathwayAccess.COORDS;
 import de.cebitec.mgx.kegg.pathways.api.PathwayI;
-import java.awt.EventQueue;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -39,7 +38,6 @@ public class AccessBase {
     }
 
     protected final InputStream get(final WebResource resource, final String path) throws KEGGException {
-        assert !EventQueue.isDispatchThread();
         ClientResponse res = resource.path(path).get(ClientResponse.class);
         catchException(res);
         return res.getEntityInputStream();
