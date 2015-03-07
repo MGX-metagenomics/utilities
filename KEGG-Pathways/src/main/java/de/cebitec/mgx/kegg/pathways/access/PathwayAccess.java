@@ -9,7 +9,6 @@ import de.cebitec.mgx.kegg.pathways.api.PathwayI;
 import de.cebitec.mgx.kegg.pathways.model.ECNumber;
 import de.cebitec.mgx.kegg.pathways.model.ECNumberFactory;
 import de.cebitec.mgx.kegg.pathways.model.Pathway;
-import java.awt.EventQueue;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
@@ -106,7 +105,6 @@ public class PathwayAccess extends AccessBase {
     }
 
     public void fetchImageFromServer(PathwayI p) throws KEGGException {
-        assert !EventQueue.isDispatchThread();
         File cacheFile = new File(getMaster().getCacheDir() + p.getMapNum() + ".png");
         
         if (isValid(cacheFile)) {
