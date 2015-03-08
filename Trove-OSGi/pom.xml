@@ -9,6 +9,8 @@
     
     <artifactId>Trove-OSGi</artifactId>
     <packaging>bundle</packaging>
+
+    <name>Trove-OSGi</name>
     
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
