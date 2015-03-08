@@ -51,6 +51,7 @@ public class MGXOptions {
                 mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-isequences"),
                 mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-seqstorage"),
                 mavenBundle().groupId("de.cebitec.mgx").artifactId("SFFReader"),
+                mavenBundle().groupId("de.cebitec.mgx").artifactId("Trove-OSGi"),
                 mavenBundle().groupId("org.apache.commons").artifactId("commons-math3")
         );
     }
