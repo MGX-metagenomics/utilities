@@ -32,10 +32,7 @@ public class FileTypeTest {
                 junitBundles(),
                 MGXOptions.serviceLoaderBundles(),
                 MGXOptions.gpmsBundles(),
-                mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-BufferedRandomAccessFile"),
-                mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-isequences"),
-                mavenBundle().groupId("org.apache.commons").artifactId("commons-math3"),
-                mavenBundle().groupId("de.cebitec.mgx").artifactId("Trove-OSGi"),
+                MGXOptions.seqIOBundles(),
                 url("link:classpath:de.cebitec.mgx.MGX-parallelPropChange.link"),
                 systemProperty("org.ops4j.pax.logging.DefaultServiceLog.level").value("WARN"),
                 bundle("reference:file:target/classes")
