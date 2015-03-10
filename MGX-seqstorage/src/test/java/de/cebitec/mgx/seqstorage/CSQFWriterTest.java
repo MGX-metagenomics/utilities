@@ -42,10 +42,10 @@ public class CSQFWriterTest {
     }
 
     @Test
-    public void testCSFWriter() throws Exception {
+    public void testCSQFWriter() throws Exception {
         System.out.println("testCSQFWriter");
         File f = copyTestData();
-        File target = File.createTempFile("testout", "");
+        File target = File.createTempFile("testCSQFWriter", "xx");
         target.delete();
         try (FASTQReader fr = new FASTQReader(f.getAbsolutePath(), false)) {
             try (CSQFWriter csq = new CSQFWriter(target)) {
@@ -58,15 +58,21 @@ public class CSQFWriterTest {
             }
         } catch (SeqStoreException ex) {
             fail(ex.getMessage());
+        } finally {
+            f.delete();
+            //target.delete();
+            try {
+                new CSQFReader(target.getAbsolutePath(), false).delete();
+            } catch (SeqStoreException ex) {
+            }
         }
-        f.delete();
     }
 
     @Test
     public void testCSQFReader() throws Exception {
         System.out.println("testCSQFReader");
         File f = copyTestData();
-        File target = File.createTempFile("testout", "");
+        File target = File.createTempFile("testCSQFReader", "");
         target.delete();
         List<DNAQualitySequenceI> writer = new ArrayList<>();
         try (FASTQReader fr = new FASTQReader(f.getAbsolutePath(), false)) {
@@ -99,8 +105,10 @@ public class CSQFWriterTest {
 
         } catch (SeqStoreException ex) {
             fail(ex.getMessage());
+        } finally {
+            target.delete();
+            f.delete();
         }
-        f.delete();
     }
 
     private File copyTestData() {
