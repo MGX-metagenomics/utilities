@@ -23,7 +23,7 @@ public interface AttributeAccessI extends AccessBaseI<AttributeI> {
 
     public Iterator<AttributeI> BySeqRun(final SeqRunI seqrun) throws MGXException;
 
-    public DistributionI getDistribution(AttributeTypeI attrType, JobI job) throws MGXException;
+    public DistributionI<Long> getDistribution(AttributeTypeI attrType, JobI job) throws MGXException;
 
     public TreeI<Long> getHierarchy(AttributeTypeI attrType, JobI job) throws MGXException;
 

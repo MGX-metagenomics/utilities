@@ -7,20 +7,21 @@ package de.cebitec.mgx.api.misc;
 
 import de.cebitec.mgx.api.MGXMasterI;
 import de.cebitec.mgx.api.model.AttributeI;
-import java.util.List;
 import java.util.Map;
 
 /**
  *
  * @author sj
  */
-public interface DistributionI extends Map<AttributeI, Number> , Visualizable {
+public interface DistributionI<T extends Number> extends Map<AttributeI, T> , Visualizable {
 
     public MGXMasterI getMaster();
 
     public long getTotalClassifiedElements();
+    
+    public Class<T> getEntryType();
 
-    public void setOrder(List<AttributeI> o);
-
-    public void reset();
+//    public void setOrder(List<AttributeI> o);
+//
+//    public void reset();
 }
