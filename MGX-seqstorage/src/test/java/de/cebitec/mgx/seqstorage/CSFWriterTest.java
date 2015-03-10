@@ -11,6 +11,9 @@ import de.cebitec.mgx.sequence.SeqStoreException;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.runner.RunWith;
@@ -46,10 +49,10 @@ public class CSFWriterTest {
     }
 
     @Test
-    public void testCSFWriter() throws Exception {
+    public void testCSFWriter() throws IOException {
         System.out.println("testCSFWriter");
         File f = copyTestData();
-        File target = File.createTempFile("testout", "");
+        File target = File.createTempFile("testCSFWriter", "xx");
         target.delete();
         try (FastaReader fr = new FastaReader(f.getAbsolutePath(), false)) {
             try (CSFWriter csf = new CSFWriter(target)) {
@@ -62,15 +65,21 @@ public class CSFWriterTest {
             }
         } catch (SeqStoreException ex) {
             fail(ex.getMessage());
+        } finally {
+            try {
+                new CSFReader(target.getAbsolutePath(), false).delete();
+            } catch (SeqStoreException ex) {
+            }
+            //target.delete();
+            f.delete();
         }
-        f.delete();
     }
 
     @Test
-    public void testCSFReader() throws Exception {
+    public void testCSFReader() throws IOException {
         System.out.println("testCSFReader");
         File f = copyTestData();
-        File target = File.createTempFile("testout", "");
+        File target = File.createTempFile("testCSFReader", "xx");
         target.delete();
         try (FastaReader fr = new FastaReader(f.getAbsolutePath(), false)) {
             try (CSFWriter csf = new CSFWriter(target)) {
@@ -95,8 +104,10 @@ public class CSFWriterTest {
 
         } catch (SeqStoreException ex) {
             fail(ex.getMessage());
+        } finally {
+            f.delete();
+            target.delete();
         }
-        f.delete();
     }
 
     private File copyTestData() {
