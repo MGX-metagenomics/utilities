@@ -13,22 +13,22 @@ public final class VisFilterSupport {
     private VisFilterSupport() {
     }
 
-    public static <T> VisFilterI<T> append(VisFilterI<T> first, VisFilterI<T> second) {
+    public static <T, U, V> VisFilterI<T, V> append(VisFilterI<T, U> first, VisFilterI<U, V> second) {
         return new VFCombinedImpl<>(first, second);
     }
     
-    private final static class VFCombinedImpl<T> implements VisFilterI<T> {
+    private final static class VFCombinedImpl<T, U, V> implements VisFilterI<T, V> {
 
-    VisFilterI<T> first;
-    VisFilterI<T> second;
+    VisFilterI<T, U> first;
+    VisFilterI<U, V> second;
 
-    public VFCombinedImpl(VisFilterI<T> first, VisFilterI<T> second) {
+    public VFCombinedImpl(VisFilterI<T, U> first, VisFilterI<U, V> second) {
         this.first = first;
         this.second = second;
     }
 
     @Override
-    public List<Pair<VisualizationGroupI, T>> filter(List<Pair<VisualizationGroupI, T>> dists) {
+    public List<Pair<VisualizationGroupI, V>> filter(List<Pair<VisualizationGroupI, T>> dists) {
         return second.filter(first.filter(dists));
     }
 }

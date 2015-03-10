@@ -48,7 +48,7 @@ public interface VisualizationGroupI extends PropertyChangeListener {
     
     Map<SeqRunI, Set<JobI>> getConflicts(AttributeRank rank);
 
-    DistributionI getDistribution() throws ConflictingJobsException;
+    DistributionI<Long> getDistribution() throws ConflictingJobsException;
 
     TreeI<Long> getHierarchy();
 
