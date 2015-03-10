@@ -33,7 +33,7 @@ public interface VGroupManagerI extends PropertyChangeListener {
 
     Collection<VisualizationGroupI> getAllGroups();
 
-    List<Pair<VisualizationGroupI, DistributionI>> getDistributions() throws ConflictingJobsException;
+    List<Pair<VisualizationGroupI, DistributionI<Long>>> getDistributions() throws ConflictingJobsException;
 
     List<Pair<VisualizationGroupI, TreeI<Long>>> getHierarchies();
 

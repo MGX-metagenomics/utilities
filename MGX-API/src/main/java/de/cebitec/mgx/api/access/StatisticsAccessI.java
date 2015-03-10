@@ -23,12 +23,12 @@ import java.util.List;
  */
 public interface StatisticsAccessI {
 
-    public Iterator<Point> Rarefaction(DistributionI dist) throws MGXException;
+    public Iterator<Point> Rarefaction(DistributionI<Long> dist) throws MGXException;
 
-    public PCAResultI PCA(Collection<Pair<VisualizationGroupI, DistributionI>> groups, PrincipalComponent pc1, PrincipalComponent pc2) throws MGXException;
+    public PCAResultI PCA(Collection<Pair<VisualizationGroupI, DistributionI<Double>>> groups, PrincipalComponent pc1, PrincipalComponent pc2) throws MGXException;
 
-    public List<Point> PCoA(Collection<Pair<VisualizationGroupI, DistributionI>> groups) throws MGXException;
+    public List<Point> PCoA(Collection<Pair<VisualizationGroupI, DistributionI<Double>>> groups) throws MGXException;
 
-    public NodeI Clustering(List<Pair<VisualizationGroupI, DistributionI>> dists, String distanceMethod, String agglomeration) throws MGXException;
+    public NodeI Clustering(Collection<Pair<VisualizationGroupI, DistributionI<Double>>> dists, String distanceMethod, String agglomeration) throws MGXException;
 
 }

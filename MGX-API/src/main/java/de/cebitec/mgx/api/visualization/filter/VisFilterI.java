@@ -8,8 +8,8 @@ import java.util.List;
  *
  * @author sjaenick
  */
-public interface VisFilterI<T> {
+public interface VisFilterI<T, U> {
     
-    public List<Pair<VisualizationGroupI, T>> filter(List<Pair<VisualizationGroupI, T>> in);
+    public List<Pair<VisualizationGroupI, U>> filter(List<Pair<VisualizationGroupI, T>> in);
     
 }
