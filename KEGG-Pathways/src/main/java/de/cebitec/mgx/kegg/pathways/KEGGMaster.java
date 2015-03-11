@@ -27,7 +27,7 @@ import java.util.logging.Logger;
  *
  * @author sj
  */
-public class KEGGMaster {
+public class KEGGMaster implements AutoCloseable {
 
     private final Client restclient;
     private final Client keggclient;
@@ -208,14 +208,11 @@ public class KEGGMaster {
             Logger.getLogger(AccessBase.class.getName()).log(Level.SEVERE, null, ex.getMessage());
         }
     }
-    
-    public void close() {
-//        if (conn != null) {
-//            try {
-//                conn.close();
-//            } catch (SQLException ex) {
-//            }
-//        }
-    }
 
+    @Override
+    public void close() throws SQLException {
+        if (conn != null) {
+            conn.close();
+        }
+    }
 }
