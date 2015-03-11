@@ -7,9 +7,12 @@ import de.cebitec.mgx.kegg.pathways.api.PathwayI;
 import de.cebitec.mgx.kegg.pathways.model.ECNumberFactory;
 import java.awt.Rectangle;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.junit.*;
 import static org.junit.Assert.*;
 import org.junit.rules.TemporaryFolder;
@@ -38,7 +41,11 @@ public class PathwayAccessTest {
     @After
     public void tearDown() {
         if (m != null) {
-            m.close();
+            try {
+                m.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(PathwayAccessTest.class.getName()).log(Level.SEVERE, null, ex);
+            }
             m = null;
         }
     }
