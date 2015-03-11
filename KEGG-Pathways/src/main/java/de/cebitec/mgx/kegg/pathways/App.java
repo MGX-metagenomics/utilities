@@ -2,19 +2,13 @@ package de.cebitec.mgx.kegg.pathways;
 
 import de.cebitec.mgx.kegg.pathways.api.ECNumberI;
 import de.cebitec.mgx.kegg.pathways.api.PathwayI;
-import de.cebitec.mgx.kegg.pathways.model.ECNumberFactory;
 import de.cebitec.mgx.kegg.pathways.paint.KEGGPanel;
-import java.awt.Color;
 import java.awt.Rectangle;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JFrame;
 
 /**
  * Hello world!
@@ -40,7 +34,7 @@ public class App {
         
         for (final PathwayI p : all) {
             System.err.println(p.getName());
-            //Map<ECNumberI, Set<Rectangle>> coords = m.Pathways().getCoords(p);
+            Map<ECNumberI, Set<Rectangle>> coords = m.Pathways().getCoords(p);
             Thread t = new Thread(new Runnable() {
 
                 @Override

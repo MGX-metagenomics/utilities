@@ -30,7 +30,7 @@
                 </executions>
                 <configuration>
                     <instructions>
-                        <Import-Package>org.h2,javax.swing,javax.imageio,com.sun.jersey.api.client.config,com.sun.jersey.api.client</Import-Package>
+                        <Import-Package>org.h2,org.h2.*,javax.swing,javax.imageio,com.sun.jersey.api.client.config,com.sun.jersey.api.client</Import-Package>
                         <Export-Package>de.cebitec.mgx.kegg.pathways,de.cebitec.mgx.kegg.pathways.access,de.cebitec.mgx.kegg.pathways.api,de.cebitec.mgx.kegg.pathways.model,de.cebitec.mgx.kegg.pathways.paint</Export-Package>
                         <Private-Package>de.cebitec.mgx.kegg.pathways.*</Private-Package>
                     </instructions>
