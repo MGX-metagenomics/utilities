@@ -83,13 +83,23 @@ public class PathwayAccess extends AccessBase {
                 conn.prepareStatement("DELETE FROM pathway").execute();
                 //conn.prepareStatement("DELETE FROM ecnumber").execute();
 
+                // save incoming data to a map first to avoid duplicate entries
+                // which sometimes seem to occur when accessing the REST service
+                Map<String, String> data = new HashMap<>();
+                String line;
+                while ((line = bin.readLine()) != null) {
+                    line = line.substring(5); // remove leading "path:"
+                    String[] split = line.split("\t");
+                    if (data.containsKey(split[0])) {
+                        Logger.getLogger(PathwayAccess.class.getName()).log(Level.INFO, "KEGG map {0} received more than once.", split[0]);
+                    }
+                    data.put(split[0], split[1]);
+                }
+
                 try (PreparedStatement stmt = conn.prepareStatement(INSERT_PW)) {
-                    String line;
-                    while ((line = bin.readLine()) != null) {
-                        line = line.substring(5); // remove leading "path:"
-                        String[] split = line.split("\t");
-                        stmt.setString(1, split[0]);
-                        stmt.setString(2, split[1]);
+                    for (Entry<String, String> e : data.entrySet()) {
+                        stmt.setString(1, e.getKey());
+                        stmt.setString(2, e.getValue());
                         stmt.addBatch();
                     }
                     stmt.executeBatch();
@@ -106,7 +116,7 @@ public class PathwayAccess extends AccessBase {
 
     public void fetchImageFromServer(PathwayI p) throws KEGGException {
         File cacheFile = new File(getMaster().getCacheDir() + p.getMapNum() + ".png");
-        
+
         if (isValid(cacheFile)) {
             return; // no need to refetch
         }
@@ -131,7 +141,7 @@ public class PathwayAccess extends AccessBase {
             throw new KEGGException(ex);
         }
     }
-    
+
     public BufferedImage getImage(PathwayI p) throws KEGGException {
         BufferedImage img = null;
         File cacheFile = new File(getMaster().getCacheDir() + p.getMapNum() + ".png");
@@ -208,7 +218,6 @@ public class PathwayAccess extends AccessBase {
             fetchCoordsFromServer(pw);
         }
         assert isValid(pw);
-
 
         // fetch from db
         final Map<ECNumberI, Set<Rectangle>> ret = new HashMap<>();
@@ -399,7 +408,6 @@ public class PathwayAccess extends AccessBase {
         } catch (InterruptedException ex) {
             throw new KEGGException(ex);
         }
-
 
         StringBuilder sql = new StringBuilder()
                 .append("SELECT DISTINCT mapnum, name FROM pathway LEFT JOIN coords ON (pathway.mapnum=coords.pw_num) WHERE coords.ec_num IN (")

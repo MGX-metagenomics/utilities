@@ -62,7 +62,7 @@ public class PathwayAccessTest {
     public void testFetchall() throws Exception {
         System.out.println("fetchall");
         Set<PathwayI> fetchall = getMaster().Pathways().fetchall();
-        assertTrue(fetchall.size() > 460);
+        assertTrue(fetchall.size() > 465);
     }
 
     @Test
