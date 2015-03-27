@@ -21,12 +21,18 @@ public class MGXOptions {
 
     public static CompositeOption clientBundles() {
         return new DefaultCompositeOption(
+                testUtils(),
                 gpmsBundles(),
                 seqIOBundles(),
                 serviceLoaderBundles(),
                 mavenBundle().groupId("de.cebitec.mgx").artifactId("Trove-OSGi"),
                 mavenBundle().groupId("de.cebitec.mgx").artifactId("BioJava-OSGi"),
-                mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-DTO"),
+                mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-DTO")
+        );
+    }
+
+    public static CompositeOption testUtils() {
+        return new DefaultCompositeOption(
                 mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-TestUtils")
         );
     }
