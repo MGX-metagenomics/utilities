@@ -9,7 +9,7 @@ import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.zip.GZIPInputStream;
 
-public class ByteStreamTokenizer implements Enumeration {
+public class ByteStreamTokenizer implements Enumeration<byte[]> {
 
     private final InputStream in;
     private final int DEFAULT_BUFSIZE = 49152;
@@ -20,6 +20,7 @@ public class ByteStreamTokenizer implements Enumeration {
     private int startpos = 0;
     private int endpos = 0;
     private byte elem[] = null;
+    private boolean atEOF = false;
 
     public ByteStreamTokenizer(String fname, boolean gzipCompressed, byte separatorChar, int skipBytes) throws FileNotFoundException, IOException {
         bufferSize = DEFAULT_BUFSIZE;
@@ -40,6 +41,12 @@ public class ByteStreamTokenizer implements Enumeration {
 
     @Override
     public boolean hasMoreElements() {
+        
+        if (elem != null) {
+            // previous element not yet received
+            return true;
+        }
+        
         int breakpos;
 
         /* 
@@ -66,7 +73,7 @@ public class ByteStreamTokenizer implements Enumeration {
          * if possible
          */
 
-        while ((breakpos = getSeparatorPos(startpos, endpos)) == -1) {
+        while (!atEOF && (breakpos = getSeparatorPos(startpos, endpos)) == -1) {
             // move buffer contents to front of buffer
             moveBuffer(startpos);
             enlargeBuffer();
@@ -78,7 +85,8 @@ public class ByteStreamTokenizer implements Enumeration {
 
         /*
          * re-check buffer after reading - if we still don't see a valid element,
-         * there aren't any
+         * there aren't any, unless the final record isn't terminated with the 
+         * separator char
          */
 
         if ((breakpos = getSeparatorPos(startpos, endpos)) != -1) {
@@ -86,13 +94,22 @@ public class ByteStreamTokenizer implements Enumeration {
             startpos = breakpos + 1;
             return true;
         } else {
+            if (atEOF && startpos <= endpos) {
+                // at EOF, data present but not terminated with separator
+                elem = ByteUtils.substring(buffer, startpos, endpos-1);
+                startpos = endpos+1;
+                return true;
+            }
             return false;
         }
     }
 
     @Override
     public byte[] nextElement() {
-        return elem;
+        assert elem != null;
+        byte[] ret = elem;
+        elem = null;
+        return ret;
     }
 
     public void close() {
@@ -132,6 +149,7 @@ public class ByteStreamTokenizer implements Enumeration {
                 //System.err.println("read " + bytesRead + " bytes");
                 endpos += bytesRead;
             } else {
+                atEOF = true;
                 return true;
             }
         } catch (IOException ex) {

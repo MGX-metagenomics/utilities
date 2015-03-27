@@ -29,7 +29,7 @@ public class FASTQReader implements SeqReaderI<DNAQualitySequenceI> {
     }
 
     @Override
-    public boolean hasMoreElements() {
+    public boolean hasMoreElements() throws SeqStoreException {
 
         byte[] l1, l2, l3, l4;
 
@@ -46,9 +46,24 @@ public class FASTQReader implements SeqReaderI<DNAQualitySequenceI> {
             return false;
         }
 
+        if (l1[0] != '@') {
+            throw new SeqStoreException("FASTQ Error: missing \'@\' in line " + new String(l1));
+        }
+        if (l3 != null && l3[0] != '+') {
+            throw new SeqStoreException("FASTQ Error: missing \'+\' in line " + new String(l3));
+        }
+
         // remove leading '@' from sequence name
         byte[] seqname = new byte[l1.length - 1];
         System.arraycopy(l1, 1, seqname, 0, l1.length - 1);
+
+        if (l4 == null) {
+            throw new SeqStoreException("Error for sequence " + new String(seqname) + ", no quality?");
+        }
+
+        if (l2.length != l4.length) {
+            throw new SeqStoreException("Error in FASTQ file: length differs between sequence and quality for " + new String(seqname));
+        }
 
         seq = new QualityDNASequence();
         seq.setName(seqname);
@@ -84,7 +99,7 @@ public class FASTQReader implements SeqReaderI<DNAQualitySequenceI> {
     public Set<DNAQualitySequenceI> fetch(long[] ids) throws SeqStoreException {
         Set<DNAQualitySequenceI> res = new HashSet<>(ids.length);
         Set<Long> idList = new HashSet<>(ids.length);
-        for (int i =0; i< ids.length; i++) {
+        for (int i = 0; i < ids.length; i++) {
             idList.add(ids[i]);
         }
         while (hasMoreElements() && !idList.isEmpty()) {
@@ -100,14 +115,16 @@ public class FASTQReader implements SeqReaderI<DNAQualitySequenceI> {
         }
         return res;
     }
-    
-    private byte[] convertQuality(byte[] in) {
-        
-        byte[] out = new byte[in.length];
-        for (int i = 0; i<in.length; i++){
-            out[i] = (byte) (in[i]-33);
+
+    private byte[] convertQuality(byte[] in) throws SeqStoreException {
+        if (in == null) {
+            throw new SeqStoreException("Cannot convert null quality string.");
         }
-        
+        byte[] out = new byte[in.length];
+        for (int i = 0; i < in.length; i++) {
+            out[i] = (byte) (in[i] - 33);
+        }
+
         return out;
     }
 

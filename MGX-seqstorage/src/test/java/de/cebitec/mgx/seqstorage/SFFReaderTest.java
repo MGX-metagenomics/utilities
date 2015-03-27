@@ -3,6 +3,7 @@ package de.cebitec.mgx.seqstorage;
 import de.cebitec.mgx.osgiutils.MGXOptions;
 import de.cebitec.mgx.sequence.DNAQualitySequenceI;
 import de.cebitec.mgx.sequence.SeqStoreException;
+import de.cebitec.mgx.testutils.TestInput;
 import java.io.*;
 import org.junit.*;
 import static org.junit.Assert.assertArrayEquals;
@@ -36,19 +37,16 @@ public class SFFReaderTest {
                 url("link:classpath:de.cebitec.mgx.SFFReader.link"),
                 url("link:classpath:org.apache.commons.math3.link"),
                 MGXOptions.serviceLoaderBundles(),
+                MGXOptions.testUtils(),
                 systemProperty("org.ops4j.pax.logging.DefaultServiceLog.level").value("WARN"),
                 bundle("reference:file:target/classes")
         );
     }
-    private File f;
-
-    public SFFReaderTest() {
-    }
 
     @Test
-    public void testOneReadSFF() {
+    public void testOneReadSFF() throws Exception {
         System.out.println("OneReadSFF");
-        f = copyTestData("de/cebitec/mgx/seqstorage/oneread.sff");
+        File f = TestInput.copyTestData(SFFReader.class, "de/cebitec/mgx/seqstorage/oneread.sff");
         try (SFFReader sr = new SFFReader(f.getAbsolutePath())) {
             while (sr.hasMoreElements()) {
                 DNAQualitySequenceI entry = sr.nextElement();
@@ -67,9 +65,9 @@ public class SFFReaderTest {
     }
 
     @Test
-    public void testMultipleReadSFF() {
+    public void testMultipleReadSFF() throws Exception {
         System.out.println("MultipleReadSFF");
-        f = copyTestData("de/cebitec/mgx/seqstorage/multipleRead.sff");
+        File f = TestInput.copyTestData(SFFReader.class,"de/cebitec/mgx/seqstorage/multipleRead.sff");
         int seqCnt = 0;
         try (SFFReader sr = new SFFReader(f.getAbsolutePath())) {
             while (sr.hasMoreElements()) {
@@ -84,25 +82,4 @@ public class SFFReaderTest {
         System.out.println(seqCnt);
         assertEquals(3546, seqCnt);
     }
-
-    private File copyTestData(String uri) {
-        File f = null;
-        try (BufferedInputStream is = new BufferedInputStream(SFFReader.class.getClassLoader().getResourceAsStream(uri))) {
-            f = File.createTempFile("seq", ".sff");
-            try (FileOutputStream fos = new FileOutputStream(f)) {
-                byte[] buffer = new byte[1024];
-                int bytesRead = is.read(buffer);
-                while (bytesRead >= 0) {
-                    fos.write(buffer, 0, bytesRead);
-                    bytesRead = is.read(buffer);
-                }
-
-            }
-        } catch (Exception ex) {
-            fail(ex.getMessage());
-        }
-        assertNotNull(f);
-        return f;
-    }
-
 }

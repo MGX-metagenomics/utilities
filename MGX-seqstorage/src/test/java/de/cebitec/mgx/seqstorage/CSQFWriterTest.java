@@ -2,9 +2,8 @@ package de.cebitec.mgx.seqstorage;
 
 import de.cebitec.mgx.osgiutils.MGXOptions;
 import de.cebitec.mgx.sequence.*;
-import java.io.BufferedInputStream;
+import de.cebitec.mgx.testutils.TestInput;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.*;
@@ -36,6 +35,7 @@ public class CSQFWriterTest {
                 url("link:classpath:de.cebitec.mgx.SFFReader.link"),
                 url("link:classpath:org.apache.commons.math3.link"),
                 MGXOptions.serviceLoaderBundles(),
+                MGXOptions.testUtils(),
                 systemProperty("org.ops4j.pax.logging.DefaultServiceLog.level").value("WARN"),
                 bundle("reference:file:target/classes")
         );
@@ -44,7 +44,7 @@ public class CSQFWriterTest {
     @Test
     public void testCSQFWriter() throws Exception {
         System.out.println("testCSQFWriter");
-        File f = copyTestData();
+        File f = TestInput.copyTestData(CSQFWriter.class, "de/cebitec/mgx/seqstorage/sample_1.fq");
         File target = File.createTempFile("testCSQFWriter", "xx");
         target.delete();
         try (FASTQReader fr = new FASTQReader(f.getAbsolutePath(), false)) {
@@ -71,7 +71,7 @@ public class CSQFWriterTest {
     @Test
     public void testCSQFReader() throws Exception {
         System.out.println("testCSQFReader");
-        File f = copyTestData();
+        File f = TestInput.copyTestData(CSQFWriter.class, "de/cebitec/mgx/seqstorage/sample_1.fq");
         File target = File.createTempFile("testCSQFReader", "");
         target.delete();
         List<DNAQualitySequenceI> writer = new ArrayList<>();
@@ -109,25 +109,5 @@ public class CSQFWriterTest {
             target.delete();
             f.delete();
         }
-    }
-
-    private File copyTestData() {
-        File f = null;
-        try (BufferedInputStream is = new BufferedInputStream(CSQFWriter.class.getClassLoader().getResourceAsStream("de/cebitec/mgx/seqstorage/sample_1.fq"))) {
-            f = File.createTempFile("seq", "fq");
-            try (FileOutputStream fos = new FileOutputStream(f)) {
-                byte[] buffer = new byte[1024];
-                int bytesRead = is.read(buffer);
-                while (bytesRead >= 0) {
-                    fos.write(buffer, 0, bytesRead);
-                    bytesRead = is.read(buffer);
-                }
-
-            }
-        } catch (Exception ex) {
-            fail(ex.getMessage());
-        }
-        assertNotNull(f);
-        return f;
     }
 }
