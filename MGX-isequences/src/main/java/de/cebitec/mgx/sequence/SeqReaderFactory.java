@@ -12,6 +12,9 @@ public class SeqReaderFactory {
     private static final ServiceLoader<FactoryI> loader = ServiceLoader.<FactoryI>load(FactoryI.class);
 
     public static <T extends DNASequenceI> SeqReaderI<T> getReader(String filename) throws SeqStoreException {
+        if (filename == null || filename.isEmpty()) {
+            throw new SeqStoreException("Unable to determine reader for empty/null filename");
+        }
         FactoryI<T> fac = SeqReaderFactory.<T>get();
         if (fac == null) {
             throw new SeqStoreException("No SeqReaderFactory found.");
