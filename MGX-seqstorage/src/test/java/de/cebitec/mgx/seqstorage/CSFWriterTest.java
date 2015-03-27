@@ -8,12 +8,8 @@ package de.cebitec.mgx.seqstorage;
 import de.cebitec.mgx.osgiutils.MGXOptions;
 import de.cebitec.mgx.sequence.DNASequenceI;
 import de.cebitec.mgx.sequence.SeqStoreException;
-import java.io.BufferedInputStream;
+import de.cebitec.mgx.testutils.TestInput;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.runner.RunWith;
@@ -43,15 +39,16 @@ public class CSFWriterTest {
                 url("link:classpath:de.cebitec.mgx.SFFReader.link"),
                 url("link:classpath:org.apache.commons.math3.link"),
                 MGXOptions.serviceLoaderBundles(),
+                MGXOptions.testUtils(),
                 systemProperty("org.ops4j.pax.logging.DefaultServiceLog.level").value("WARN"),
                 bundle("reference:file:target/classes")
         );
     }
 
     @Test
-    public void testCSFWriter() throws IOException {
+    public void testCSFWriter() throws Exception {
         System.out.println("testCSFWriter");
-        File f = copyTestData();
+        File f = TestInput.copyTestData(CSFReader.class, "de/cebitec/mgx/seqstorage/test.fas");
         File target = File.createTempFile("testCSFWriter", "xx");
         target.delete();
         try (FastaReader fr = new FastaReader(f.getAbsolutePath(), false)) {
@@ -76,9 +73,9 @@ public class CSFWriterTest {
     }
 
     @Test
-    public void testCSFReader() throws IOException {
+    public void testCSFReader() throws Exception {
         System.out.println("testCSFReader");
-        File f = copyTestData();
+        File f = TestInput.copyTestData(CSFReader.class, "de/cebitec/mgx/seqstorage/test.fas");
         File target = File.createTempFile("testCSFReader", "xx");
         target.delete();
         try (FastaReader fr = new FastaReader(f.getAbsolutePath(), false)) {
@@ -110,23 +107,23 @@ public class CSFWriterTest {
         }
     }
 
-    private File copyTestData() {
-        File f = null;
-        try (BufferedInputStream is = new BufferedInputStream(CSFWriter.class.getClassLoader().getResourceAsStream("de/cebitec/mgx/seqstorage/test.fas"))) {
-            f = File.createTempFile("seq", "fas");
-            try (FileOutputStream fos = new FileOutputStream(f)) {
-                byte[] buffer = new byte[1024];
-                int bytesRead = is.read(buffer);
-                while (bytesRead >= 0) {
-                    fos.write(buffer, 0, bytesRead);
-                    bytesRead = is.read(buffer);
-                }
-
-            }
-        } catch (Exception ex) {
-            fail(ex.getMessage());
-        }
-        assertNotNull(f);
-        return f;
-    }
+//    private File copyTestData() {
+//        File f = null;
+//        try (BufferedInputStream is = new BufferedInputStream(CSFWriter.class.getClassLoader().getResourceAsStream("de/cebitec/mgx/seqstorage/test.fas"))) {
+//            f = File.createTempFile("seq", "fas");
+//            try (FileOutputStream fos = new FileOutputStream(f)) {
+//                byte[] buffer = new byte[1024];
+//                int bytesRead = is.read(buffer);
+//                while (bytesRead >= 0) {
+//                    fos.write(buffer, 0, bytesRead);
+//                    bytesRead = is.read(buffer);
+//                }
+//
+//            }
+//        } catch (Exception ex) {
+//            fail(ex.getMessage());
+//        }
+//        assertNotNull(f);
+//        return f;
+//    }
 }

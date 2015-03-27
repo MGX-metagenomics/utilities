@@ -1,13 +1,13 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package de.cebitec.mgx.seqstorage;
 
 import de.cebitec.mgx.osgiutils.MGXOptions;
-import de.cebitec.mgx.sequence.SeqStoreException;
 import de.cebitec.mgx.testutils.TestInput;
 import java.io.File;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.runner.RunWith;
@@ -22,15 +22,11 @@ import org.ops4j.pax.exam.junit.PaxExam;
 
 /**
  *
- * @author sj
+ * @author sjaenick
  */
 @RunWith(PaxExam.class)
-public class FastaTest {
-
-    public FastaTest() {
-    }
-
-    @Configuration
+public class ByteStreamTokenizerTest {
+        @Configuration
     public static Option[] configuration() {
         return options(
                 junitBundles(),
@@ -45,39 +41,22 @@ public class FastaTest {
                 bundle("reference:file:target/classes")
         );
     }
-
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
-
+    
     @Test
-    public void testreadFasta() throws Exception {
-        System.out.println("readFasta");
-        File f = TestInput.copyTestData(FastaReader.class, "de/cebitec/mgx/seqstorage/test.fas");
-        int seqCnt = 0;
-        try (FastaReader fr = new FastaReader(f.getAbsolutePath(), false)) {
-            while (fr.hasMoreElements()) {
-                fr.nextElement();
-                seqCnt++;
-            }
-        } catch (SeqStoreException ex) {
-            fail(ex.getMessage());
+    public void testNoLineBreak() throws Exception {
+        System.out.println("testNoLineBreak");
+        // file has no line break after last line
+        File f = TestInput.copyTestData(ByteStreamTokenizer.class, "de/cebitec/mgx/seqstorage/incomplete_last_line.fq");
+        byte LINEBREAK = '\n';
+        ByteStreamTokenizer bst = new ByteStreamTokenizer(f.getAbsolutePath(), false, LINEBREAK, 0);
+        int cnt=0;
+        byte[] foo = null;
+        while (bst.hasMoreElements()) {
+            foo = bst.nextElement();
+            assertNotNull(foo);
+            cnt++;
         }
-        f.delete();
-
-        assertEquals(25, seqCnt);
+        assertEquals(4, cnt);
     }
-
+    
 }

@@ -3,6 +3,7 @@ package de.cebitec.mgx.seqstorage;
 import de.cebitec.mgx.osgiutils.MGXOptions;
 import de.cebitec.mgx.sequence.DNAQualitySequenceI;
 import de.cebitec.mgx.sequence.SeqStoreException;
+import de.cebitec.mgx.testutils.TestInput;
 import java.io.*;
 import org.junit.*;
 import static org.junit.Assert.assertArrayEquals;
@@ -36,16 +37,16 @@ public class FastqTest {
                 url("link:classpath:de.cebitec.mgx.SFFReader.link"),
                 url("link:classpath:org.apache.commons.math3.link"),
                 MGXOptions.serviceLoaderBundles(),
+                MGXOptions.testUtils(),
                 systemProperty("org.ops4j.pax.logging.DefaultServiceLog.level").value("WARN"),
                 bundle("reference:file:target/classes")
         );
     }
-    private File f;
 
     @Test
-    public void testReadFastq() {
+    public void testReadFastq() throws Exception {
         System.out.println("readFastq");
-        f = copyTestData();
+        File f = TestInput.copyTestData(FASTQReader.class, "de/cebitec/mgx/seqstorage/sample_1.fq");
         int seqCnt = 0;
         try (FASTQReader fr = new FASTQReader(f.getAbsolutePath(), false)) {
             while (fr.hasMoreElements()) {
@@ -61,9 +62,9 @@ public class FastqTest {
     }
 
     @Test
-    public void testFirstReadInFastq() throws SeqStoreException {
+    public void testFirstReadInFastq() throws Exception {
         System.out.println("FirstReadInFastq");
-        f = copyTestData();
+        File f = TestInput.copyTestData(FASTQReader.class, "de/cebitec/mgx/seqstorage/sample_1.fq");
         try (FASTQReader fr = new FASTQReader(f.getAbsolutePath(), false)) {
             fr.hasMoreElements();
             DNAQualitySequenceI entry = fr.nextElement();
@@ -80,24 +81,45 @@ public class FastqTest {
         f.delete();
     }
 
-    private File copyTestData() {
-        File f = null;
-        try (BufferedInputStream is = new BufferedInputStream(FASTQReader.class.getClassLoader().getResourceAsStream("de/cebitec/mgx/seqstorage/sample_1.fq"))) {
-            f = File.createTempFile("seq", "fq");
-            try (FileOutputStream fos = new FileOutputStream(f)) {
-                byte[] buffer = new byte[1024];
-                int bytesRead = is.read(buffer);
-                while (bytesRead >= 0) {
-                    fos.write(buffer, 0, bytesRead);
-                    bytesRead = is.read(buffer);
-                }
-
+    @Test
+    public void testIncompleteLastLine() throws Exception {
+        System.out.println("testIncompleteLastLine");
+        // file has no line break after last line
+        File f = TestInput.copyTestData(FASTQReader.class, "de/cebitec/mgx/seqstorage/incomplete_last_line.fq");
+        int seqCnt = 0;
+        DNAQualitySequenceI seq = null;
+        try (FASTQReader fr = new FASTQReader(f.getAbsolutePath(), false)) {
+            while (fr.hasMoreElements()) {
+                seq = fr.nextElement();
+                seqCnt++;
             }
-        } catch (Exception ex) {
+        } catch (SeqStoreException ex) {
             fail(ex.getMessage());
+        } finally {
+            f.delete();
         }
-        assertNotNull(f);
-        return f;
+        assertEquals(1, seqCnt);
+        assertNotNull(seq);
+        assertEquals(seq.getSequence().length, seq.getQuality().length);
     }
 
+    @Test
+    public void testBrokenSeq() throws Exception {
+        System.out.println("testBrokenSeq");
+        // file has no line break after last line
+        File f = TestInput.copyTestData(FASTQReader.class, "de/cebitec/mgx/seqstorage/broken_seq.fq");
+        DNAQualitySequenceI seq = null;
+        try (FASTQReader fr = new FASTQReader(f.getAbsolutePath(), false)) {
+            while (fr.hasMoreElements()) {
+                seq = fr.nextElement();
+            }
+        } catch (SeqStoreException ex) {
+            if (ex.getMessage().contains("length differs between sequence and qualit")) {
+                return;
+            }
+        } finally {
+            f.delete();
+        }
+        fail("FASTQReader produced sequence with differing sequence and quality length.");
+    }
 }
