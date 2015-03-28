@@ -60,6 +60,7 @@
         <module>MGX-ExecutorService</module>
         <module>MGX-ParallelSortedProcessing</module>
         <module>Trove-OSGi</module>
+        <module>JFreeChart-OSGi</module>
         <module>MGX-OSGiUtils</module>
         <module>MGX-TestUtils</module>
     </modules>
