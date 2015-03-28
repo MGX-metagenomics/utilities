@@ -138,6 +138,9 @@
         <pluginRepository>
             <id>apache.snapshots</id>
             <url>https://repository.apache.org/content/repositories/snapshots/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
         </pluginRepository>
     </pluginRepositories>
   
