@@ -26,9 +26,52 @@
                     <instructions>
                         <Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
                         <Embed-Transitive>true</Embed-Transitive>
-                        <_exportcontents>org.jfree.*,org.jfree.chart,org.jfree.ui,org.jfree.graphics2d.svg</_exportcontents>
+                        <_exportcontents>
+                            org.jfree,
+                            org.jfree.base,
+                            org.jfree.base.config,
+                            org.jfree.base.modules,
+                            org.jfree.util,
+                            org.jfree.chart,
+                            org.jfree.chart.annotations,
+                            org.jfree.chart.axis,
+                            org.jfree.chart.block,
+                            org.jfree.chart.entity,
+                            org.jfree.chart.event,
+                            org.jfree.chart.imagemap,
+                            org.jfree.chart.needle,
+                            org.jfree.chart.title,
+                            org.jfree.chart.labels,
+                            org.jfree.chart.panel,
+                            org.jfree.chart.plot,
+                            org.jfree.chart.renderer,
+                            org.jfree.chart.renderer.category,
+                            org.jfree.chart.renderer.xy,
+                            org.jfree.chart.urls,
+                            org.jfree.chart.util,
+                            org.jfree.date,
+                            org.jfree.data,
+                            org.jfree.data.category,
+                            org.jfree.data.contour,
+                            org.jfree.data.function,
+                            org.jfree.data.gantt,
+                            org.jfree.data.general,
+                            org.jfree.data.statistics,
+                            org.jfree.data.time,
+                            org.jfree.data.xy,
+                            org.jfree.text,
+                            org.jfree.ui,
+                            org.jfree.ui.about,
+                            org.jfree.renderer,
+                            org.jfree.graphics2d.svg
+                        </_exportcontents>
                         <Export-Package />
                         <Private-Package/>
+                        <Import-Package>
+                            javax.imageio,
+                            javax.swing,
+                            javax.swing.*,
+                            javax.servlet;resolution:=optional</Import-Package>
                     </instructions>
                 </configuration>
                 <executions>
