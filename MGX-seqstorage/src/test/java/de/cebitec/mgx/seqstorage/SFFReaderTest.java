@@ -30,11 +30,11 @@ public class SFFReaderTest {
     public static Option[] configuration() {
         return options(
                 junitBundles(),
-                mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-isequences"),
-                mavenBundle().groupId("de.cebitec.mgx").artifactId("Trove-OSGi"),
-                mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-BufferedRandomAccessFile"),
-                mavenBundle().groupId("de.cebitec.mgx").artifactId("SFFReader"),
-                mavenBundle().groupId("org.apache.commons").artifactId("commons-math3"),
+                mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-isequences").versionAsInProject(),
+                mavenBundle().groupId("de.cebitec.mgx").artifactId("Trove-OSGi").versionAsInProject(),
+                mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-BufferedRandomAccessFile").versionAsInProject(),
+                mavenBundle().groupId("de.cebitec.mgx").artifactId("SFFReader").versionAsInProject(),
+                mavenBundle().groupId("org.apache.commons").artifactId("commons-math3").versionAsInProject(),
                 MGXOptions.serviceLoaderBundles(),
                 MGXOptions.testUtils(),
                 systemProperty("org.ops4j.pax.logging.DefaultServiceLog.level").value("WARN"),
