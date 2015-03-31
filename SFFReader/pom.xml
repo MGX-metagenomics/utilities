@@ -115,18 +115,6 @@
                 </executions>
             </plugin>
             
-            <plugin>
-                <groupId>org.apache.ws.commons.axiom</groupId>
-                <artifactId>paxexam-maven-plugin</artifactId>
-                <version>1.2.15-SNAPSHOT</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>generate-link-files</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
 

@@ -24,7 +24,7 @@
     
     <build>
         <plugins>
-            <plugin>
+            <!-- <plugin>
                 <groupId>org.apache.ws.commons.axiom</groupId>
                 <artifactId>paxexam-maven-plugin</artifactId>
                 <executions>
@@ -34,7 +34,7 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin> -->
             
             <plugin>
                 <groupId>org.apache.felix</groupId>
@@ -217,7 +217,6 @@
             <artifactId>MGX-TestUtils</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>test</scope>
-            <type>jar</type>
         </dependency>
     </dependencies>
 </project>

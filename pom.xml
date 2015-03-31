@@ -114,37 +114,10 @@
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>2.18.1</version>
                 </plugin>
-                <plugin>
-                    <groupId>org.apache.ws.commons.axiom</groupId>
-                    <artifactId>paxexam-maven-plugin</artifactId>
-                    <version>1.2.15-SNAPSHOT</version>
-                    <executions>
-                        <execution>
-                            <goals>
-                                <goal>generate-link-files</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
             </plugins>
         </pluginManagement>
     </build>
     
-    <dependencyManagement>
-        <dependencies>
-        </dependencies>
-    </dependencyManagement>
-    
-    <pluginRepositories>
-        <pluginRepository>
-            <id>apache.snapshots</id>
-            <url>https://repository.apache.org/content/repositories/snapshots/</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </pluginRepository>
-    </pluginRepositories>
-  
     <distributionManagement>
         <repository>
             <id>artifactory</id>
