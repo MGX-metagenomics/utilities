@@ -6,7 +6,6 @@
 package de.cebitec.mgx.osgiutils;
 
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
-import static org.ops4j.pax.exam.CoreOptions.url;
 import org.ops4j.pax.exam.options.CompositeOption;
 import org.ops4j.pax.exam.options.DefaultCompositeOption;
 
@@ -64,10 +63,9 @@ public class MGXOptions {
 
     public static CompositeOption serviceLoaderBundles() {
         return new DefaultCompositeOption(
-                mavenBundle().groupId("org.apache.aries.spifly").artifactId("org.apache.aries.spifly.dynamic.bundle"),
-                //url("link:classpath:org.apache.aries.spifly.dynamic.bundle.link"),
-                url("link:classpath:org.apache.aries.util.link"),
-                url("link:classpath:org.objectweb.asm.all.debug.link"));
+                mavenBundle().groupId("org.apache.aries.spifly").artifactId("org.apache.aries.spifly.dynamic.bundle").version("1.0.1"),
+                mavenBundle().groupId("org.apache.aries").artifactId("org.apache.aries.util").version("1.0.0"),
+                mavenBundle().groupId("org.ow2.asm").artifactId("asm-debug-all").version("5.0.3"));
     }
 
 }

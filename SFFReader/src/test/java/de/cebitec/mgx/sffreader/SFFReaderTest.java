@@ -19,11 +19,9 @@ import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Configuration;
 import static org.ops4j.pax.exam.CoreOptions.bundle;
 import static org.ops4j.pax.exam.CoreOptions.junitBundles;
-import static org.ops4j.pax.exam.CoreOptions.maven;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
 import static org.ops4j.pax.exam.CoreOptions.systemProperty;
-import static org.ops4j.pax.exam.CoreOptions.url;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
 
@@ -42,8 +40,8 @@ public class SFFReaderTest {
     public static Option[] configuration() {
         return options(
                 junitBundles(),
-                url("link:classpath:de.cebitec.mgx.MGX-BufferedRandomAccessFile.link"),
-                url("link:classpath:de.cebitec.mgx.Trove-OSGi.link"),
+                mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-BufferedRandomAccessFile"),
+                mavenBundle().groupId("de.cebitec.mgx").artifactId("Trove-OSGi"),
                 systemProperty("org.ops4j.pax.logging.DefaultServiceLog.level").value("WARN"),
                 bundle("reference:file:target/classes")
         );
