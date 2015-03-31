@@ -9,7 +9,7 @@
 
     <groupId>de.cebitec.mgx</groupId>
     <artifactId>SFFReader</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
     <packaging>bundle</packaging>
 
     <name>SFFReader OSGi Bundle</name>
@@ -19,12 +19,6 @@
     </properties>
 
     <dependencies>
-        <!-- <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.core</artifactId>
-            <version>4.3.0</version>
-            <scope>provided</scope>
-        </dependency> -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -34,7 +28,12 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>MGX-BufferedRandomAccessFile</artifactId>
-            <version>${project.version}</version>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>Trove-OSGi</artifactId>
+            <version>1.0</version>
         </dependency>
         
         <dependency>
@@ -85,11 +84,7 @@
             <version>1.1.2</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>Trove-OSGi</artifactId>
-            <version>${project.version}</version>
-        </dependency>
+
     </dependencies>
     
     <build>
