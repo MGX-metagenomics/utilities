@@ -9,6 +9,7 @@
     
     <artifactId>Trove-OSGi</artifactId>
     <packaging>bundle</packaging>
+    <version>1.0</version>
 
     <name>Trove-OSGi</name>
     
