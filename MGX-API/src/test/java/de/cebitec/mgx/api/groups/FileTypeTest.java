@@ -32,7 +32,7 @@ public class FileTypeTest {
                 MGXOptions.serviceLoaderBundles(),
                 MGXOptions.gpmsBundles(),
                 MGXOptions.seqIOBundles(),
-                mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-parallelPropChange"),
+                mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-parallelPropChange").versionAsInProject(),
                 systemProperty("org.ops4j.pax.logging.DefaultServiceLog.level").value("WARN"),
                 bundle("reference:file:target/classes")
         );
