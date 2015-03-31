@@ -15,7 +15,6 @@ import static org.ops4j.pax.exam.CoreOptions.junitBundles;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
 import static org.ops4j.pax.exam.CoreOptions.systemProperty;
-import static org.ops4j.pax.exam.CoreOptions.url;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
 
@@ -33,7 +32,7 @@ public class FileTypeTest {
                 MGXOptions.serviceLoaderBundles(),
                 MGXOptions.gpmsBundles(),
                 MGXOptions.seqIOBundles(),
-                url("link:classpath:de.cebitec.mgx.MGX-parallelPropChange.link"),
+                mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-parallelPropChange"),
                 systemProperty("org.ops4j.pax.logging.DefaultServiceLog.level").value("WARN"),
                 bundle("reference:file:target/classes")
         );
