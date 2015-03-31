@@ -11,12 +11,38 @@ import de.cebitec.gpms.rest.RESTProjectI;
 import java.util.Iterator;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.runner.RunWith;
+import org.ops4j.pax.exam.Configuration;
+import static org.ops4j.pax.exam.CoreOptions.bundle;
+import static org.ops4j.pax.exam.CoreOptions.junitBundles;
+import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
+import static org.ops4j.pax.exam.CoreOptions.options;
+import static org.ops4j.pax.exam.CoreOptions.systemProperty;
+import org.ops4j.pax.exam.Option;
+import org.ops4j.pax.exam.junit.PaxExam;
 
 /**
  *
  * @author sj
  */
+@RunWith(PaxExam.class)
 public class GPMSTest {
+
+    @Configuration
+    public static Option[] configuration() {
+        return options(
+                junitBundles(),
+                mavenBundle().groupId("com.sun.jersey").artifactId("jersey-client").version("1.18.2"),
+                mavenBundle().groupId("com.sun.jersey").artifactId("jersey-core").version("1.18.2"),
+                mavenBundle().groupId("com.google.protobuf").artifactId("protobuf-java").version("2.5.0"),
+                mavenBundle().groupId("de.cebitec.gpms").artifactId("GPMS-DTO"),
+                mavenBundle().groupId("de.cebitec.gpms").artifactId("GPMS-core-api"),
+                mavenBundle().groupId("de.cebitec.gpms").artifactId("GPMS-rest-api"),
+                mavenBundle().groupId("de.cebitec.mgx").artifactId("ProtoBuf-Serializer").version("1.0"),
+                systemProperty("org.ops4j.pax.logging.DefaultServiceLog.level").value("WARN"),
+                bundle("reference:file:target/classes")
+        );
+    }
 
     @Test
     public void testGetProjectClasses() {
