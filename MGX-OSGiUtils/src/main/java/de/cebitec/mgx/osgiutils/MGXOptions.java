@@ -24,8 +24,8 @@ public class MGXOptions {
                 gpmsBundles(),
                 seqIOBundles(),
                 serviceLoaderBundles(),
-                mavenBundle().groupId("de.cebitec.mgx").artifactId("Trove-OSGi"),
-                mavenBundle().groupId("de.cebitec.mgx").artifactId("BioJava-OSGi"),
+                mavenBundle().groupId("de.cebitec.mgx").artifactId("Trove-OSGi").version("1.0"),
+                mavenBundle().groupId("de.cebitec.mgx").artifactId("BioJava-OSGi").version("1.0"),
                 mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-DTO")
         );
     }
@@ -46,7 +46,7 @@ public class MGXOptions {
                 mavenBundle().groupId("de.cebitec.gpms").artifactId("GPMS-core-api"),
                 mavenBundle().groupId("de.cebitec.gpms").artifactId("GPMS-rest-api"),
                 mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-restgpms"),
-                mavenBundle().groupId("de.cebitec.mgx").artifactId("ProtoBuf-Serializer")
+                mavenBundle().groupId("de.cebitec.mgx").artifactId("ProtoBuf-Serializer").version("1.0")
         );
     }
 
@@ -56,7 +56,7 @@ public class MGXOptions {
                 mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-isequences").version("1.0"),
                 mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-seqstorage").version("1.0-SNAPSHOT"),
                 mavenBundle().groupId("de.cebitec.mgx").artifactId("SFFReader").version("1.0"),
-                mavenBundle().groupId("de.cebitec.mgx").artifactId("Trove-OSGi"),
+                mavenBundle().groupId("de.cebitec.mgx").artifactId("Trove-OSGi").version("1.0"),
                 mavenBundle().groupId("org.apache.commons").artifactId("commons-math3")
         );
     }
