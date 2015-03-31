@@ -31,10 +31,10 @@ public class ByteStreamTokenizerTest {
     public static Option[] configuration() {
         return options(
                 junitBundles(),
-                mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-isequences"),
-                mavenBundle().groupId("de.cebitec.mgx").artifactId("SFFReader"),
-                mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-BufferedRandomAccessFile"),
-                mavenBundle().groupId("de.cebitec.mgx").artifactId("Trove-OSGi"),
+                mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-isequences").version("1.0-SNAPSHOT"),
+                mavenBundle().groupId("de.cebitec.mgx").artifactId("SFFReader").version("1.0-SNAPSHOT"),
+                mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-BufferedRandomAccessFile").version("1.0-SNAPSHOT"),
+                mavenBundle().groupId("de.cebitec.mgx").artifactId("Trove-OSGi").version("1.0-SNAPSHOT"),
                 mavenBundle().groupId("org.apache.commons").artifactId("commons-math3"),
                 MGXOptions.serviceLoaderBundles(),
                 MGXOptions.testUtils(),
