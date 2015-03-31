@@ -52,10 +52,10 @@ public class MGXOptions {
 
     public static CompositeOption seqIOBundles() {
         return new DefaultCompositeOption(
-                mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-BufferedRandomAccessFile"),
-                mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-isequences"),
+                mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-BufferedRandomAccessFile").version("1.0-SNAPSHOT"),
+                mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-isequences").version("1.0-SNAPSHOT"),
                 mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-seqstorage").version("1.0-SNAPSHOT"),
-                mavenBundle().groupId("de.cebitec.mgx").artifactId("SFFReader"),
+                mavenBundle().groupId("de.cebitec.mgx").artifactId("SFFReader").version("1.0-SNAPSHOT"),
                 mavenBundle().groupId("de.cebitec.mgx").artifactId("Trove-OSGi"),
                 mavenBundle().groupId("org.apache.commons").artifactId("commons-math3")
         );
