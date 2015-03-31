@@ -10,6 +10,7 @@
     
     <artifactId>ProtoBuf-Serializer</artifactId>
     <packaging>bundle</packaging>
+    <version>1.0</version>
 
     <name>ProtoBuf-Serializer</name>
     
