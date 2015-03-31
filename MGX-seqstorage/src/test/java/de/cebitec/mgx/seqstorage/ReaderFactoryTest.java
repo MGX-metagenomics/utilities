@@ -5,16 +5,12 @@
  */
 package de.cebitec.mgx.seqstorage;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import static org.junit.Assert.*;
 import org.ops4j.pax.exam.Configuration;
 import static org.ops4j.pax.exam.CoreOptions.bundle;
 import static org.ops4j.pax.exam.CoreOptions.junitBundles;
+import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
 import static org.ops4j.pax.exam.CoreOptions.systemProperty;
-import static org.ops4j.pax.exam.CoreOptions.url;
 import org.ops4j.pax.exam.Option;
 
 /**
@@ -28,9 +24,9 @@ public class ReaderFactoryTest {
     public static Option[] configuration() {
         return options(
                 junitBundles(),
-                url("link:classpath:de.cebitec.mgx.MGX-isequences.link"),
-                url("link:classpath:de.cebitec.mgx.MGX-BufferedRandomAccessFile.link"),
-                url("link:classpath:de.cebitec.mgx.SFFReader.link"),
+                mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-isequences"),
+                mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-BufferedRandomAccessFile"),
+                mavenBundle().groupId("de.cebitec.mgx").artifactId("SFFReader"),
                 systemProperty("org.ops4j.pax.logging.DefaultServiceLog.level").value("WARN"),
                 bundle("reference:file:target/classes")
         );
