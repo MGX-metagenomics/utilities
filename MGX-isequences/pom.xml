@@ -11,7 +11,7 @@
     
     <groupId>de.cebitec.mgx</groupId>
     <artifactId>MGX-isequences</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
     <name>MGX-isequences</name>
     <packaging>bundle</packaging>
     
@@ -117,12 +117,6 @@
             <version>4.12</version>
             <scope>test</scope>
         </dependency>
-        <!-- <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.core</artifactId>
-            <version>4.3.1</version>
-            <scope>provided</scope>
-        </dependency> -->
     </dependencies>
 
 </project>
