@@ -31,11 +31,11 @@ public class ByteStreamTokenizerTest {
     public static Option[] configuration() {
         return options(
                 junitBundles(),
-                mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-isequences").version("1.0-SNAPSHOT"),
-                mavenBundle().groupId("de.cebitec.mgx").artifactId("SFFReader").version("1.0-SNAPSHOT"),
-                mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-BufferedRandomAccessFile").version("1.0-SNAPSHOT"),
-                mavenBundle().groupId("de.cebitec.mgx").artifactId("Trove-OSGi").version("1.0-SNAPSHOT"),
-                mavenBundle().groupId("org.apache.commons").artifactId("commons-math3"),
+                mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-isequences").versionAsInProject(),
+                mavenBundle().groupId("de.cebitec.mgx").artifactId("SFFReader").versionAsInProject(),
+                mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-BufferedRandomAccessFile").versionAsInProject(),
+                mavenBundle().groupId("de.cebitec.mgx").artifactId("Trove-OSGi").versionAsInProject(),
+                mavenBundle().groupId("org.apache.commons").artifactId("commons-math3").versionAsInProject(),
                 MGXOptions.serviceLoaderBundles(),
                 MGXOptions.testUtils(),
                 systemProperty("org.ops4j.pax.logging.DefaultServiceLog.level").value("WARN"),

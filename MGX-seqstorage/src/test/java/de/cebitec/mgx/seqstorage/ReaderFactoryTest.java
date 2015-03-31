@@ -24,9 +24,9 @@ public class ReaderFactoryTest {
     public static Option[] configuration() {
         return options(
                 junitBundles(),
-                mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-isequences"),
-                mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-BufferedRandomAccessFile"),
-                mavenBundle().groupId("de.cebitec.mgx").artifactId("SFFReader"),
+                mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-isequences").versionAsInProject(),
+                mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-BufferedRandomAccessFile").versionAsInProject(),
+                mavenBundle().groupId("de.cebitec.mgx").artifactId("SFFReader").versionAsInProject(),
                 systemProperty("org.ops4j.pax.logging.DefaultServiceLog.level").value("WARN"),
                 bundle("reference:file:target/classes")
         );
