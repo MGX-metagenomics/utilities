@@ -54,7 +54,7 @@
         <module>SFFReader</module>
         <module>MGX-BufferedRandomAccessFile</module>
         <module>MGX-isequences</module>
-        <module>MGX-seqholder</module>
+        <!-- <module>MGX-seqholder</module> -->
         <module>MGX-seqstorage</module>
         <module>MGX-QualityControl</module>
         <module>MGX-ExecutorService</module>
