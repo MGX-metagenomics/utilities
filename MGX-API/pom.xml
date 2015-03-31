@@ -29,7 +29,7 @@
         <dependency>
             <groupId>de.cebitec.mgx</groupId>
             <artifactId>MGX-parallelPropChange</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -49,7 +49,7 @@
         <dependency>
             <groupId>de.cebitec.mgx</groupId>
             <artifactId>MGX-isequences</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>de.cebitec.gpms</groupId>
@@ -120,19 +120,33 @@
         <dependency>
             <groupId>de.cebitec.mgx</groupId>
             <artifactId>MGX-BufferedRandomAccessFile</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>de.cebitec.mgx</groupId>
             <artifactId>MGX-seqstorage</artifactId>
-            <version>${project.version}</version>
+            <version>1.0-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
 
     <build>
         <plugins>
+            <!-- required for PAX exam versionAsInProject()-->
+            <plugin>
+                <groupId>org.apache.servicemix.tooling</groupId>
+                <artifactId>depends-maven-plugin</artifactId>
+                <version>1.2</version>
+                <executions>
+                    <execution>
+                        <id>generate-depends-file</id>
+                        <goals>
+                            <goal>generate-depends-file</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
