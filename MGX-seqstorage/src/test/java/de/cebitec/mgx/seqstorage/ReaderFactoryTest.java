@@ -32,8 +32,6 @@ public class ReaderFactoryTest {
         );
     }
 
-    public ReaderFactoryTest() {
-    }
 
 //    @Test
 //    public void testGetSFFReader() throws Exception {
@@ -56,24 +54,5 @@ public class ReaderFactoryTest {
 //        }
 //        assertEquals(1, numReads);
 //        sffFile.delete();
-//    }
-//    private File copyTestData() {
-//        File f = null;
-//        try (BufferedInputStream is = new BufferedInputStream(getClass().getClassLoader().getResourceAsStream("de/cebitec/mgx/seqstorage/oneread.sff"))) {
-//            f = File.createTempFile("seq", "fas");
-//            try (FileOutputStream fos = new FileOutputStream(f)) {
-//                byte[] buffer = new byte[1024];
-//                int bytesRead = is.read(buffer);
-//                while (bytesRead >= 0) {
-//                    fos.write(buffer, 0, bytesRead);
-//                    bytesRead = is.read(buffer);
-//                }
-//
-//            }
-//        } catch (Exception ex) {
-//            fail(ex.getMessage());
-//        }
-//        assertNotNull(f);
-//        return f;
 //    }
 }
