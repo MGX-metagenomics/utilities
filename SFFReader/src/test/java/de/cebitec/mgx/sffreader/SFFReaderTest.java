@@ -40,8 +40,8 @@ public class SFFReaderTest {
     public static Option[] configuration() {
         return options(
                 junitBundles(),
-                mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-BufferedRandomAccessFile"),
-                mavenBundle().groupId("de.cebitec.mgx").artifactId("Trove-OSGi"),
+                mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-BufferedRandomAccessFile").versionAsInProject(),
+                mavenBundle().groupId("de.cebitec.mgx").artifactId("Trove-OSGi").versionAsInProject(),
                 systemProperty("org.ops4j.pax.logging.DefaultServiceLog.level").value("WARN"),
                 bundle("reference:file:target/classes")
         );
