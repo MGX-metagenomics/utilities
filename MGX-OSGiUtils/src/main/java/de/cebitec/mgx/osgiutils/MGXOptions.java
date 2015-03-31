@@ -42,9 +42,9 @@ public class MGXOptions {
                 mavenBundle().groupId("com.sun.jersey").artifactId("jersey-client").version("1.18.2"),
                 mavenBundle().groupId("com.sun.jersey").artifactId("jersey-core").version("1.18.2"),
                 mavenBundle().groupId("com.google.protobuf").artifactId("protobuf-java").version("2.5.0"),
-                mavenBundle().groupId("de.cebitec.gpms").artifactId("GPMS-DTO"),
-                mavenBundle().groupId("de.cebitec.gpms").artifactId("GPMS-core-api"),
-                mavenBundle().groupId("de.cebitec.gpms").artifactId("GPMS-rest-api"),
+                mavenBundle().groupId("de.cebitec.gpms").artifactId("GPMS-DTO").version("1.1"),
+                mavenBundle().groupId("de.cebitec.gpms").artifactId("GPMS-core-api").version("1.1"),
+                mavenBundle().groupId("de.cebitec.gpms").artifactId("GPMS-rest-api").version("1.1"),
                 mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-restgpms"),
                 mavenBundle().groupId("de.cebitec.mgx").artifactId("ProtoBuf-Serializer").version("1.0")
         );
