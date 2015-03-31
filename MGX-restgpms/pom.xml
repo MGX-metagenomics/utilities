@@ -70,17 +70,17 @@
         <dependency>
             <groupId>de.cebitec.gpms</groupId>
             <artifactId>GPMS-rest-api</artifactId>
-            <version>1.0-RELEASE</version>
+            <version>1.1</version>
         </dependency>
         <dependency>
             <groupId>de.cebitec.gpms</groupId>
             <artifactId>GPMS-core-api</artifactId>
-            <version>1.0-RELEASE</version>
+            <version>1.1</version>
         </dependency>
         <dependency>
             <groupId>de.cebitec.gpms</groupId>
             <artifactId>GPMS-DTO</artifactId>
-            <version>1.0-RELEASE</version>
+            <version>1.1</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
