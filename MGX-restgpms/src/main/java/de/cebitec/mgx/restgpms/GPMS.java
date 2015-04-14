@@ -56,6 +56,10 @@ public class GPMS implements GPMSClientI {
         cc = new DefaultClientConfig();
         cc.getClasses().add(de.cebitec.mgx.protobuf.serializer.PBReader.class);
         cc.getClasses().add(de.cebitec.mgx.protobuf.serializer.PBWriter.class);
+        cc.getProperties().put(ClientConfig.PROPERTY_THREADPOOL_SIZE, 10);
+        cc.getProperties().put(ClientConfig.PROPERTY_CONNECT_TIMEOUT, 5000); // in ms
+        cc.getProperties().put(ClientConfig.PROPERTY_READ_TIMEOUT, 5000);
+
         client = Client.create(cc);
     }
 
