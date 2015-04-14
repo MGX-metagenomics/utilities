@@ -38,6 +38,8 @@ public class RESTMaster implements RESTMasterI {
 
         cc = new DefaultClientConfig();
         cc.getProperties().put(ClientConfig.PROPERTY_THREADPOOL_SIZE, 10);
+        cc.getProperties().put(ClientConfig.PROPERTY_CONNECT_TIMEOUT, 5000); // in ms
+        cc.getProperties().put(ClientConfig.PROPERTY_READ_TIMEOUT, 5000);
 
         if (!verifySSL) {
 
@@ -75,7 +77,7 @@ public class RESTMaster implements RESTMasterI {
 
             cc.getProperties().put(HTTPSProperties.PROPERTY_HTTPS_PROPERTIES, new HTTPSProperties(null, ctx));
         }
-        
+
         client = Client.create(cc);
         client.addFilter(new HTTPBasicAuthFilter(user.getLogin(), user.getPassword()));
     }
