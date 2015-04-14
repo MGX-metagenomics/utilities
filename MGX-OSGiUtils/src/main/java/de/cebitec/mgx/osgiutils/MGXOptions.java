@@ -24,6 +24,7 @@ public class MGXOptions {
                 gpmsBundles(),
                 seqIOBundles(),
                 serviceLoaderBundles(),
+                mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-parallelPropChange").version("1.0"),
                 mavenBundle().groupId("de.cebitec.mgx").artifactId("Trove-OSGi").version("1.0"),
                 mavenBundle().groupId("de.cebitec.mgx").artifactId("BioJava-OSGi").version("1.0"),
                 mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-DTO")
