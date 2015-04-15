@@ -7,6 +7,7 @@ package de.cebitec.mgx.api.access;
 
 import de.cebitec.mgx.api.access.datatransfer.UploadBaseI;
 import de.cebitec.mgx.api.exception.MGXException;
+import de.cebitec.mgx.api.misc.TaskI;
 import de.cebitec.mgx.api.model.MGXReferenceI;
 import de.cebitec.mgx.api.model.RegionI;
 import java.io.File;
@@ -26,5 +27,5 @@ public interface ReferenceAccessI extends AccessBaseI<MGXReferenceI> {
     
     public UploadBaseI createUploader(File localFile) throws MGXException;
 
-    public long installGlobalReference(long id) throws MGXException;
+    public TaskI<MGXReferenceI> installGlobalReference(MGXReferenceI obj) throws MGXException;
 }
