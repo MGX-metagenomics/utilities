@@ -85,7 +85,11 @@ public class CSFWriter implements SeqWriterI<DNASequenceI> {
                 PosixFilePermission.OWNER_WRITE,
                 PosixFilePermission.GROUP_READ,
                 PosixFilePermission.GROUP_WRITE);
-        Files.setPosixFilePermissions(Paths.get(fname), perms);
-        Files.setPosixFilePermissions(Paths.get(fname + ".csf"), perms);
+        try {
+            Files.setPosixFilePermissions(Paths.get(fname), perms);
+            Files.setPosixFilePermissions(Paths.get(fname + ".csf"), perms);
+        } catch (UnsupportedOperationException uoex) {
+            // posix permissions not support on file system
+        }
     }
 }

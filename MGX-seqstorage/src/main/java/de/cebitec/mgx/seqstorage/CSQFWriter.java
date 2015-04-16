@@ -77,8 +77,12 @@ public class CSQFWriter implements SeqWriterI<DNAQualitySequenceI>{
                 PosixFilePermission.OWNER_WRITE,
                 PosixFilePermission.GROUP_READ,
                 PosixFilePermission.GROUP_WRITE);
+        try {
         Files.setPosixFilePermissions(Paths.get(fname), perms);
         Files.setPosixFilePermissions(Paths.get(fname + ".csq"), perms);
+        } catch (UnsupportedOperationException uoex) {
+            // not supported by underlying file system
+        }
 
     }
 }
