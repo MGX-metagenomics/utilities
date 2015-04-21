@@ -28,7 +28,7 @@ http://www.apache.org/licenses/LICENSE-2.0
    
   <root level="WARN">
     <appender-ref ref="STDOUT"/>
-    <appender-ref ref="TEST_LOG"/>
+    <!-- <appender-ref ref="TEST_LOG"/> -->
   </root>
   <logger name="org.ops4j.pax.exam" level="INFO"/>
    
