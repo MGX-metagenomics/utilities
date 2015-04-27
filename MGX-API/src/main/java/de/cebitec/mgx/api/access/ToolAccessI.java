@@ -27,4 +27,6 @@ public interface ToolAccessI extends AccessBaseI<ToolI> {
     public Collection<JobParameterI> getAvailableParameters(long toolId, boolean isGlobalTool) throws MGXException;
 
     public Collection<JobParameterI> getAvailableParameters(ToolI tool) throws MGXException;
+
+    public String getXMLDefinition(ToolI tool) throws MGXException;
 }
