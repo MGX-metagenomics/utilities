@@ -41,9 +41,9 @@ public abstract class ToolI extends Identifiable<ToolI> {
 
     public abstract ToolI setVersion(Float version);
 
-    public abstract String getXMLFile();
+    public abstract String getXML();
 
-    public abstract ToolI setXMLFile(String xml_file);
+    public abstract ToolI setXML(String xmlData);
 
     @Override
     public abstract int hashCode();
