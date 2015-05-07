@@ -213,4 +213,9 @@ public class GPMS implements GPMSClientI {
     public String getServerName() {
         return servername;
     }
+
+    @Override
+    public RESTUserI getUser() {
+        return user;
+    }
 }
