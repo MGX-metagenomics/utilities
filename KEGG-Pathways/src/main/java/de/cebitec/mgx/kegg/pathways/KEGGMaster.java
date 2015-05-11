@@ -38,7 +38,7 @@ public class KEGGMaster implements AutoCloseable {
     private final long timeout = 1000L * 60L * 60L * 24L * 7L * 12L; // 12 weeks
     private PathwayAccess pwacc = null;
     private ECNumberAccess ecacc = null;
-    private final Connection conn;
+    //private Connection conn;
     //
     private final static Map<String, KEGGMaster> instances = new HashMap<>();
 
@@ -71,7 +71,7 @@ public class KEGGMaster implements AutoCloseable {
         }
         try {
             Class.forName("org.h2.Driver");
-            conn = DriverManager.getConnection("jdbc:h2:" + cacheDir + File.separator + "kegg" + ";DEFAULT_TABLE_ENGINE=org.h2.mvstore.db.MVTableEngine");
+            //conn = DriverManager.getConnection("jdbc:h2:" + cacheDir + File.separator + "kegg" + ";DEFAULT_TABLE_ENGINE=org.h2.mvstore.db.MVTableEngine");
             checkDBH2();
         } catch (ClassNotFoundException | SQLException ex) {
             throw new KEGGException(ex);
@@ -125,45 +125,46 @@ public class KEGGMaster implements AutoCloseable {
         return timeout;
     }
 
-    public final Connection getConnection() {
-        return conn;
+    public final Connection getConnection() throws SQLException {
+        return DriverManager.getConnection("jdbc:h2:" + cacheDir + File.separator + "kegg" + ";DEFAULT_TABLE_ENGINE=org.h2.mvstore.db.MVTableEngine");
     }
 
     private void checkDBH2() throws SQLException {
-        try {
-            DatabaseMetaData dbm = getConnection().getMetaData();
-            ResultSet rs = dbm.getTables(null, null, "pathway", null);
-            if (rs.next()) {
-                // Table exists
-            } else {
-                // Table does not exist
-                String sql = "CREATE TABLE IF NOT EXISTS pathway ("
-                        + "   mapnum VARCHAR(10), "
-                        + "   name VARCHAR(512), "
-                        + "   UNIQUE(mapnum))";
-                conn.createStatement().execute(sql);
+        try (Connection conn = getConnection()) {
+            DatabaseMetaData dbm = conn.getMetaData();
+            try (ResultSet rs = dbm.getTables(null, null, "pathway", null)) {
+                if (rs.next()) {
+                    // Table exists
+                } else {
+                    // Table does not exist
+                    String sql = "CREATE TABLE IF NOT EXISTS pathway ("
+                            + "   mapnum VARCHAR(10), "
+                            + "   name VARCHAR(512), "
+                            + "   UNIQUE(mapnum))";
+                    conn.createStatement().execute(sql);
 
 //                sql = "CREATE TABLE IF NOT EXISTS ecnumber ("
 //                        + "   number TEXT, "
 //                        + "   UNIQUE(number))";
 //                conn.createStatement().execute(sql);
-                sql = "CREATE TABLE IF NOT EXISTS coords ("
-                        + "   pw_num VARCHAR(10), "
-                        + "   ec_num VARCHAR(20), "
-                        + "   x INTEGER, "
-                        + "   y INTEGER, "
-                        + "   width INTEGER, "
-                        + "   height INTEGER, "
-                        + "   FOREIGN KEY(pw_num) REFERENCES pathway(mapnum), "
-                        //                       + "   FOREIGN KEY(ec_num) REFERENCES ecnumber(number),"
-                        + "   UNIQUE(pw_num, ec_num, x, y) "
-                        + ")";
-                conn.createStatement().execute(sql);
+                    sql = "CREATE TABLE IF NOT EXISTS coords ("
+                            + "   pw_num VARCHAR(10), "
+                            + "   ec_num VARCHAR(20), "
+                            + "   x INTEGER, "
+                            + "   y INTEGER, "
+                            + "   width INTEGER, "
+                            + "   height INTEGER, "
+                            + "   FOREIGN KEY(pw_num) REFERENCES pathway(mapnum), "
+                            //                       + "   FOREIGN KEY(ec_num) REFERENCES ecnumber(number),"
+                            + "   UNIQUE(pw_num, ec_num, x, y) "
+                            + ")";
+                    conn.createStatement().execute(sql);
 
-                sql = "CREATE TABLE IF NOT EXISTS timestamps ("
-                        + "type VARCHAR(30), "
-                        + "time DATETIME)";
-                conn.createStatement().execute(sql);
+                    sql = "CREATE TABLE IF NOT EXISTS timestamps ("
+                            + "type VARCHAR(30), "
+                            + "time DATETIME)";
+                    conn.createStatement().execute(sql);
+                }
             }
         } catch (SQLException ex) {
             Logger.getLogger(KEGGMaster.class.getName()).log(Level.SEVERE, null, ex);
@@ -171,7 +172,7 @@ public class KEGGMaster implements AutoCloseable {
     }
 
     public boolean isValid(final String type) {
-        try {
+        try (Connection conn = getConnection()) {
             try (PreparedStatement stmt = conn.prepareStatement("SELECT time FROM timestamps WHERE type=?")) {
                 stmt.setString(1, type);
                 try (ResultSet rs = stmt.executeQuery()) {
@@ -192,7 +193,7 @@ public class KEGGMaster implements AutoCloseable {
     }
 
     public void setValid(final String type) {
-        try {
+        try (Connection conn = getConnection()) {
             try (PreparedStatement stmt = conn.prepareStatement("UPDATE timestamps SET time=CURRENT_DATE() WHERE type=?")) {
                 stmt.setString(1, type);
                 stmt.execute();
@@ -210,9 +211,6 @@ public class KEGGMaster implements AutoCloseable {
     }
 
     @Override
-    public void close() throws SQLException {
-        if (conn != null) {
-            conn.close();
-        }
+    public void close() throws Exception {
     }
 }

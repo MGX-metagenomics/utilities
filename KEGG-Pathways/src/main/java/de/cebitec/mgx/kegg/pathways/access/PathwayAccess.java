@@ -60,12 +60,13 @@ public class PathwayAccess extends AccessBase {
         assert isValid(PATHWAYS);
 
         final Set<PathwayI> all = new HashSet<>();
-        Connection conn = getMaster().getConnection();
-        try (PreparedStatement stmt = conn.prepareStatement(FETCHALL)) {
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    Pathway pathway = new Pathway(rs.getString(1), rs.getString(2));
-                    all.add(pathway);
+        try (Connection conn = getMaster().getConnection()) {
+            try (PreparedStatement stmt = conn.prepareStatement(FETCHALL)) {
+                try (ResultSet rs = stmt.executeQuery()) {
+                    while (rs.next()) {
+                        Pathway pathway = new Pathway(rs.getString(1), rs.getString(2));
+                        all.add(pathway);
+                    }
                 }
             }
         } catch (SQLException ex) {
@@ -79,8 +80,12 @@ public class PathwayAccess extends AccessBase {
         try (InputStream in = get(getRESTResource(), "list/pathway")) {
             try (BufferedReader bin = new BufferedReader(new InputStreamReader(in))) {
                 Connection conn = getMaster().getConnection();
-                conn.prepareStatement("DELETE FROM coords").execute();
-                conn.prepareStatement("DELETE FROM pathway").execute();
+                try (PreparedStatement stmt = conn.prepareStatement("DELETE FROM coords")) {
+                    stmt.execute();
+                }
+                try (PreparedStatement stmt = conn.prepareStatement("DELETE FROM pathway")) {
+                    stmt.execute();
+                }
                 //conn.prepareStatement("DELETE FROM ecnumber").execute();
 
                 // save incoming data to a map first to avoid duplicate entries
@@ -221,19 +226,20 @@ public class PathwayAccess extends AccessBase {
 
         // fetch from db
         final Map<ECNumberI, Set<Rectangle>> ret = new HashMap<>();
-        Connection conn = getMaster().getConnection();
-        try (PreparedStatement stmt = conn.prepareStatement("SELECT ec_num, x, y, width, height FROM coords WHERE pw_num=?")) {
-            stmt.setString(1, pw.getMapNum());
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    ECNumberI ec = ECNumberFactory.fromString(rs.getString(1));
-                    Rectangle rect = new Rectangle(rs.getInt(2), rs.getInt(3), rs.getInt(4), rs.getInt(5));
-                    if (ret.containsKey(ec)) {
-                        ret.get(ec).add(rect);
-                    } else {
-                        Set<Rectangle> tmp = new HashSet<>();
-                        tmp.add(rect);
-                        ret.put(ec, tmp);
+        try (Connection conn = getMaster().getConnection()) {
+            try (PreparedStatement stmt = conn.prepareStatement("SELECT ec_num, x, y, width, height FROM coords WHERE pw_num=?")) {
+                stmt.setString(1, pw.getMapNum());
+                try (ResultSet rs = stmt.executeQuery()) {
+                    while (rs.next()) {
+                        ECNumberI ec = ECNumberFactory.fromString(rs.getString(1));
+                        Rectangle rect = new Rectangle(rs.getInt(2), rs.getInt(3), rs.getInt(4), rs.getInt(5));
+                        if (ret.containsKey(ec)) {
+                            ret.get(ec).add(rect);
+                        } else {
+                            Set<Rectangle> tmp = new HashSet<>();
+                            tmp.add(rect);
+                            ret.put(ec, tmp);
+                        }
                     }
                 }
             }
@@ -302,19 +308,20 @@ public class PathwayAccess extends AccessBase {
             throw new KEGGException(ex);
         }
         // save to db
-        Connection conn = getMaster().getConnection();
-        try {
-            PreparedStatement stmt1 = conn.prepareStatement("DELETE FROM coords WHERE pw_num=?");
-            stmt1.setString(1, pw.getMapNum());
-            stmt1.executeUpdate();
-            stmt1 = conn.prepareStatement("DELETE FROM timestamps WHERE type=?");
-            stmt1.setString(1, COORDS + "_" + pw.getMapNum());
-            stmt1.executeUpdate();
+        try (Connection conn = getMaster().getConnection()) {
+            try (PreparedStatement stmt1 = conn.prepareStatement("DELETE FROM coords WHERE pw_num=?")) {
+                stmt1.setString(1, pw.getMapNum());
+                stmt1.executeUpdate();
+            }
+            try (PreparedStatement stmt1 = conn.prepareStatement("DELETE FROM timestamps WHERE type=?")) {
+                stmt1.setString(1, COORDS + "_" + pw.getMapNum());
+                stmt1.executeUpdate();
+            }
         } catch (SQLException ex) {
             throw new KEGGException(ex);
         }
 
-        try {
+        try (Connection conn = getMaster().getConnection()) {
             for (Entry<ECNumberI, Set<Rectangle>> e : data.entrySet()) {
                 try (PreparedStatement stmt = conn.prepareStatement(INSERT_COORD)) {
                     for (Rectangle rect : e.getValue()) {
@@ -367,12 +374,13 @@ public class PathwayAccess extends AccessBase {
 
         final Set<PathwayI> ret = new HashSet<>();
 
-        Connection conn = getMaster().getConnection();
-        try (PreparedStatement stmt = conn.prepareStatement("SELECT DISTINCT mapnum, name FROM pathway LEFT JOIN coords ON (pathway.mapnum=coords.pw_num) WHERE coords.ec_num=?")) {
-            stmt.setString(1, ec.getNumber());
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    ret.add(new Pathway(rs.getString(1), rs.getString(2)));
+        try (Connection conn = getMaster().getConnection()) {
+            try (PreparedStatement stmt = conn.prepareStatement("SELECT DISTINCT mapnum, name FROM pathway LEFT JOIN coords ON (pathway.mapnum=coords.pw_num) WHERE coords.ec_num=?")) {
+                stmt.setString(1, ec.getNumber());
+                try (ResultSet rs = stmt.executeQuery()) {
+                    while (rs.next()) {
+                        ret.add(new Pathway(rs.getString(1), rs.getString(2)));
+                    }
                 }
             }
         } catch (SQLException ex) {
@@ -416,11 +424,12 @@ public class PathwayAccess extends AccessBase {
 
         final Set<PathwayI> ret = new HashSet<>();
 
-        Connection conn = getMaster().getConnection();
-        try (PreparedStatement stmt = conn.prepareStatement(sql.toString())) {
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    ret.add(new Pathway(rs.getString(1), rs.getString(2)));
+        try (Connection conn = getMaster().getConnection()) {
+            try (PreparedStatement stmt = conn.prepareStatement(sql.toString())) {
+                try (ResultSet rs = stmt.executeQuery()) {
+                    while (rs.next()) {
+                        ret.add(new Pathway(rs.getString(1), rs.getString(2)));
+                    }
                 }
             }
         } catch (SQLException ex) {
