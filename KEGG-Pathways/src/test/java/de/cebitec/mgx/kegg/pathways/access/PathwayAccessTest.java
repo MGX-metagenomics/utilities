@@ -43,7 +43,7 @@ public class PathwayAccessTest {
         if (m != null) {
             try {
                 m.close();
-            } catch (SQLException ex) {
+            } catch (Exception ex) {
                 Logger.getLogger(PathwayAccessTest.class.getName()).log(Level.SEVERE, null, ex);
             }
             m = null;
