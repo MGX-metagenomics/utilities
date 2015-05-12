@@ -39,7 +39,7 @@ public class RESTMaster implements RESTMasterI {
         cc = new DefaultClientConfig();
         cc.getProperties().put(ClientConfig.PROPERTY_THREADPOOL_SIZE, 10);
         cc.getProperties().put(ClientConfig.PROPERTY_CONNECT_TIMEOUT, 10000); // in ms
-        cc.getProperties().put(ClientConfig.PROPERTY_READ_TIMEOUT, 10000);
+        cc.getProperties().put(ClientConfig.PROPERTY_READ_TIMEOUT, 15000);
 
         if (!verifySSL) {
 
