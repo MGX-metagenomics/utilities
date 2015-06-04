@@ -5,9 +5,7 @@
  */
 package de.cebitec.mgx.qc;
 
-import de.cebitec.mgx.qc.impl.GCDistribution;
-import de.cebitec.mgx.qc.impl.LengthDistribution;
-import de.cebitec.mgx.qc.impl.NucleotideDistribution;
+import de.cebitec.mgx.qc.impl.*;
 
 /**
  *
@@ -18,7 +16,7 @@ public class QCFactory {
     public static Analyzer[] getQCAnalyzers(boolean hasQuality) {
 //        return new Analyzer[]{};
         if (hasQuality) {
-            return new Analyzer[]{new LengthDistribution(), new NucleotideDistribution(), new GCDistribution()};
+            return new Analyzer[]{new LengthDistribution(), new NucleotideDistribution(), new GCDistribution(), new QualityDistribution()};
         } else {
             return new Analyzer[]{new LengthDistribution(), new NucleotideDistribution(), new GCDistribution()};
         }
