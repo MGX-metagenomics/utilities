@@ -17,8 +17,6 @@ public abstract class Identifiable<T> extends ModelBase<T> {
     }
 
     public final void setId(long id) {
-        assert this.id == INVALID_IDENTIFIER; // prevent changing of internal ID field
-        //assert id != INVALID_IDENTIFIER;
         this.id = id;
     }
 
