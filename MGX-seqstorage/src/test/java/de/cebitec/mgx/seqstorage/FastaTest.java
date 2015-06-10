@@ -1,11 +1,13 @@
 package de.cebitec.mgx.seqstorage;
 
 import de.cebitec.mgx.osgiutils.MGXOptions;
+import de.cebitec.mgx.sequence.DNASequenceI;
 import de.cebitec.mgx.sequence.SeqStoreException;
 import de.cebitec.mgx.testutils.TestInput;
 import java.io.File;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -78,6 +80,20 @@ public class FastaTest {
         f.delete();
 
         assertEquals(25, seqCnt);
+    }
+    
+        @Test
+    public void testLowerCaseInput() throws Exception {
+        System.out.println("testLowerCaseInput");
+        File f = TestInput.copyTestData(FastaReader.class, "de/cebitec/mgx/seqstorage/lowercase.fas");
+        try (FastaReader fr = new FastaReader(f.getAbsolutePath(), false)) {
+            fr.hasMoreElements();
+            DNASequenceI entry = fr.nextElement();
+            assertEquals("TCGGT", new String(entry.getSequence()));
+        } catch (SeqStoreException ex) {
+            fail(ex.getMessage());
+        }
+        f.delete();
     }
 
 }
