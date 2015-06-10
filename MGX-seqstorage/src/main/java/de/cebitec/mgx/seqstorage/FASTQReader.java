@@ -65,6 +65,35 @@ public class FASTQReader implements SeqReaderI<DNAQualitySequenceI> {
             throw new SeqStoreException("Error in FASTQ file: length differs between sequence and quality for " + new String(seqname));
         }
 
+        // validate nucleotide sequence, convert to uppercase if necessary
+        for (int i = 0; i < l2.length; i++) {
+            switch (l2[i]) {
+                case 'A':
+                case 'T':
+                case 'G':
+                case 'C':
+                case 'N':
+                    break;
+                case 'a':
+                    l2[i] = 'A';
+                    break;
+                case 't':
+                    l2[i] = 'T';
+                    break;
+                case 'g':
+                    l2[i] = 'G';
+                    break;
+                case 'c':
+                    l2[i] = 'C';
+                    break;
+                case 'n':
+                    l2[i] = 'N';
+                    break;
+                default:
+                    throw new SeqStoreException("Illegal nucleotide " + l2[i] + " at position " + i + " of sequence " + new String(seqname));
+            }
+        }
+
         seq = new QualityDNASequence();
         seq.setName(seqname);
         seq.setSequence(l2);

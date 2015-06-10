@@ -122,4 +122,18 @@ public class FastqTest {
         }
         fail("FASTQReader produced sequence with differing sequence and quality length.");
     }
+
+    @Test
+    public void testLowerCaseInput() throws Exception {
+        System.out.println("testLowerCaseInput");
+        File f = TestInput.copyTestData(FASTQReader.class, "de/cebitec/mgx/seqstorage/lowercase.fq");
+        try (FASTQReader fr = new FASTQReader(f.getAbsolutePath(), false)) {
+            fr.hasMoreElements();
+            DNAQualitySequenceI entry = fr.nextElement();
+            Assert.assertEquals("TCGGT", new String(entry.getSequence()));
+        } catch (SeqStoreException ex) {
+            fail(ex.getMessage());
+        }
+        f.delete();
+    }
 }

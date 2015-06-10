@@ -34,7 +34,7 @@ public class FastaReader implements SeqReaderI<DNASequenceI> {
     }
 
     @Override
-    public boolean hasMoreElements() {
+    public boolean hasMoreElements() throws SeqStoreException {
         if (stream == null) {
             return false;
         }
@@ -90,6 +90,36 @@ public class FastaReader implements SeqReaderI<DNASequenceI> {
                 dnasequence = ByteUtils.concat(dnasequence, buf);
             }
         }
+
+        // validate nucleotide sequence, convert to uppercase if necessary
+        for (int i = 0; i < dnasequence.length; i++) {
+            switch (dnasequence[i]) {
+                case 'A':
+                case 'T':
+                case 'G':
+                case 'C':
+                case 'N':
+                    break;
+                case 'a':
+                    dnasequence[i] = 'A';
+                    break;
+                case 't':
+                    dnasequence[i] = 'T';
+                    break;
+                case 'g':
+                    dnasequence[i] = 'G';
+                    break;
+                case 'c':
+                    dnasequence[i] = 'C';
+                    break;
+                case 'n':
+                    dnasequence[i] = 'N';
+                    break;
+                default:
+                    throw new SeqStoreException("Illegal nucleotide " + dnasequence[i] + " at position " + i + " of sequence " + new String(seqname));
+            }
+        }
+
         seq.setSequence(dnasequence);
         return true;
     }
