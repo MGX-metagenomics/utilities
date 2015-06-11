@@ -36,7 +36,7 @@ public class Loader {
                 DataRowI dr = new DataRow(split[0], d);
                 payload.add(dr);
             }
-            return new QCResult(title, payload.toArray(new DataRow[]{}));
+            return new QCResult(title, payload.toArray(new DataRowI[]{}));
         }
     }
 
