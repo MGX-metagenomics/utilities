@@ -6,5 +6,5 @@ package de.cebitec.mgx.sequence;
  */
 public interface FactoryI<T extends DNASequenceI> {
 
-    public SeqReaderI<T> getReader(String uri) throws SeqStoreException;
+    public SeqReaderI<? extends T> getReader(String uri) throws SeqStoreException;
 }
