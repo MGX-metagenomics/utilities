@@ -18,7 +18,7 @@ import java.util.zip.GZIPInputStream;
  *
  * @author sjaenick
  */
-public class ReaderFactory implements FactoryI {
+public class ReaderFactory implements FactoryI<DNASequenceI> {
 
     public ReaderFactory() {
     }
@@ -72,7 +72,11 @@ public class ReaderFactory implements FactoryI {
                 ret = new FASTQReader(uri, is_compressed);
                 break;
             case 'N':
-                ret = new CSFReader(uri, is_compressed);
+                if (new File(uri + ".csf").exists()) {
+                    ret = new CSFReader(uri, is_compressed);
+                } else if (new File(uri + ".csq").exists()) {
+                    ret = new CSQFReader(uri, is_compressed);
+                }
                 break;
             case '.':
                 if (cbuf[1] == 's' && cbuf[2] == 'f' && cbuf[3] == 'f') {
