@@ -172,6 +172,7 @@ public class KEGGMaster implements AutoCloseable {
     }
 
     public boolean isValid(final String type) {
+        boolean ret = false;
         try (Connection conn = getConnection()) {
             try (PreparedStatement stmt = conn.prepareStatement("SELECT time FROM timestamps WHERE type=?")) {
                 stmt.setString(1, type);
@@ -182,14 +183,14 @@ public class KEGGMaster implements AutoCloseable {
                         Date lastFetch = df.parse(s);
 
                         Date earliestValidDate = new Date(System.currentTimeMillis() - getTimeout());
-                        return (earliestValidDate.before(lastFetch) || earliestValidDate.equals(lastFetch));
+                        ret = (earliestValidDate.before(lastFetch) || earliestValidDate.equals(lastFetch));
                     }
                 }
             }
         } catch (SQLException | ParseException ex) {
             Logger.getLogger(KEGGMaster.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return false;
+        return ret;
     }
 
     public void setValid(final String type) {
