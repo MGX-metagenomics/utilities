@@ -369,7 +369,7 @@ message MappedSequenceDTO {
     required uint64 seq_id = 1;
     required int32 start = 2;
     required int32 stop = 3;
-    required int32 identity = 4;
+    required float identity = 4;
 }
 
 message MappedSequenceDTOList {

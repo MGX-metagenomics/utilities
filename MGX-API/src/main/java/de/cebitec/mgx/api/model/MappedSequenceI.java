@@ -23,7 +23,7 @@ public abstract class MappedSequenceI extends LocationBase<MappedSequenceI> {
 
     public abstract long getSeqId();
 
-    public abstract int getIdentity();
+    public abstract float getIdentity();
 
     @Override
     public abstract int compareTo(MappedSequenceI o);
