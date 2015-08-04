@@ -45,15 +45,11 @@ public class LengthDistribution implements Analyzer<DNASequenceI> {
     @Override
     public QCResult get() {
         float[] res = new float[maxLen + 1];
-        long sum = 0;
-        for (int i : l) {
-            sum += i;
-        }
-        if (sum == 0 && maxLen == 0) {
+        if (maxLen == 0) {
             res[0] = 0f;
         } else {
             for (int i = 0; i < res.length; i++) {
-                res[i] = 1f * l[i] / sum;
+                res[i] = 1f * l[i];
             }
         }
         DataRow dr = new DataRow("Read length", res);
