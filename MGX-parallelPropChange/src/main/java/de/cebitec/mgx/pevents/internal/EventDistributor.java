@@ -28,7 +28,7 @@ public class EventDistributor implements Runnable, AutoCloseable {
     private final Set<EventReceiver> receivers = new HashSet<>(MAX_RECV_THREADS);
     private volatile boolean exit = false;
     //
-    private static final int MAX_RECV_THREADS = 5;
+    private static final int MAX_RECV_THREADS = 8;
 
     @Override
     public void run() {
@@ -83,7 +83,7 @@ public class EventDistributor implements Runnable, AutoCloseable {
                     pcl.propertyChange(event.getEvent());
                     start = System.currentTimeMillis() - start;
                     if (start >= 100) {
-                        Logger.getLogger(EventReceiver.class.getName()).log(Level.INFO, "Slow processing of propertyChange ({0} ms) for target {1}", new Object[]{start, pcl.toString()});
+                        Logger.getLogger(EventReceiver.class.getName()).log(Level.INFO, "Slow processing of propertyChange event {0} ({1} ms) for target {2}", new Object[]{event.getEvent(), start, pcl.toString()});
                     }
                 }
                 //pcl.propertyChange(event.getEvent());
