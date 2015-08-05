@@ -63,6 +63,7 @@
         <module>JFreeChart-OSGi</module>
         <module>MGX-OSGiUtils</module>
         <module>MGX-TestUtils</module>
+        <module>JOGL-OSGi</module>
     </modules>
     
     <build>
