@@ -16,7 +16,7 @@ public class QCFactory {
     public static Analyzer[] getQCAnalyzers(boolean hasQuality) {
 //        return new Analyzer[]{};
         if (hasQuality) {
-            return new Analyzer[]{new LengthDistribution(), new NucleotideDistribution(), new GCDistribution(), new QualityDistribution()};
+            return new Analyzer[]{ new QualityDistribution(), new LengthDistribution(), new NucleotideDistribution(), new GCDistribution()};
         } else {
             return new Analyzer[]{new LengthDistribution(), new NucleotideDistribution(), new GCDistribution()};
         }
