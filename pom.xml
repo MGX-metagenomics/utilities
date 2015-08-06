@@ -45,6 +45,7 @@
         <module>MGX-OSGiUtils</module>
         <module>MGX-TestUtils</module>
         <module>JOGL-OSGi</module>
+        <module>Prefuse-OSGi</module>
     </modules>
     
     <build>
