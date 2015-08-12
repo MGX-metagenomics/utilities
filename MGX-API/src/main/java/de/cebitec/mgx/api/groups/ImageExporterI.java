@@ -7,7 +7,13 @@ package de.cebitec.mgx.api.groups;
  */
 public interface ImageExporterI {
     
+    public enum Result {
+        SUCCESS,
+        ERROR,
+        ABORT;
+    }
+    
     public FileType[] getSupportedTypes();
 
-    public boolean export(FileType type, String fName) throws Exception;
+    public Result export(FileType type, String fName) throws Exception;
 }
