@@ -42,7 +42,7 @@ public class MGXOptions {
                 // 1.19.x will additionally need javax.ws.rs:jsr311-api:1.1.1
                 mavenBundle().groupId("com.sun.jersey").artifactId("jersey-client").version("1.18.2"),
                 mavenBundle().groupId("com.sun.jersey").artifactId("jersey-core").version("1.18.2"),
-                mavenBundle().groupId("com.google.protobuf").artifactId("protobuf-java").version("2.5.0"),
+                mavenBundle().groupId("com.google.protobuf").artifactId("protobuf-java").version("2.6.1"),
                 mavenBundle().groupId("de.cebitec.gpms").artifactId("GPMS-DTO").version("1.1"),
                 mavenBundle().groupId("de.cebitec.gpms").artifactId("GPMS-core-api").version("1.1"),
                 mavenBundle().groupId("de.cebitec.gpms").artifactId("GPMS-rest-api").version("1.1"),
@@ -55,7 +55,7 @@ public class MGXOptions {
         return new DefaultCompositeOption(
                 mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-BufferedRandomAccessFile").version("1.0"),
                 mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-isequences").version("1.0"),
-                mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-seqstorage").version("1.0-SNAPSHOT"),
+                mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-seqstorage").version("1.0"),
                 mavenBundle().groupId("de.cebitec.mgx").artifactId("SFFReader").version("1.0"),
                 mavenBundle().groupId("de.cebitec.mgx").artifactId("Trove-OSGi").version("1.0"),
                 mavenBundle().groupId("org.apache.commons").artifactId("commons-math3")
