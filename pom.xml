@@ -46,6 +46,7 @@
         <module>MGX-TestUtils</module>
         <module>JOGL-OSGi</module>
         <module>Prefuse-OSGi</module>
+        <module>jCharts-OSGi</module>
     </modules>
     
     <build>
