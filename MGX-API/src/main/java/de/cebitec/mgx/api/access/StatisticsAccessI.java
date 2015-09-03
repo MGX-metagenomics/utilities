@@ -12,7 +12,6 @@ import de.cebitec.mgx.api.misc.PrincipalComponent;
 import de.cebitec.mgx.api.misc.PCAResultI;
 import de.cebitec.mgx.api.misc.Pair;
 import de.cebitec.mgx.api.misc.Point;
-import de.cebitec.mgx.newick.NodeI;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -29,6 +28,6 @@ public interface StatisticsAccessI {
 
     public List<Point> PCoA(Collection<Pair<VisualizationGroupI, DistributionI<Double>>> groups) throws MGXException;
 
-    public NodeI Clustering(Collection<Pair<VisualizationGroupI, DistributionI<Double>>> dists, String distanceMethod, String agglomeration) throws MGXException;
+    public String Clustering(Collection<Pair<VisualizationGroupI, DistributionI<Double>>> dists, String distanceMethod, String agglomeration) throws MGXException;
 
 }
