@@ -42,6 +42,7 @@
         <module>MGX-ParallelSortedProcessing</module>
         <module>Trove-OSGi</module>
         <module>JFreeChart-OSGi</module>
+        <module>JFreeSVG-OSGi</module>
         <module>MGX-OSGiUtils</module>
         <module>MGX-TestUtils</module>
         <module>JOGL-OSGi</module>
