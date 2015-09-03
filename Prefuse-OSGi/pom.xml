@@ -35,10 +35,6 @@
     </repositories>
 
     <dependencies>
-        <!-- <dependency>
-            <groupId>org.netbeans.api</groupId>
-            <artifactId>org-netbeans-api-annotations-common</artifactId>
-        </dependency> -->
         <dependency>
             <groupId>org.prefuse</groupId>
             <artifactId>prefuse</artifactId>
@@ -48,6 +44,11 @@
             <groupId>lucene</groupId>
             <artifactId>lucene</artifactId>
             <version>1.4.3</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>JFreeSVG-OSGi</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 
@@ -59,11 +60,16 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
+                        <Embed-Dependency>prefuse,lucene;scope=compile|runtime</Embed-Dependency>
                         <Embed-Transitive>true</Embed-Transitive>
                         <_exportcontents>prefuse,prefuse.action.*,prefuse.activity,prefuse.controls,prefuse.data,prefuse.data.column,prefuse.data.event,prefuse.data.parser,prefuse.data.expression,prefuse.data.search,prefuse.data.tuple,prefuse.data.util,prefuse.render,prefuse.util,prefuse.util.force,prefuse.util.collections,prefuse.util.display,prefuse.util.ui,prefuse.visual.*,org.apache.lucene.index,org.apache.lucene.document,org.apache.lucene.store,org.apache.lucene.queryParser,org.apache.lucene.search,org.apache.lucene.analysis</_exportcontents>
-                        <Export-Package />
+                        <Export-Package>prefuse.svg</Export-Package>
                         <Private-Package/>
+                        <Import-Package>
+                            javax.swing,
+                            javax.swing.*,
+                            org.jfree.graphics2d.svg
+                        </Import-Package>
                     </instructions>
                 </configuration>
                 <executions>
@@ -76,29 +82,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <!-- <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>nbm-maven-plugin</artifactId>
-                <extensions>true</extensions>
-                <configuration>
-                    <publicPackages>
-                        <publicPackage>prefuse</publicPackage>
-                        <publicPackage>prefuse.action.*</publicPackage>
-                        <publicPackage>prefuse.activity</publicPackage>
-                        <publicPackage>prefuse.controls</publicPackage>
-                        <publicPackage>prefuse.data</publicPackage>
-                        <publicPackage>prefuse.data.event</publicPackage>
-                        <publicPackage>prefuse.data.expression</publicPackage>
-                        <publicPackage>prefuse.data.search</publicPackage>
-                        <publicPackage>prefuse.data.tuple</publicPackage>
-                        <publicPackage>prefuse.render</publicPackage>
-                        <publicPackage>prefuse.util</publicPackage>
-                        <publicPackage>prefuse.util.display</publicPackage>
-                        <publicPackage>prefuse.util.ui</publicPackage>
-                        <publicPackage>prefuse.visual.*</publicPackage>
-                    </publicPackages>
-                </configuration>
-            </plugin> -->
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
