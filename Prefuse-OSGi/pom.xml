@@ -66,6 +66,7 @@
                         <Export-Package>prefuse.svg</Export-Package>
                         <Private-Package/>
                         <Import-Package>
+                            javax.imageio,
                             javax.swing,
                             javax.swing.*,
                             org.jfree.graphics2d.svg
