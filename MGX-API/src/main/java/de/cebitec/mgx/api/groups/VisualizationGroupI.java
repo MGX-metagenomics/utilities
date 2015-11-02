@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  *
@@ -53,6 +54,8 @@ public interface VisualizationGroupI extends PropertyChangeListener {
     TreeI<Long> getHierarchy();
 
     int getId();
+    
+    UUID getUUID();
     
     void close();
 
