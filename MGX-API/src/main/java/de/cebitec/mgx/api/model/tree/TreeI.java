@@ -6,6 +6,7 @@
 
 package de.cebitec.mgx.api.model.tree;
 
+import de.cebitec.mgx.api.MGXMasterI;
 import de.cebitec.mgx.api.misc.Visualizable;
 import de.cebitec.mgx.api.model.AttributeI;
 import java.util.Collection;
@@ -15,6 +16,8 @@ import java.util.Collection;
  * @author sj
  */
 public interface TreeI<T> extends Visualizable {
+    
+//    public MGXMasterI getMaster();
 
     NodeI<T> createRootNode(AttributeI attr, T content);
 
