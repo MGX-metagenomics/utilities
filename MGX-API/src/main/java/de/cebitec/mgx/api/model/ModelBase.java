@@ -18,13 +18,16 @@ public abstract class ModelBase<T> implements Transferable, Comparable<T> {
 
     protected MGXMasterI master;
     private final PropertyChangeSupport pcs = new ParallelPropertyChangeSupport(this);
+    public final static String OBJECT_MANAGED = "objectManaged";
     public final static String OBJECT_DELETED = "objectDeleted";
     public final static String OBJECT_MODIFIED = "objectModified";
     private final DataFlavor dataflavor;
+    private String managedState;
 
     public ModelBase(MGXMasterI master, DataFlavor dataflavor) {
         this.master = master;
         this.dataflavor = dataflavor;
+        managedState = OBJECT_MANAGED;
     }
 
     public final MGXMasterI getMaster() {
@@ -38,12 +41,7 @@ public abstract class ModelBase<T> implements Transferable, Comparable<T> {
 
     @Override
     public boolean isDataFlavorSupported(DataFlavor flavor) {
-        for (DataFlavor df : getTransferDataFlavors()) {
-            if (df.equals(flavor)) {
-                return true;
-            }
-        }
-        return false;
+        return flavor != null && flavor.equals(dataflavor);
     }
 
     @Override
@@ -56,11 +54,18 @@ public abstract class ModelBase<T> implements Transferable, Comparable<T> {
     }
 
     public final void modified() {
+        if (managedState.equals(OBJECT_DELETED)) {
+            throw new RuntimeException("Invalid object state, cannot modify deleted object.");
+        }
         firePropertyChange(ModelBase.OBJECT_MODIFIED, 1, 2);
     }
 
     public final void deleted() {
+        if (managedState.equals(OBJECT_DELETED)) {
+            throw new RuntimeException("Invalid object state, cannot delete deleted object.");
+        }
         firePropertyChange(ModelBase.OBJECT_DELETED, 0, 1);
+        managedState = OBJECT_DELETED;
     }
 
     public void addPropertyChangeListener(PropertyChangeListener listener) {
