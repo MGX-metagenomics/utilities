@@ -12,10 +12,12 @@ package de.cebitec.mgx.qc;
 public class QCResult implements QCResultI {
     
     private final String name;
+    private final String desc;
     private final DataRowI[] data;
 
-    public QCResult(String name, DataRowI[] data) {
+    public QCResult(String name, String description, DataRowI[] data) {
         this.name = name;
+        this.desc = description;
         this.data = data;
     }
 
@@ -32,6 +34,11 @@ public class QCResult implements QCResultI {
     @Override
     public int compareTo(QCResultI o) {
         return name.compareTo(o.getName());
+    }
+
+    @Override
+    public String getDescription() {
+        return desc != null ? desc : name;
     }
     
 }

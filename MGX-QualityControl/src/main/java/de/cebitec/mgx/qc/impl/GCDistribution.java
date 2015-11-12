@@ -60,7 +60,7 @@ public class GCDistribution implements Analyzer<DNASequenceI> {
     @Override
     public QCResult get() {
         DataRow dr = new DataRow("GC", GC);
-        return new QCResult(getName(), new DataRow[]{dr});
+        return new QCResult(getName(), getDescription(), new DataRow[]{dr});
     }
 
     @Override
@@ -71,6 +71,11 @@ public class GCDistribution implements Analyzer<DNASequenceI> {
     @Override
     public long getNumberOfSequences() {
         return cnt;
+    }
+
+    @Override
+    public String getDescription() {
+        return "GC content distribution";
     }
 
 }
