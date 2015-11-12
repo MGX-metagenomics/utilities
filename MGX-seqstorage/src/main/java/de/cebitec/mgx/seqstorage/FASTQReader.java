@@ -65,6 +65,16 @@ public class FASTQReader implements SeqReaderI<DNAQualitySequenceI> {
             throw new SeqStoreException("Error in FASTQ file: length differs between sequence and quality for " + new String(seqname));
         }
 
+//        R A or G
+//        Y C or T
+//        S G or C
+//        W A or T
+//        K G or T
+//        M A or C
+//        B C or G or T
+//        D A or G or T
+//        H A or C or T
+//        V A or C or G 
         // validate nucleotide sequence, convert to uppercase if necessary
         for (int i = 0; i < l2.length; i++) {
             switch (l2[i]) {
@@ -72,6 +82,16 @@ public class FASTQReader implements SeqReaderI<DNAQualitySequenceI> {
                 case 'T':
                 case 'G':
                 case 'C':
+                case 'R':
+                case 'Y':
+                case 'S':
+                case 'W':
+                case 'K':
+                case 'M':
+                case 'B':
+                case 'D':
+                case 'H':
+                case 'V':
                 case 'N':
                     break;
                 case 'a':
@@ -85,6 +105,36 @@ public class FASTQReader implements SeqReaderI<DNAQualitySequenceI> {
                     break;
                 case 'c':
                     l2[i] = 'C';
+                    break;
+                case 'r':
+                    l2[i] = 'R';
+                    break;
+                case 'y':
+                    l2[i] = 'Y';
+                    break;
+                case 's':
+                    l2[i] = 'S';
+                    break;
+                case 'w':
+                    l2[i] = 'W';
+                    break;
+                case 'k':
+                    l2[i] = 'K';
+                    break;
+                case 'm':
+                    l2[i] = 'M';
+                    break;
+                case 'b':
+                    l2[i] = 'B';
+                    break;
+                case 'd':
+                    l2[i] = 'D';
+                    break;
+                case 'h':
+                    l2[i] = 'H';
+                    break;
+                case 'v':
+                    l2[i] = 'V';
                     break;
                 case 'n':
                     l2[i] = 'N';
