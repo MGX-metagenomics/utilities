@@ -136,4 +136,22 @@ public class FastqTest {
         }
         f.delete();
     }
+
+    @Test
+    public void testIUPAC() throws Exception {
+        System.out.println("testIUPAC");
+        File f = TestInput.copyTestData(FASTQReader.class, "de/cebitec/mgx/seqstorage/regression_iupac.fq");
+        int seqCnt = 0;
+        try (FASTQReader fr = new FASTQReader(f.getAbsolutePath(), false)) {
+            while (fr.hasMoreElements()) {
+                fr.nextElement();
+                seqCnt++;
+            }
+        } catch (SeqStoreException ex) {
+            fail(ex.getMessage());
+        }
+        f.delete();
+
+        assertEquals(1, seqCnt);
+    }
 }
