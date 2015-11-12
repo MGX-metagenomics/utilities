@@ -86,12 +86,17 @@ public class QualityDistribution implements Analyzer<DNAQualitySequenceI>{
         DataRow[] dr = new DataRow[]{
             new DataRow("mean", meanList),
             new DataRow("standard deviation", stdDevList)};
-        return new QCResult(getName(), dr);
+        return new QCResult(getName(), getDescription(), dr);
     }
 
     @Override
     public long getNumberOfSequences() {
         return count[0];
+    }
+
+    @Override
+    public String getDescription() {
+        return "Phred quality score distribution";
     }
     
 }

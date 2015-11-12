@@ -90,7 +90,7 @@ public class NucleotideDistribution implements Analyzer<DNASequenceI> {
             new DataRow("G", g),
             new DataRow("C", c),
             new DataRow("N", n)};
-        return new QCResult(getName(), dr);
+        return new QCResult(getName(), getDescription(), dr);
     }
 
     @Override
@@ -101,6 +101,11 @@ public class NucleotideDistribution implements Analyzer<DNASequenceI> {
     @Override
     public long getNumberOfSequences() {
         return cnt;
+    }
+
+    @Override
+    public String getDescription() {
+        return "Nucleotide distribution for first 100bp";
     }
 
 }

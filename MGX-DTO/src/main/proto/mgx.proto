@@ -480,6 +480,7 @@ message DataRowDTO {
 message QCResultDTO {
     required string name = 1;
     repeated DataRowDTO row = 2;
+    optional string description = 3;
 }
 
 message QCResultDTOList {

@@ -24,6 +24,12 @@ public class Loader {
     public static QCResultI load(String fName) throws IOException {
         try (BufferedReader br = new BufferedReader(new FileReader(fName))) {
             String title = br.readLine();
+            String description = null;
+            if (title.contains("\t")) {
+                String[] split = title.split("\t");
+                title = split[0];
+                description = split[1];
+            }
             String line;
             List<DataRowI> payload = new ArrayList<>();
             while ((line = br.readLine()) != null) {
@@ -36,7 +42,7 @@ public class Loader {
                 DataRowI dr = new DataRow(split[0], d);
                 payload.add(dr);
             }
-            return new QCResult(title, payload.toArray(new DataRowI[]{}));
+            return new QCResult(title, description != null ? description : title, payload.toArray(new DataRowI[]{}));
         }
     }
 
