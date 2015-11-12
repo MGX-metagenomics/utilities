@@ -11,10 +11,13 @@ package de.cebitec.mgx.qc;
  */
 public interface QCResultI extends Comparable<QCResultI> {
 
+    @Override
     int compareTo(QCResultI o);
 
     DataRowI[] getData();
 
     String getName();
+    
+    String getDescription();
     
 }

@@ -28,6 +28,8 @@ public class Persister {
             try (BufferedWriter bw = new BufferedWriter(new FileWriter(f))) {
                 QCResult qc = a.get();
                 bw.write(qc.getName());
+                bw.write("\t");
+                bw.write(qc.getDescription());
                 bw.newLine();
                 for (DataRowI dr : qc.getData()) {
                     bw.write(dr.getName());

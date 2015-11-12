@@ -53,7 +53,7 @@ public class LengthDistribution implements Analyzer<DNASequenceI> {
             }
         }
         DataRow dr = new DataRow("Read length", res);
-        return new QCResult(getName(), new DataRow[]{dr});
+        return new QCResult(getName(), getDescription(), new DataRow[]{dr});
     }
 
     @Override
@@ -64,5 +64,10 @@ public class LengthDistribution implements Analyzer<DNASequenceI> {
     @Override
     public long getNumberOfSequences() {
         return cnt;
+    }
+
+    @Override
+    public String getDescription() {
+        return "Sequence length distribution";
     }
 }

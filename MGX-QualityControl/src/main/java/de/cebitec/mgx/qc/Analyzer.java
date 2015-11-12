@@ -15,6 +15,8 @@ public interface Analyzer<T extends DNASequenceI> {
     
     public String getName();
     
+    public String getDescription();
+    
     public void add(T seq);
 
     public QCResult get();
