@@ -98,6 +98,16 @@ public class FastaReader implements SeqReaderI<DNASequenceI> {
                 case 'T':
                 case 'G':
                 case 'C':
+                case 'R':
+                case 'Y':
+                case 'S':
+                case 'W':
+                case 'K':
+                case 'M':
+                case 'B':
+                case 'D':
+                case 'H':
+                case 'V':
                 case 'N':
                     break;
                 case 'a':
@@ -111,6 +121,36 @@ public class FastaReader implements SeqReaderI<DNASequenceI> {
                     break;
                 case 'c':
                     dnasequence[i] = 'C';
+                    break;
+                case 'r':
+                    dnasequence[i] = 'R';
+                    break;
+                case 'y':
+                    dnasequence[i] = 'Y';
+                    break;
+                case 's':
+                    dnasequence[i] = 'S';
+                    break;
+                case 'w':
+                    dnasequence[i] = 'W';
+                    break;
+                case 'k':
+                    dnasequence[i] = 'K';
+                    break;
+                case 'm':
+                    dnasequence[i] = 'M';
+                    break;
+                case 'b':
+                    dnasequence[i] = 'B';
+                    break;
+                case 'd':
+                    dnasequence[i] = 'D';
+                    break;
+                case 'h':
+                    dnasequence[i] = 'H';
+                    break;
+                case 'v':
+                    dnasequence[i] = 'V';
                     break;
                 case 'n':
                     dnasequence[i] = 'N';
