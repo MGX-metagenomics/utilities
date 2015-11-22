@@ -10,6 +10,8 @@ import de.cebitec.mgx.pevents.internal.EventDistributor;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -19,17 +21,30 @@ public class ParallelPropertyChangeSupport extends PropertyChangeSupport impleme
 
     private static EventDistributor distributor = null;
     private static int numInstances = 0;
+    private final boolean traceDuplicates;
+    private static final Logger LOG = Logger.getLogger(ParallelPropertyChangeSupport.class.getName());
 
     public ParallelPropertyChangeSupport(Object sourceBean) {
+        this(sourceBean, false);
+    }
+
+    public ParallelPropertyChangeSupport(Object sourceBean, boolean traceDuplicates) {
         super(sourceBean);
         numInstances++;
-
+        this.traceDuplicates = traceDuplicates;
     }
 
     @Override
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         if (listener == null) {
             return;
+        }
+        if (traceDuplicates) {
+            for (PropertyChangeListener pcl : getPropertyChangeListeners()) {
+                if (pcl.equals(listener)) {
+                    LOG.log(Level.INFO, "Duplicate PropertyChangeListener added: {0}", listener.toString());
+                }
+            }
         }
         if (distributor == null) {
             startDistributor();
