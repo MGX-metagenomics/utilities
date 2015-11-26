@@ -67,7 +67,7 @@ public class FastaTest {
     @Test
     public void testreadFasta() throws Exception {
         System.out.println("readFasta");
-        File f = TestInput.copyTestData(FastaReader.class, "de/cebitec/mgx/seqstorage/test.fas");
+        File f = TestInput.copyTestResource(getClass(), "/de/cebitec/mgx/seqstorage/test.fas");
         int seqCnt = 0;
         try (FastaReader fr = new FastaReader(f.getAbsolutePath(), false)) {
             while (fr.hasMoreElements()) {
@@ -81,11 +81,11 @@ public class FastaTest {
 
         assertEquals(25, seqCnt);
     }
-    
-        @Test
+
+    @Test
     public void testLowerCaseInput() throws Exception {
         System.out.println("testLowerCaseInput");
-        File f = TestInput.copyTestData(FastaReader.class, "de/cebitec/mgx/seqstorage/lowercase.fas");
+        File f = TestInput.copyTestResource(getClass(), "/de/cebitec/mgx/seqstorage/lowercase.fas");
         try (FastaReader fr = new FastaReader(f.getAbsolutePath(), false)) {
             fr.hasMoreElements();
             DNASequenceI entry = fr.nextElement();

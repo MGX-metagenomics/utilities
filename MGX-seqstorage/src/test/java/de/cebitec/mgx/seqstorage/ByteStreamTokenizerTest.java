@@ -47,7 +47,7 @@ public class ByteStreamTokenizerTest {
     public void testNoLineBreak() throws Exception {
         System.out.println("testNoLineBreak");
         // file has no line break after last line
-        File f = TestInput.copyTestData(ByteStreamTokenizer.class, "de/cebitec/mgx/seqstorage/incomplete_last_line.fq");
+        File f = TestInput.copyTestResource(getClass(), "/de/cebitec/mgx/seqstorage/incomplete_last_line.fq");
         byte LINEBREAK = '\n';
         ByteStreamTokenizer bst = new ByteStreamTokenizer(f.getAbsolutePath(), false, LINEBREAK, 0);
         int cnt = 0;
