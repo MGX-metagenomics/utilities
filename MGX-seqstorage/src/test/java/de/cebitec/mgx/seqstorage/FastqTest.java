@@ -46,7 +46,7 @@ public class FastqTest {
     @Test
     public void testReadFastq() throws Exception {
         System.out.println("readFastq");
-        File f = TestInput.copyTestData(FASTQReader.class, "de/cebitec/mgx/seqstorage/sample_1.fq");
+        File f = TestInput.copyTestResource(getClass(), "/de/cebitec/mgx/seqstorage/sample_1.fq");
         int seqCnt = 0;
         try (FASTQReader fr = new FASTQReader(f.getAbsolutePath(), false)) {
             while (fr.hasMoreElements()) {
@@ -64,7 +64,7 @@ public class FastqTest {
     @Test
     public void testFirstReadInFastq() throws Exception {
         System.out.println("FirstReadInFastq");
-        File f = TestInput.copyTestData(FASTQReader.class, "de/cebitec/mgx/seqstorage/sample_1.fq");
+        File f = TestInput.copyTestResource(getClass(), "/de/cebitec/mgx/seqstorage/sample_1.fq");
         try (FASTQReader fr = new FASTQReader(f.getAbsolutePath(), false)) {
             fr.hasMoreElements();
             DNAQualitySequenceI entry = fr.nextElement();
@@ -85,7 +85,7 @@ public class FastqTest {
     public void testIncompleteLastLine() throws Exception {
         System.out.println("testIncompleteLastLine");
         // file has no line break after last line
-        File f = TestInput.copyTestData(FASTQReader.class, "de/cebitec/mgx/seqstorage/incomplete_last_line.fq");
+        File f = TestInput.copyTestResource(getClass(), "/de/cebitec/mgx/seqstorage/incomplete_last_line.fq");
         int seqCnt = 0;
         DNAQualitySequenceI seq = null;
         try (FASTQReader fr = new FASTQReader(f.getAbsolutePath(), false)) {
@@ -107,7 +107,7 @@ public class FastqTest {
     public void testBrokenSeq() throws Exception {
         System.out.println("testBrokenSeq");
         // file has no line break after last line
-        File f = TestInput.copyTestData(FASTQReader.class, "de/cebitec/mgx/seqstorage/broken_seq.fq");
+        File f = TestInput.copyTestResource(getClass(), "/de/cebitec/mgx/seqstorage/broken_seq.fq");
         DNAQualitySequenceI seq = null;
         try (FASTQReader fr = new FASTQReader(f.getAbsolutePath(), false)) {
             while (fr.hasMoreElements()) {
@@ -126,7 +126,7 @@ public class FastqTest {
     @Test
     public void testLowerCaseInput() throws Exception {
         System.out.println("testLowerCaseInput");
-        File f = TestInput.copyTestData(FASTQReader.class, "de/cebitec/mgx/seqstorage/lowercase.fq");
+        File f = TestInput.copyTestResource(getClass(), "/de/cebitec/mgx/seqstorage/lowercase.fq");
         try (FASTQReader fr = new FASTQReader(f.getAbsolutePath(), false)) {
             fr.hasMoreElements();
             DNAQualitySequenceI entry = fr.nextElement();
@@ -140,7 +140,7 @@ public class FastqTest {
     @Test
     public void testIUPAC() throws Exception {
         System.out.println("testIUPAC");
-        File f = TestInput.copyTestData(FASTQReader.class, "de/cebitec/mgx/seqstorage/regression_iupac.fq");
+        File f = TestInput.copyTestResource(getClass(), "/de/cebitec/mgx/seqstorage/regression_iupac.fq");
         int seqCnt = 0;
         try (FASTQReader fr = new FASTQReader(f.getAbsolutePath(), false)) {
             while (fr.hasMoreElements()) {
