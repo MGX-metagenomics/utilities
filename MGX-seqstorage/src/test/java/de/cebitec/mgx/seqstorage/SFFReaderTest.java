@@ -45,7 +45,7 @@ public class SFFReaderTest {
     @Test
     public void testOneReadSFF() throws Exception {
         System.out.println("OneReadSFF");
-        File f = TestInput.copyTestData(SFFReader.class, "de/cebitec/mgx/seqstorage/oneread.sff");
+        File f = TestInput.copyTestResource(getClass(), "/de/cebitec/mgx/seqstorage/oneread.sff");
         try (SFFReader sr = new SFFReader(f.getAbsolutePath())) {
             while (sr.hasMoreElements()) {
                 DNAQualitySequenceI entry = sr.nextElement();
@@ -66,7 +66,7 @@ public class SFFReaderTest {
     @Test
     public void testMultipleReadSFF() throws Exception {
         System.out.println("MultipleReadSFF");
-        File f = TestInput.copyTestData(SFFReader.class,"de/cebitec/mgx/seqstorage/multipleRead.sff");
+        File f = TestInput.copyTestResource(getClass(), "/de/cebitec/mgx/seqstorage/multipleRead.sff");
         int seqCnt = 0;
         try (SFFReader sr = new SFFReader(f.getAbsolutePath())) {
             while (sr.hasMoreElements()) {

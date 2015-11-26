@@ -48,7 +48,7 @@ public class CSFWriterTest {
     @Test
     public void testCSFWriter() throws Exception {
         System.out.println("testCSFWriter");
-        File f = TestInput.copyTestData(CSFReader.class, "de/cebitec/mgx/seqstorage/test.fas");
+        File f = TestInput.copyTestResource(getClass(), "/de/cebitec/mgx/seqstorage/test.fas");
         File target = File.createTempFile("testCSFWriter", "xx");
         target.delete();
         try (FastaReader fr = new FastaReader(f.getAbsolutePath(), false)) {
@@ -75,7 +75,7 @@ public class CSFWriterTest {
     @Test
     public void testCSFReader() throws Exception {
         System.out.println("testCSFReader");
-        File f = TestInput.copyTestData(CSFReader.class, "de/cebitec/mgx/seqstorage/test.fas");
+        File f = TestInput.copyTestResource(getClass(), "/de/cebitec/mgx/seqstorage/test.fas");
         File target = File.createTempFile("testCSFReader", "xx");
         target.delete();
         try (FastaReader fr = new FastaReader(f.getAbsolutePath(), false)) {
