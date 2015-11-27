@@ -107,7 +107,7 @@ public class CSQFReader implements SeqReaderI<DNAQualitySequenceI>{
     }
 
     @Override
-    public boolean hasMoreElements() {
+    public boolean hasMoreElements() throws SeqStoreException {
         try {
             if (holder != null) {
                 // element in holder not yet retrieved
@@ -182,7 +182,7 @@ public class CSQFReader implements SeqReaderI<DNAQualitySequenceI>{
         return -1;
     }
     
-    private DNAQualitySequenceI getEntry(long id, long offset) throws IOException{
+    private DNAQualitySequenceI getEntry(long id, long offset) throws IOException, SeqStoreException{
         raf.seek(offset);
         byte[] buf = new byte[600];
         int bytesRead = raf.read(buf);

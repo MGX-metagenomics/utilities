@@ -61,7 +61,7 @@ public class SFFReader implements SeqReaderI<DNAQualitySequenceI> {
     
     
     @Override
-    public boolean hasMoreElements() {
+    public boolean hasMoreElements() throws SeqStoreException {
         if (reader.hasMoreElements()){
             SFFRead read = reader.nextElement();
 

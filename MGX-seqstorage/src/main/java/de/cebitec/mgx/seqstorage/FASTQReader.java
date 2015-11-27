@@ -34,10 +34,10 @@ public class FASTQReader implements SeqReaderI<DNAQualitySequenceI> {
         byte[] l1, l2, l3, l4;
 
         try {
-            l1 = stream.hasMoreElements() ? stream.nextElement() : null; // header
-            l2 = stream.hasMoreElements() ? stream.nextElement() : null; // dna sequence
-            l3 = stream.hasMoreElements() ? stream.nextElement() : null; // quality header
-            l4 = stream.hasMoreElements() ? stream.nextElement() : null; // quality string
+            l1 = stream.hasNext() ? stream.next() : null; // header
+            l2 = stream.hasNext() ? stream.next() : null; // dna sequence
+            l3 = stream.hasNext() ? stream.next() : null; // quality header
+            l4 = stream.hasNext() ? stream.next() : null; // quality string
         } catch (Exception e) {
             return false;
         }
@@ -54,8 +54,12 @@ public class FASTQReader implements SeqReaderI<DNAQualitySequenceI> {
         }
 
         // remove leading '@' from sequence name
-        byte[] seqname = new byte[l1.length - 1];
-        System.arraycopy(l1, 1, seqname, 0, l1.length - 1);
+        int nameLen = l1.length - 1;
+        if (l1[1 + nameLen - 1] == '\r') {
+            nameLen--;
+        }
+        byte[] seqname = new byte[nameLen];
+        System.arraycopy(l1, 1, seqname, 0, nameLen);
 
         if (l4 == null) {
             throw new SeqStoreException("Error for sequence " + new String(seqname) + ", no quality?");
@@ -65,89 +69,19 @@ public class FASTQReader implements SeqReaderI<DNAQualitySequenceI> {
             throw new SeqStoreException("Error in FASTQ file: length differs between sequence and quality for " + new String(seqname));
         }
 
-//        R A or G
-//        Y C or T
-//        S G or C
-//        W A or T
-//        K G or T
-//        M A or C
-//        B C or G or T
-//        D A or G or T
-//        H A or C or T
-//        V A or C or G 
-        // validate nucleotide sequence, convert to uppercase if necessary
-        for (int i = 0; i < l2.length; i++) {
-            switch (l2[i]) {
-                case 'A':
-                case 'T':
-                case 'G':
-                case 'C':
-                case 'R':
-                case 'Y':
-                case 'S':
-                case 'W':
-                case 'K':
-                case 'M':
-                case 'B':
-                case 'D':
-                case 'H':
-                case 'V':
-                case 'N':
-                    break;
-                case 'a':
-                    l2[i] = 'A';
-                    break;
-                case 't':
-                    l2[i] = 'T';
-                    break;
-                case 'g':
-                    l2[i] = 'G';
-                    break;
-                case 'c':
-                    l2[i] = 'C';
-                    break;
-                case 'r':
-                    l2[i] = 'R';
-                    break;
-                case 'y':
-                    l2[i] = 'Y';
-                    break;
-                case 's':
-                    l2[i] = 'S';
-                    break;
-                case 'w':
-                    l2[i] = 'W';
-                    break;
-                case 'k':
-                    l2[i] = 'K';
-                    break;
-                case 'm':
-                    l2[i] = 'M';
-                    break;
-                case 'b':
-                    l2[i] = 'B';
-                    break;
-                case 'd':
-                    l2[i] = 'D';
-                    break;
-                case 'h':
-                    l2[i] = 'H';
-                    break;
-                case 'v':
-                    l2[i] = 'V';
-                    break;
-                case 'n':
-                    l2[i] = 'N';
-                    break;
-                default:
-                    throw new SeqStoreException("Illegal nucleotide " + l2[i] + " at position " + i + " of sequence " + new String(seqname));
-            }
-        }
-
         seq = new QualityDNASequence();
         seq.setName(seqname);
-        seq.setSequence(l2);
-        seq.setQuality(convertQuality(l4));     //quality as phred scores
+
+        //check and trim remainder of DOS line breaks
+        int targetLen = l2.length > 0 && l2[l2.length - 1] == '\r' ? l2.length - 1 : l2.length;
+        byte[] dnasequence = new byte[targetLen];
+        System.arraycopy(l2, 0, dnasequence, 0, targetLen);
+        seq.setSequence(dnasequence);
+
+        int qLen = l4.length > 0 && l4[l4.length - 1] == '\r' ? l4.length - 1 : l4.length;
+        byte[] qseq = new byte[qLen];
+        System.arraycopy(l4, 0, qseq, 0, qLen);
+        seq.setQuality(convertQuality(qseq));     //quality as phred scores
 
         return true;
     }

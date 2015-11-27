@@ -6,6 +6,7 @@ import de.cebitec.mgx.sequence.SeqReaderI;
 import de.cebitec.mgx.sequence.SeqStoreException;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -30,7 +31,7 @@ public class FastaReader implements SeqReaderI<DNASequenceI> {
         }
 
         // read first line
-        buf = stream.hasMoreElements() ? stream.nextElement() : null; // header
+        buf = stream.hasNext() ? stream.next() : null; // header
     }
 
     @Override
@@ -40,8 +41,8 @@ public class FastaReader implements SeqReaderI<DNASequenceI> {
         }
 
         if (buf.length == 0) {
-            while (buf.length == 0 && stream.hasMoreElements()) {
-                buf = stream.nextElement();
+            while (buf.length == 0 && stream.hasNext()) {
+                buf = stream.next();
             }
         }
 
@@ -51,9 +52,15 @@ public class FastaReader implements SeqReaderI<DNASequenceI> {
         }
 
         // process sequence header
-        byte[] seqname = new byte[buf.length - 1];
-        System.arraycopy(buf, 1, seqname, 0, buf.length - 1);
+        int nameLen = buf.length - 1; // subtract '>'
+        if (buf[1 + nameLen - 1] == '\r') {
+            nameLen--;
+        }
+        byte[] seqname = new byte[nameLen];
+        System.arraycopy(buf, 1, seqname, 0, nameLen);
 
+        assert seqname[seqname.length-1] != '\r';
+        
         // check sequence name for whitespaces and trim
         int trimPos = 0;
         for (int i = 0; i < seqname.length; i++) {
@@ -73,8 +80,8 @@ public class FastaReader implements SeqReaderI<DNASequenceI> {
 
         byte[] dnasequence = null;
 
-        while (stream.hasMoreElements()) {
-            buf = stream.nextElement();
+        while (stream.hasNext()) {
+            buf = stream.next();
 
             if (buf.length > 0 && buf[0] == '>') {
                 // we have reached the next sequence
@@ -84,79 +91,16 @@ public class FastaReader implements SeqReaderI<DNASequenceI> {
 
             if (dnasequence == null) {
                 // start new sequence
-                dnasequence = new byte[buf.length];
-                System.arraycopy(buf, 0, dnasequence, 0, buf.length);
-            } else {
-                dnasequence = ByteUtils.concat(dnasequence, buf);
-            }
-        }
 
-        // validate nucleotide sequence, convert to uppercase if necessary
-        for (int i = 0; i < dnasequence.length; i++) {
-            switch (dnasequence[i]) {
-                case 'A':
-                case 'T':
-                case 'G':
-                case 'C':
-                case 'R':
-                case 'Y':
-                case 'S':
-                case 'W':
-                case 'K':
-                case 'M':
-                case 'B':
-                case 'D':
-                case 'H':
-                case 'V':
-                case 'N':
-                    break;
-                case 'a':
-                    dnasequence[i] = 'A';
-                    break;
-                case 't':
-                    dnasequence[i] = 'T';
-                    break;
-                case 'g':
-                    dnasequence[i] = 'G';
-                    break;
-                case 'c':
-                    dnasequence[i] = 'C';
-                    break;
-                case 'r':
-                    dnasequence[i] = 'R';
-                    break;
-                case 'y':
-                    dnasequence[i] = 'Y';
-                    break;
-                case 's':
-                    dnasequence[i] = 'S';
-                    break;
-                case 'w':
-                    dnasequence[i] = 'W';
-                    break;
-                case 'k':
-                    dnasequence[i] = 'K';
-                    break;
-                case 'm':
-                    dnasequence[i] = 'M';
-                    break;
-                case 'b':
-                    dnasequence[i] = 'B';
-                    break;
-                case 'd':
-                    dnasequence[i] = 'D';
-                    break;
-                case 'h':
-                    dnasequence[i] = 'H';
-                    break;
-                case 'v':
-                    dnasequence[i] = 'V';
-                    break;
-                case 'n':
-                    dnasequence[i] = 'N';
-                    break;
-                default:
-                    throw new SeqStoreException("Illegal nucleotide " + dnasequence[i] + " at position " + i + " of sequence " + new String(seqname));
+                //check and trim remainder of DOS line breaks
+                int targetLen = buf.length > 0 && buf[buf.length - 1] == '\r' ? buf.length - 1 : buf.length;
+                dnasequence = new byte[targetLen];
+                System.arraycopy(buf, 0, dnasequence, 0, targetLen);
+            } else {
+                // extend current sequence
+                dnasequence = buf.length > 0 && buf[buf.length - 1] == '\r'
+                        ? ByteUtils.concat(dnasequence, Arrays.copyOf(buf, buf.length - 1))
+                        : ByteUtils.concat(dnasequence, buf);
             }
         }
 

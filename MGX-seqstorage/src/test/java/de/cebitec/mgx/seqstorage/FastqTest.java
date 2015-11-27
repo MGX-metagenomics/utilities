@@ -24,29 +24,29 @@ import org.ops4j.pax.exam.junit.PaxExam;
  *
  * @author patrick
  */
-@RunWith(PaxExam.class)
+//@RunWith(PaxExam.class)
 public class FastqTest {
 
-    @Configuration
-    public static Option[] configuration() {
-        return options(
-                junitBundles(),
-                mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-isequences").versionAsInProject(),
-                mavenBundle().groupId("de.cebitec.mgx").artifactId("Trove-OSGi").versionAsInProject(),
-                mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-BufferedRandomAccessFile").versionAsInProject(),
-                mavenBundle().groupId("de.cebitec.mgx").artifactId("SFFReader").versionAsInProject(),
-                mavenBundle().groupId("org.apache.commons").artifactId("commons-math3").versionAsInProject(),
-                MGXOptions.serviceLoaderBundles(),
-                MGXOptions.testUtils(),
-                systemProperty("org.ops4j.pax.logging.DefaultServiceLog.level").value("WARN"),
-                bundle("reference:file:target/classes")
-        );
-    }
+//    @Configuration
+//    public static Option[] configuration() {
+//        return options(
+//                junitBundles(),
+//                mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-isequences").versionAsInProject(),
+//                mavenBundle().groupId("de.cebitec.mgx").artifactId("Trove-OSGi").versionAsInProject(),
+//                mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-BufferedRandomAccessFile").versionAsInProject(),
+//                mavenBundle().groupId("de.cebitec.mgx").artifactId("SFFReader").versionAsInProject(),
+//                mavenBundle().groupId("org.apache.commons").artifactId("commons-math3").versionAsInProject(),
+//                MGXOptions.serviceLoaderBundles(),
+//                MGXOptions.testUtils(),
+//                systemProperty("org.ops4j.pax.logging.DefaultServiceLog.level").value("WARN"),
+//                bundle("reference:file:target/classes")
+//        );
+//    }
 
     @Test
     public void testReadFastq() throws Exception {
         System.out.println("readFastq");
-        File f = TestInput.copyTestResource(getClass(), "/de/cebitec/mgx/seqstorage/sample_1.fq");
+        File f = TestInput.copyTestResource(getClass(), "de/cebitec/mgx/seqstorage/sample_1.fq");
         int seqCnt = 0;
         try (FASTQReader fr = new FASTQReader(f.getAbsolutePath(), false)) {
             while (fr.hasMoreElements()) {
@@ -62,9 +62,31 @@ public class FastqTest {
     }
 
     @Test
+    public void testReadDOSFastq() throws Exception {
+        System.out.println("testReadDOSFastq");
+        File f = TestInput.copyTestResource(getClass(), "de/cebitec/mgx/seqstorage/sample_1_dos.fq");
+        int seqCnt = 0;
+        DNAQualitySequenceI qseq = null;
+        try (FASTQReader fr = new FASTQReader(f.getAbsolutePath(), false)) {
+            while (fr.hasMoreElements()) {
+                qseq = fr.nextElement();
+                assertNotNull(qseq);
+                seqCnt++;
+            }
+        } catch (SeqStoreException ex) {
+            fail(ex.getMessage());
+        }
+        f.delete();
+
+        assertEquals(20, seqCnt);
+        
+        assertNotNull(qseq);
+    }
+
+    @Test
     public void testFirstReadInFastq() throws Exception {
         System.out.println("FirstReadInFastq");
-        File f = TestInput.copyTestResource(getClass(), "/de/cebitec/mgx/seqstorage/sample_1.fq");
+        File f = TestInput.copyTestResource(getClass(), "de/cebitec/mgx/seqstorage/sample_1.fq");
         try (FASTQReader fr = new FASTQReader(f.getAbsolutePath(), false)) {
             fr.hasMoreElements();
             DNAQualitySequenceI entry = fr.nextElement();
@@ -85,7 +107,7 @@ public class FastqTest {
     public void testIncompleteLastLine() throws Exception {
         System.out.println("testIncompleteLastLine");
         // file has no line break after last line
-        File f = TestInput.copyTestResource(getClass(), "/de/cebitec/mgx/seqstorage/incomplete_last_line.fq");
+        File f = TestInput.copyTestResource(getClass(), "de/cebitec/mgx/seqstorage/incomplete_last_line.fq");
         int seqCnt = 0;
         DNAQualitySequenceI seq = null;
         try (FASTQReader fr = new FASTQReader(f.getAbsolutePath(), false)) {
@@ -107,7 +129,7 @@ public class FastqTest {
     public void testBrokenSeq() throws Exception {
         System.out.println("testBrokenSeq");
         // file has no line break after last line
-        File f = TestInput.copyTestResource(getClass(), "/de/cebitec/mgx/seqstorage/broken_seq.fq");
+        File f = TestInput.copyTestResource(getClass(), "de/cebitec/mgx/seqstorage/broken_seq.fq");
         DNAQualitySequenceI seq = null;
         try (FASTQReader fr = new FASTQReader(f.getAbsolutePath(), false)) {
             while (fr.hasMoreElements()) {
@@ -126,7 +148,7 @@ public class FastqTest {
     @Test
     public void testLowerCaseInput() throws Exception {
         System.out.println("testLowerCaseInput");
-        File f = TestInput.copyTestResource(getClass(), "/de/cebitec/mgx/seqstorage/lowercase.fq");
+        File f = TestInput.copyTestResource(getClass(), "de/cebitec/mgx/seqstorage/lowercase.fq");
         try (FASTQReader fr = new FASTQReader(f.getAbsolutePath(), false)) {
             fr.hasMoreElements();
             DNAQualitySequenceI entry = fr.nextElement();
@@ -140,7 +162,7 @@ public class FastqTest {
     @Test
     public void testIUPAC() throws Exception {
         System.out.println("testIUPAC");
-        File f = TestInput.copyTestResource(getClass(), "/de/cebitec/mgx/seqstorage/regression_iupac.fq");
+        File f = TestInput.copyTestResource(getClass(), "de/cebitec/mgx/seqstorage/regression_iupac.fq");
         int seqCnt = 0;
         try (FASTQReader fr = new FASTQReader(f.getAbsolutePath(), false)) {
             while (fr.hasMoreElements()) {
