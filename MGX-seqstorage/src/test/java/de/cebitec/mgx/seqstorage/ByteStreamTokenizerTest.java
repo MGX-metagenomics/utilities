@@ -6,8 +6,11 @@
 package de.cebitec.mgx.seqstorage;
 
 import de.cebitec.mgx.osgiutils.MGXOptions;
+import static de.cebitec.mgx.seqstorage.FASTQReader.LINEBREAK;
 import de.cebitec.mgx.testutils.TestInput;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.runner.RunWith;
@@ -52,12 +55,27 @@ public class ByteStreamTokenizerTest {
         ByteStreamTokenizer bst = new ByteStreamTokenizer(f.getAbsolutePath(), false, LINEBREAK, 0);
         int cnt = 0;
         byte[] foo = null;
-        while (bst.hasMoreElements()) {
-            foo = bst.nextElement();
+        while (bst.hasNext()) {
+            foo = bst.next();
             assertNotNull(foo);
             cnt++;
         }
         assertEquals(4, cnt);
     }
-
+//  @Test
+//    public void testEmptyLines() throws Exception {
+//        System.out.println("testEmptyLines");
+//        File f = new File("src/test/resources/de/cebitec/mgx/seqstorage/4emptylines.txt");
+//        ByteStreamTokenizer bst =  new ByteStreamTokenizer(f.getAbsolutePath(), false, LINEBREAK, 0);
+//        List<String> data = new ArrayList<>();
+//        byte[] foo = null;
+//        while (bst.hasNext()) {
+//            foo = bst.next();
+//            String s = new String(foo);
+//            assertEquals("", s);
+//            data.add(s);
+//        }
+//        bst.close();
+//        assertEquals(4, data.size());
+//    }
 }

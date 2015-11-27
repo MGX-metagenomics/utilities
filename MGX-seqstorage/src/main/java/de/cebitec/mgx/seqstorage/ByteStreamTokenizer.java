@@ -6,10 +6,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.zip.GZIPInputStream;
 
-public class ByteStreamTokenizer implements Enumeration<byte[]> {
+public class ByteStreamTokenizer implements Iterator<byte[]> {
 
     private final InputStream in;
     private final int DEFAULT_BUFSIZE = 49152;
@@ -40,7 +40,7 @@ public class ByteStreamTokenizer implements Enumeration<byte[]> {
     }
 
     @Override
-    public boolean hasMoreElements() {
+    public boolean hasNext() {
         
         if (elem != null) {
             // previous element not yet received
@@ -105,7 +105,7 @@ public class ByteStreamTokenizer implements Enumeration<byte[]> {
     }
 
     @Override
-    public byte[] nextElement() {
+    public byte[] next() {
         assert elem != null;
         byte[] ret = elem;
         elem = null;
@@ -165,5 +165,10 @@ public class ByteStreamTokenizer implements Enumeration<byte[]> {
         System.arraycopy(buffer, 0, newbuf, 0, buffer.length);
         buffer = newbuf;
         bufferRefillPosition = buffer.length * 8 / 10;
+    }
+
+    @Override
+    public void remove() {
+        throw new UnsupportedOperationException("Not supported.");
     }
 }
