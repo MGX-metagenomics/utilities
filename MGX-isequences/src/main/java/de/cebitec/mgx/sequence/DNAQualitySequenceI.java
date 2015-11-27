@@ -7,5 +7,6 @@ package de.cebitec.mgx.sequence;
 public interface DNAQualitySequenceI extends DNASequenceI {
 
     public byte[] getQuality();
-    public void setQuality(byte[] qual);
+
+    public void setQuality(byte[] qual) throws SeqStoreException;
 }
