@@ -58,7 +58,7 @@ public class CSFReader implements SeqReaderI<DNASequenceI> {
     }
 
     @Override
-    public boolean hasMoreElements() {
+    public boolean hasMoreElements() throws SeqStoreException {
 
         if (holder != null) {
             // element in holder not yet retrieved
@@ -85,11 +85,11 @@ public class CSFReader implements SeqReaderI<DNASequenceI> {
         System.arraycopy(record, 0, seqId, 0, 8);
         long sequence_id = ByteUtils.bytesToLong(seqId);
 
-        if (!seqin.hasMoreElements()) {
+        if (!seqin.hasNext()) {
             return false;
         }
 
-        byte[] dnasequence = seqin.nextElement();
+        byte[] dnasequence = seqin.next();
 
         if ((seqId != null) && (dnasequence != null)) {
             DNASequenceI seq = new DNASequence(sequence_id);
