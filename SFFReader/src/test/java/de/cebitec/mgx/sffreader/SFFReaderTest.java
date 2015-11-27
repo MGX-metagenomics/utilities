@@ -62,7 +62,7 @@ public class SFFReaderTest {
     public void setUp() {
         try {
             fileWithIndex = folder.newFile();
-            InputStream is = SFFReader.class.getClassLoader().getResourceAsStream("de/cebitec/mgx/oneread.sff");
+            InputStream is = getClass().getClassLoader().getResourceAsStream("de/cebitec/mgx/oneread.sff");
             FileOutputStream fos = new FileOutputStream(fileWithIndex);
             int i;
             while ((i = is.read()) != -1) {
@@ -70,7 +70,7 @@ public class SFFReaderTest {
             }
             fos.close();
             fileWithoutIndex = folder.newFile();
-            is = SFFReader.class.getClassLoader().getResourceAsStream("de/cebitec/mgx/multipleRead.sff");
+            is = getClass().getClassLoader().getResourceAsStream("de/cebitec/mgx/multipleRead.sff");
             fos = new FileOutputStream(fileWithoutIndex);
             while ((i = is.read()) != -1) {
                 fos.write(i);
