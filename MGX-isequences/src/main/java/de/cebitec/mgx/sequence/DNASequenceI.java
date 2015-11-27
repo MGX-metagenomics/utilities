@@ -17,5 +17,5 @@ public interface DNASequenceI {
 
     void setName(byte[] seqname);
 
-    void setSequence(byte[] dnaseq);
+    void setSequence(byte[] dnaseq) throws SeqStoreException;
 }
