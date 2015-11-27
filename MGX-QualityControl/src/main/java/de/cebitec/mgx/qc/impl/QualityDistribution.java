@@ -33,7 +33,7 @@ public class QualityDistribution implements Analyzer<DNAQualitySequenceI>{
     
     @Override
     public String getName() {
-        return "Sequence quality distribution";
+        return "Sequence quality";
     }
 
     @Override
