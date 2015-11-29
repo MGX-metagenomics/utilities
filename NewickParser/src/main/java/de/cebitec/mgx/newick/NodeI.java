@@ -15,6 +15,8 @@ public interface NodeI {
     public double getWeight();
 
     public String getName();
+    
+    public void setName(String name);
 
     public boolean isLeaf();
 }
