@@ -7,7 +7,7 @@ import java.awt.datatransfer.DataFlavor;
  *
  * @author sj
  */
-public abstract class Identifiable<T> extends ModelBase<T> {
+public abstract class Identifiable<T extends MGXDataModelBase<T>> extends MGXDataModelBase<T> {
 
     public final static long INVALID_IDENTIFIER = -1;
     protected long id = INVALID_IDENTIFIER;
