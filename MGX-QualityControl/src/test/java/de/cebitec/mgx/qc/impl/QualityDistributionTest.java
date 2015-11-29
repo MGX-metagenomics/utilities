@@ -3,6 +3,7 @@ package de.cebitec.mgx.qc.impl;
 import de.cebitec.mgx.qc.QCResult;
 import de.cebitec.mgx.seqstorage.QualityDNASequence;
 import de.cebitec.mgx.sequence.DNAQualitySequenceI;
+import de.cebitec.mgx.sequence.SeqStoreException;
 import java.util.Arrays;
 import org.junit.*;
 import static org.junit.Assert.*;
@@ -25,7 +26,7 @@ public class QualityDistributionTest {
     
     @Ignore("Test can take several minutes")
     @Test
-    public void testUpperBorder() {
+    public void testUpperBorder() throws SeqStoreException {
         DNAQualitySequenceI qualitySequence1 = new QualityDNASequence();        
         byte[] qual1 = new byte[2_000];
         Arrays.fill(qual1, 0, 1000, (byte)127);
@@ -54,7 +55,7 @@ public class QualityDistributionTest {
     }
     
     @Test
-    public void testExtendArrays() {
+    public void testExtendArrays() throws SeqStoreException {
         DNAQualitySequenceI qualitySequence1 = new QualityDNASequence();        
         byte[] qual1 = new byte[5_000];
         Arrays.fill(qual1, 0, 3000, (byte)127);
@@ -85,7 +86,7 @@ public class QualityDistributionTest {
     }
     
     @Test
-    public void testCalculations() {
+    public void testCalculations() throws SeqStoreException {
         DNAQualitySequenceI qualitySequence1 = new QualityDNASequence();        
         byte[] qual1 = new byte[1_000];
         Arrays.fill(qual1, 0, 500, (byte)127);
@@ -114,7 +115,7 @@ public class QualityDistributionTest {
     }
     
     @Test
-    public void testOnSingleSequence() {
+    public void testOnSingleSequence() throws SeqStoreException {
         DNAQualitySequenceI qualitySequence1 = new QualityDNASequence();        
         byte[] qual1 = new byte[1_000];
         Arrays.fill(qual1, 0, 500, (byte)127);
