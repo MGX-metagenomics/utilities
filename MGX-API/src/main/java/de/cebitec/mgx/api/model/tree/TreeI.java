@@ -6,7 +6,6 @@
 
 package de.cebitec.mgx.api.model.tree;
 
-import de.cebitec.mgx.api.MGXMasterI;
 import de.cebitec.mgx.api.misc.Visualizable;
 import de.cebitec.mgx.api.model.AttributeI;
 import java.util.Collection;
