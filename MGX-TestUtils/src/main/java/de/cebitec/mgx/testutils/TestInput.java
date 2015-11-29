@@ -16,7 +16,7 @@ import java.io.FileOutputStream;
 public class TestInput {
 
     public static File copyTestResource(Class clazz, String uri) throws Exception {
-        org.junit.Assert.assertNotNull("Test file " + uri + " missing", clazz.getResource(uri));
+        org.junit.Assert.assertNotNull("Test file " + uri + " missing", clazz.getClassLoader().getResource(uri));
         File f = null;
         try (BufferedInputStream is = new BufferedInputStream(clazz.getClassLoader().getResourceAsStream(uri))) {
             f = File.createTempFile("seq", ".fq");
