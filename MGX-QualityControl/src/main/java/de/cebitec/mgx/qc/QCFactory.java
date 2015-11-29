@@ -9,12 +9,11 @@ import de.cebitec.mgx.qc.impl.*;
 
 /**
  *
- * @author sj
+ * @author sjaenick
  */
 public class QCFactory {
 
     public static Analyzer[] getQCAnalyzers(boolean hasQuality) {
-//        return new Analyzer[]{};
         if (hasQuality) {
             return new Analyzer[]{ new QualityDistribution(), new LengthDistribution(), new NucleotideDistribution(), new GCDistribution()};
         } else {
