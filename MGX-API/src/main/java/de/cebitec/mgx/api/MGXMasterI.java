@@ -18,19 +18,30 @@ import de.cebitec.mgx.api.access.TaskAccessI;
 import de.cebitec.mgx.api.access.TermAccessI;
 import de.cebitec.mgx.api.access.ToolAccessI;
 import de.cebitec.mgx.api.model.AttributeTypeI;
-import de.cebitec.mgx.api.model.ModelBase;
+import de.cebitec.mgx.api.model.MGXDataModelBaseI;
+import de.cebitec.mgx.api.model.ModelBaseI;
+import de.cebitec.mgx.pevents.ParallelPropertyChangeSupport;
 import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+import java.io.IOException;
 import java.util.logging.Level;
 
 /**
  *
  * @author sjaenick
  */
-public abstract class MGXMasterI extends ModelBase<MGXMasterI> {
+public abstract class MGXMasterI implements ModelBaseI<MGXMasterI> {
 
-    public MGXMasterI(MGXMasterI master, DataFlavor dataflavor) {
-        super(null, dataflavor);
-        super.master = this;
+    public static final DataFlavor DATA_FLAVOR = new DataFlavor(MGXMasterI.class, "MGXMasterI");
+    //
+    private final PropertyChangeSupport pcs = new ParallelPropertyChangeSupport(this);
+    private String managedState = OBJECT_MANAGED;
+    
+    public MGXMasterI() {
+        //super(null, dataflavor);
     }
 
     public abstract RESTMembershipI getMembership();
@@ -71,6 +82,76 @@ public abstract class MGXMasterI extends ModelBase<MGXMasterI> {
 
     public abstract StatisticsAccessI Statistics();
 
-    public abstract <T extends ModelBase> TaskAccessI<T> Task();
+    public abstract <T extends MGXDataModelBaseI<T>> TaskAccessI<T> Task();
+
+    @Override
+    public final void modified() {
+        if (managedState.equals(OBJECT_DELETED)) {
+            throw new RuntimeException("Invalid object state, cannot modify deleted object.");
+        }
+        firePropertyChange(ModelBaseI.OBJECT_MODIFIED, 1, 2);
+    }
+
+    @Override
+    public final void deleted() {
+        if (managedState.equals(OBJECT_DELETED)) {
+            throw new RuntimeException("Invalid object state, cannot delete deleted object.");
+        }
+        firePropertyChange(ModelBaseI.OBJECT_DELETED, 0, 1);
+        managedState = OBJECT_DELETED;
+    }
+
+    @Override
+    public final void addPropertyChangeListener(PropertyChangeListener listener) {
+        pcs.addPropertyChangeListener(listener);
+    }
+
+    @Override
+    public final void removePropertyChangeListener(PropertyChangeListener listener) {
+        pcs.removePropertyChangeListener(listener);
+    }
+
+    @Override
+    public final void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
+        PropertyChangeEvent evt = new PropertyChangeEvent(this, propertyName, oldValue, newValue);
+        firePropertyChange(evt);
+    }
+
+    @Override
+    public final void firePropertyChange(String propertyName, int oldValue, int newValue) {
+        PropertyChangeEvent evt = new PropertyChangeEvent(this, propertyName, oldValue, newValue);
+        firePropertyChange(evt);
+        //pcs.firePropertyChange(propertyName, oldValue, newValue);
+    }
+
+    @Override
+    public final void firePropertyChange(String propertyName, boolean oldValue, boolean newValue) {
+        PropertyChangeEvent evt = new PropertyChangeEvent(this, propertyName, oldValue, newValue);
+        firePropertyChange(evt);
+    }
+
+    @Override
+    public final void firePropertyChange(PropertyChangeEvent event) {
+        pcs.firePropertyChange(event);
+    }
+
+    @Override
+    public final DataFlavor[] getTransferDataFlavors() {
+        return new DataFlavor[]{DATA_FLAVOR};
+    }
+
+    @Override
+    public final boolean isDataFlavorSupported(DataFlavor flavor) {
+        return flavor != null && flavor.equals(DATA_FLAVOR);
+    }
+
+    @Override
+    public final Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
+        if (isDataFlavorSupported(flavor)) {
+            return this;
+        } else {
+            throw new UnsupportedFlavorException(flavor);
+        }
+    }
 
 }

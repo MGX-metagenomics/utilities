@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package de.cebitec.mgx.api.groups;
 
 import de.cebitec.mgx.api.misc.AttributeRank;
@@ -22,35 +21,51 @@ import java.util.concurrent.Future;
  * @author sj
  */
 public interface VGroupManagerI extends PropertyChangeListener {
+
+    String REPLICATEGROUP_NUM_CHANGED = "replGroupNumChanged";
+    String REPLICATEGROUP_SELECTION_CHANGED = "replGroupSelectionChanged";
     String VISGROUP_NUM_CHANGED = "vgNumChanged";
     String VISGROUP_SELECTION_CHANGED = "vgSelectionChanged";
 
     void addPropertyChangeListener(PropertyChangeListener p);
 
-    VisualizationGroupI createGroup();
+    VisualizationGroupI createVizGroup();
 
-    List<VisualizationGroupI> getActiveGroups();
+    List<VisualizationGroupI> getActiveVizGroups();
 
-    Collection<VisualizationGroupI> getAllGroups();
+    Collection<VisualizationGroupI> getAllVizGroups();
 
     List<Pair<VisualizationGroupI, DistributionI<Long>>> getDistributions() throws ConflictingJobsException;
 
     List<Pair<VisualizationGroupI, TreeI<Long>>> getHierarchies();
 
-    VisualizationGroupI getSelectedGroup();
+    VisualizationGroupI getSelectedVizGroup();
 
-    boolean hasGroup(String name);
-
+    //boolean hasVizGroup(String name);
     void registerResolver(ConflictResolver cr);
 
-    void removeGroup(VisualizationGroupI vg);
+    void removeVizGroup(VisualizationGroupI vg);
 
     void removePropertyChangeListener(PropertyChangeListener p);
 
     boolean selectAttributeType(AttributeRank rank, String aType);
 
-    void setSelectedGroup(VisualizationGroupI group);
-    
+    void setSelectedVizGroup(VisualizationGroupI group);
+
     <T> Future<T> submit(Fetcher<T> f);
-    
+
+    //
+    // replicate group handling
+    //
+    Collection<ReplicateGroupI> getReplicateGroups();
+
+    ReplicateGroupI createReplicateGroup();
+
+    ReplicateI createReplicate(ReplicateGroupI rGroup);
+
+    void removeReplicateGroup(ReplicateGroupI vg);
+
+    //boolean hasReplicateGroup(String name);
+    public void setSelectedReplicateGroup(ReplicateGroupI replicateGroup);
+
 }

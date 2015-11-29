@@ -7,14 +7,14 @@ package de.cebitec.mgx.api.access;
 
 import de.cebitec.mgx.api.exception.MGXException;
 import de.cebitec.mgx.api.misc.TaskI;
-import de.cebitec.mgx.api.model.ModelBase;
+import de.cebitec.mgx.api.model.MGXDataModelBaseI;
 import java.util.UUID;
 
 /**
  *
  * @author sj
  */
-public interface TaskAccessI<T extends ModelBase> {
+public interface TaskAccessI<T extends MGXDataModelBaseI<T>> {
 
     public abstract TaskI<T> get(T obj, UUID taskId, TaskI.TaskType tt) throws MGXException;
 

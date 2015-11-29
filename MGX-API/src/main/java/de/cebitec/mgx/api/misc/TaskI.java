@@ -5,14 +5,14 @@
  */
 package de.cebitec.mgx.api.misc;
 
-import de.cebitec.mgx.api.model.ModelBase;
+import de.cebitec.mgx.api.model.MGXDataModelBaseI;
 import java.util.UUID;
 
 /**
  *
  * @author sj
  */
-public abstract class TaskI<T extends ModelBase> {
+public abstract class TaskI<T extends MGXDataModelBaseI<T>> {
 
     public enum TaskType {
 
