@@ -12,7 +12,7 @@ import java.awt.datatransfer.DataFlavor;
  *
  * @author sj
  */
-public abstract class MGXFileI extends ModelBase<MGXFileI> {
+public abstract class MGXFileI extends MGXDataModelBase<MGXFileI> {
 
     public static final String ROOT_PATH = ".";
     public static final String separator = "|";
@@ -64,7 +64,7 @@ public abstract class MGXFileI extends ModelBase<MGXFileI> {
             }
         };
     }
-
+    
     public MGXFileI(MGXMasterI m) {
         super(m, DATA_FLAVOR);
     }

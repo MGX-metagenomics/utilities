@@ -13,19 +13,18 @@ import org.apache.commons.math3.util.FastMath;
  *
  * @author sjaenick
  */
-public abstract class LocationBase<T> extends Identifiable<T> {
+public abstract class LocationBase<T extends LocationBase<T>> extends Identifiable<T> {
 
     private final int start;
     private final int stop;
-    private final int min;
-    private final int max;
+    private int min = -1;
+    private int max = -1;
 
     public LocationBase(MGXMasterI m, int start, int stop, DataFlavor df) {
         super(m, df);
         this.start = start;
         this.stop = stop;
-        min = FastMath.min(start, stop);
-        max = FastMath.max(start, stop);
+
     }
 
     public final int getStart() {
@@ -37,10 +36,16 @@ public abstract class LocationBase<T> extends Identifiable<T> {
     }
 
     public final int getMax() {
+        if (max == -1) {
+            max = FastMath.max(start, stop);
+        }
         return max;
     }
 
     public final int getMin() {
+        if (min == -1) {
+            min = FastMath.min(start, stop);
+        }
         return min;
     }
 }

@@ -1,9 +1,13 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package de.cebitec.mgx.api.model;
 
 import de.cebitec.mgx.api.MGXMasterI;
 import de.cebitec.mgx.pevents.ParallelPropertyChangeSupport;
 import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -14,22 +18,20 @@ import java.io.IOException;
  *
  * @author sjaenick
  */
-public abstract class ModelBase<T> implements Transferable, Comparable<T> {
+public abstract class MGXDataModelBase<T extends MGXDataModelBaseI<T>> implements MGXDataModelBaseI<T> {
 
-    protected MGXMasterI master;
-    private final PropertyChangeSupport pcs = new ParallelPropertyChangeSupport(this);
-    public final static String OBJECT_MANAGED = "objectManaged";
-    public final static String OBJECT_DELETED = "objectDeleted";
-    public final static String OBJECT_MODIFIED = "objectModified";
+    private final MGXMasterI master;
     private final DataFlavor dataflavor;
-    private String managedState;
+    private final PropertyChangeSupport pcs = new ParallelPropertyChangeSupport(this, true);
+    //
+    private String managedState = OBJECT_MANAGED;
 
-    public ModelBase(MGXMasterI master, DataFlavor dataflavor) {
+    public MGXDataModelBase(MGXMasterI master, DataFlavor dataFlavor) {
         this.master = master;
-        this.dataflavor = dataflavor;
-        managedState = OBJECT_MANAGED;
+        this.dataflavor = dataFlavor;
     }
 
+    @Override
     public final MGXMasterI getMaster() {
         return master;
     }
@@ -53,49 +55,55 @@ public abstract class ModelBase<T> implements Transferable, Comparable<T> {
         }
     }
 
-    public final void modified() {
+    @Override
+    public void modified() {
         if (managedState.equals(OBJECT_DELETED)) {
             throw new RuntimeException("Invalid object state, cannot modify deleted object.");
         }
-        firePropertyChange(ModelBase.OBJECT_MODIFIED, 1, 2);
+        firePropertyChange(ModelBaseI.OBJECT_MODIFIED, 1, 2);
     }
 
-    public final void deleted() {
+    @Override
+    public void deleted() {
         if (managedState.equals(OBJECT_DELETED)) {
             throw new RuntimeException("Invalid object state, cannot delete deleted object.");
         }
-        firePropertyChange(ModelBase.OBJECT_DELETED, 0, 1);
+        firePropertyChange(ModelBaseI.OBJECT_DELETED, 0, 1);
         managedState = OBJECT_DELETED;
     }
 
+    @Override
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         pcs.addPropertyChangeListener(listener);
     }
 
+    @Override
     public void removePropertyChangeListener(PropertyChangeListener listener) {
         pcs.removePropertyChangeListener(listener);
     }
 
+    @Override
     public void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
         PropertyChangeEvent evt = new PropertyChangeEvent(this, propertyName, oldValue, newValue);
         firePropertyChange(evt);
     }
 
+    @Override
     public void firePropertyChange(String propertyName, int oldValue, int newValue) {
         PropertyChangeEvent evt = new PropertyChangeEvent(this, propertyName, oldValue, newValue);
         firePropertyChange(evt);
         //pcs.firePropertyChange(propertyName, oldValue, newValue);
     }
 
+    @Override
     public void firePropertyChange(String propertyName, boolean oldValue, boolean newValue) {
         PropertyChangeEvent evt = new PropertyChangeEvent(this, propertyName, oldValue, newValue);
         firePropertyChange(evt);
     }
 
+    @Override
     public void firePropertyChange(PropertyChangeEvent event) {
         pcs.firePropertyChange(event);
     }
 
-    @Override
-    public abstract int compareTo(T o);
 }

@@ -3,18 +3,19 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package de.cebitec.mgx.api.groups;
 
 import de.cebitec.mgx.api.misc.AttributeRank;
 import de.cebitec.mgx.api.misc.DistributionI;
 import de.cebitec.mgx.api.misc.Triple;
+import de.cebitec.mgx.api.model.ModelBaseI;
 import de.cebitec.mgx.api.model.AttributeI;
 import de.cebitec.mgx.api.model.AttributeTypeI;
 import de.cebitec.mgx.api.model.JobI;
 import de.cebitec.mgx.api.model.SeqRunI;
 import de.cebitec.mgx.api.model.tree.TreeI;
 import java.awt.Color;
+import java.awt.datatransfer.DataFlavor;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Iterator;
@@ -27,58 +28,59 @@ import java.util.UUID;
  *
  * @author sj
  */
-public interface VisualizationGroupI extends PropertyChangeListener {
-    String VISGROUP_ACTIVATED = "visgroup_activated";
-    String VISGROUP_ATTRTYPE_CHANGED = "vgAttrTypeChange";
-    String VISGROUP_CHANGED = "visgroup_changed";
-    String VISGROUP_DEACTIVATED = "visgroup_deactivated";
-    String VISGROUP_HAS_DIST = "vgHasDist";
-    String VISGROUP_RENAMED = "visgroup_renamed";
+public interface VisualizationGroupI extends ModelBaseI<VisualizationGroupI>, PropertyChangeListener {
 
-    void addPropertyChangeListener(PropertyChangeListener p);
+    public static final DataFlavor VISGROUP_DATA_FLAVOR = new DataFlavor(VisualizationGroupI.class, "VisualizationGroupI");
+    //private String managedState = OBJECT_MANAGED;
+    //
+    public static final String VISGROUP_ACTIVATED = "visgroup_activated";
+    public static final String VISGROUP_ATTRTYPE_CHANGED = "vgAttrTypeChange";
+    public static final String VISGROUP_CHANGED = "visgroup_changed";
+    public static final String VISGROUP_DEACTIVATED = "visgroup_deactivated";
+    public static final String VISGROUP_HAS_DIST = "vgHasDist";
+    public static final String VISGROUP_RENAMED = "visgroup_renamed";
 
-    void addSeqRun(final SeqRunI sr);
+    public void addSeqRun(final SeqRunI sr);
 
-    void addSeqRuns(final Set<SeqRunI> runs);
+    public void addSeqRuns(final Set<SeqRunI> runs);
 
-    Iterator<AttributeTypeI> getAttributeTypes();
+    public Iterator<AttributeTypeI> getAttributeTypes();
 
-    Color getColor();
+    public Color getColor();
 
-    List<Triple<AttributeRank, SeqRunI, Set<JobI>>> getConflicts();
-    
-    Map<SeqRunI, Set<JobI>> getConflicts(AttributeRank rank);
+    public List<Triple<AttributeRank, SeqRunI, Set<JobI>>> getConflicts();
 
-    DistributionI<Long> getDistribution() throws ConflictingJobsException;
+    public Map<SeqRunI, Set<JobI>> getConflicts(AttributeRank rank);
 
-    TreeI<Long> getHierarchy();
+    public DistributionI<Long> getDistribution() throws ConflictingJobsException;
 
-    int getId();
-    
-    UUID getUUID();
-    
-    void close();
+    public TreeI<Long> getHierarchy();
 
-    String getName();
+    public int getId();
 
-    long getNumSequences();
+    public UUID getUUID();
 
-    Map<SeqRunI, Set<AttributeI>> getSaveSet(List<String> requestedAttrs);
+    public void close();
 
-    String getSelectedAttributeType();
+    public String getName();
 
-    Set<SeqRunI> getSeqRuns();
+    public long getNumSequences();
 
-    boolean isActive();
+    public Map<SeqRunI, Set<AttributeI>> getSaveSet(List<String> requestedAttrs);
+
+    public String getSelectedAttributeType();
+
+    public Set<SeqRunI> getSeqRuns();
+
+    public boolean isActive();
 
     @Override
-    void propertyChange(PropertyChangeEvent evt);
+    public void propertyChange(PropertyChangeEvent evt);
 
-    void removePropertyChangeListener(PropertyChangeListener p);
+//    void removePropertyChangeListener(PropertyChangeListener p);
+    public void removeSeqRun(final SeqRunI sr);
 
-    void removeSeqRun(final SeqRunI sr);
-
-    void resolveConflict(AttributeRank rank, SeqRunI sr, JobI j);
+    public void resolveConflict(AttributeRank rank, SeqRunI sr, JobI j);
 
     /**
      *
@@ -92,12 +94,34 @@ public interface VisualizationGroupI extends PropertyChangeListener {
      * to provide the corresponding attribute type, a ConflictingJobsException
      * will be raised for resolval of the conflict.
      */
-    void selectAttributeType(AttributeRank rank, String attrType) throws ConflictingJobsException;
+    public void selectAttributeType(AttributeRank rank, String attrType) throws ConflictingJobsException;
 
-    void setActive(boolean is_active);
+    public void setActive(boolean is_active);
 
-    void setColor(Color color);
+    public void setColor(Color color);
 
-    void setName(String name);
-    
+    public abstract void setName(String name);
+
+//    @Override
+//    public DataFlavor[] getTransferDataFlavors();
+//
+//    @Override
+//    public boolean isDataFlavorSupported(DataFlavor flavor);
+//    @Override
+//    public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException;
+//    @Override
+//    public  void modified(); 
+//        if (managedState.equals(OBJECT_DELETED)) {
+//            throw new RuntimeException("Invalid object state, cannot modify deleted object.");
+//        }
+//        firePropertyChange(ModelBaseI.OBJECT_MODIFIED, 1, 2);
+//    }
+//    @Override
+//    public  void deleted() {
+//        if (managedState.equals(OBJECT_DELETED)) {
+//            throw new RuntimeException("Invalid object state, cannot delete deleted object.");
+//        }
+//        firePropertyChange(ModelBaseI.OBJECT_DELETED, 0, 1);
+//        managedState = OBJECT_DELETED;
+//    }
 }

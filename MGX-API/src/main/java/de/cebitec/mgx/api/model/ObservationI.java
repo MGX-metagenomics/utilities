@@ -11,9 +11,9 @@ import java.awt.datatransfer.DataFlavor;
 
 /**
  *
- * @author sj
+ * @author sjaenick
  */
-public abstract class ObservationI extends ModelBase<ObservationI> {
+public abstract class ObservationI extends MGXDataModelBase<ObservationI> {
     //
     public static final DataFlavor DATA_FLAVOR = new DataFlavor(ObservationI.class, "ObservationI");
 
