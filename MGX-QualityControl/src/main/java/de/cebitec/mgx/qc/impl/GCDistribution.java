@@ -48,7 +48,8 @@ public class GCDistribution implements Analyzer<DNASequenceI> {
                 case 'N':
                     break;
                 default:
-                    System.err.println(new String(dna));
+                    break;
+                    //System.err.println(new String(dna));
             }
         }
         float f = 100f * (gc / (at + gc));

@@ -59,7 +59,8 @@ public class NucleotideDistribution implements Analyzer<DNASequenceI> {
                     N[i]++;
                     break;
                 default:
-                    assert false;
+                    break;
+                    //assert false;
             }
         }
         cnt++;
