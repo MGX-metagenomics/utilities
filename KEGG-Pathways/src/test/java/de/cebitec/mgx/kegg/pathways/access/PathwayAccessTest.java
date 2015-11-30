@@ -7,7 +7,6 @@ import de.cebitec.mgx.kegg.pathways.api.PathwayI;
 import de.cebitec.mgx.kegg.pathways.model.ECNumberFactory;
 import java.awt.Rectangle;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -87,7 +86,7 @@ public class PathwayAccessTest {
         assertNotNull(pw);
         Map<ECNumberI, Set<Rectangle>> coords = getMaster().Pathways().getCoords(pw);
         assertNotNull(coords);
-        assertEquals(48, coords.size());
+        assertTrue(coords.size() > 45);
         assertTrue(coords.containsKey(ECNumberFactory.fromString("2.7.1.41")));
     }
 
