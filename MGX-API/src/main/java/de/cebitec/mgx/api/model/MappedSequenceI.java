@@ -3,22 +3,24 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package de.cebitec.mgx.api.model;
 
 import de.cebitec.mgx.api.MGXMasterI;
+import de.cebitec.mgx.api.model.comparator.MappedSequenceComparator;
 import java.awt.datatransfer.DataFlavor;
 
 /**
  *
  * @author sj
  */
-public abstract class MappedSequenceI extends LocationBase<MappedSequenceI> {
+public abstract class MappedSequenceI extends LocationBase<MappedSequenceI> implements Comparable<MappedSequenceI> {
+
     //
+
     public static final DataFlavor DATA_FLAVOR = new DataFlavor(MappedSequenceI.class, "MappedSequenceI");
 
-    public MappedSequenceI(MGXMasterI m, int start, int stop) {
-        super(m, start, stop, DATA_FLAVOR);
+    public MappedSequenceI(int start, int stop) {
+        super(start, stop);
     }
 
     public abstract long getSeqId();
@@ -26,7 +28,13 @@ public abstract class MappedSequenceI extends LocationBase<MappedSequenceI> {
     public abstract float getIdentity();
 
     @Override
-    public abstract int compareTo(MappedSequenceI o);
+    public final int compareTo(MappedSequenceI o) {
+        int ret = MappedSequenceComparator.getInstance().compare(this, o);
+        if (ret != 0) {
+            return ret;
+        }
+        return Long.compare(getSeqId(), o.getSeqId());
+    }
 
     @Override
     public abstract boolean equals(Object obj);
@@ -36,5 +44,5 @@ public abstract class MappedSequenceI extends LocationBase<MappedSequenceI> {
 
     @Override
     public abstract String toString();
-    
+
 }
