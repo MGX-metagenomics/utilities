@@ -22,29 +22,33 @@ import java.util.concurrent.Future;
  */
 public interface VGroupManagerI extends PropertyChangeListener {
 
-    String REPLICATEGROUP_NUM_CHANGED = "replGroupNumChanged";
+    //String REPLICATEGROUP_NUM_CHANGED = "replGroupNumChanged";
     String REPLICATEGROUP_SELECTION_CHANGED = "replGroupSelectionChanged";
-    String VISGROUP_NUM_CHANGED = "vgNumChanged";
+    //String VISGROUP_NUM_CHANGED = "vgNumChanged";
+    String VISGROUP_ADDED = "vgmgr_visgroup_added";
+    //String VISGROUP_REMOVED = "vgmgr_visgroup_removed";
+    String REPLGROUP_ADDED = "vgmgr_replgroup_added";
+    //String REPLGROUP_REMOVED = "vgmgr_replgroup_removed";
     String VISGROUP_SELECTION_CHANGED = "vgSelectionChanged";
 
     void addPropertyChangeListener(PropertyChangeListener p);
 
-    VisualizationGroupI createVizGroup();
+    VisualizationGroupI createVisualizationGroup();
 
-    List<VisualizationGroupI> getActiveVizGroups();
+    List<VisualizationGroupI> getActiveVisualizationGroups();
 
-    Collection<VisualizationGroupI> getAllVizGroups();
+    Collection<VisualizationGroupI> getAllVisualizationGroups();
 
     List<Pair<VisualizationGroupI, DistributionI<Long>>> getDistributions() throws ConflictingJobsException;
 
     List<Pair<VisualizationGroupI, TreeI<Long>>> getHierarchies();
 
-    VisualizationGroupI getSelectedVizGroup();
+    VisualizationGroupI getSelectedVisualizationGroup();
 
     //boolean hasVizGroup(String name);
     void registerResolver(ConflictResolver cr);
 
-    void removeVizGroup(VisualizationGroupI vg);
+    void removeVisualizationGroup(VisualizationGroupI vg);
 
     void removePropertyChangeListener(PropertyChangeListener p);
 

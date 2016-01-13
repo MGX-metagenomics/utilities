@@ -37,12 +37,12 @@ public interface VisualizationGroupI extends ModelBaseI<VisualizationGroupI>, Pr
     public static final String VISGROUP_ATTRTYPE_CHANGED = "vgAttrTypeChange";
     public static final String VISGROUP_CHANGED = "visgroup_changed";
     public static final String VISGROUP_DEACTIVATED = "visgroup_deactivated";
-    public static final String VISGROUP_HAS_DIST = "vgHasDist";
-    public static final String VISGROUP_RENAMED = "visgroup_renamed";
+    public static final String VISGROUP_HAS_DIST = "vgroup_HasDist";
+    public static final String VISGROUP_RENAMED = "vgroup_renamed";
 
     public void addSeqRun(final SeqRunI sr);
 
-    public void addSeqRuns(final Set<SeqRunI> runs);
+    public void addSeqRuns(final SeqRunI... runs);
 
     public Iterator<AttributeTypeI> getAttributeTypes();
 
@@ -63,6 +63,8 @@ public interface VisualizationGroupI extends ModelBaseI<VisualizationGroupI>, Pr
     public void close();
 
     public String getName();
+    
+    public String getDisplayName();
 
     public long getNumSequences();
 
@@ -102,26 +104,4 @@ public interface VisualizationGroupI extends ModelBaseI<VisualizationGroupI>, Pr
 
     public abstract void setName(String name);
 
-//    @Override
-//    public DataFlavor[] getTransferDataFlavors();
-//
-//    @Override
-//    public boolean isDataFlavorSupported(DataFlavor flavor);
-//    @Override
-//    public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException;
-//    @Override
-//    public  void modified(); 
-//        if (managedState.equals(OBJECT_DELETED)) {
-//            throw new RuntimeException("Invalid object state, cannot modify deleted object.");
-//        }
-//        firePropertyChange(ModelBaseI.OBJECT_MODIFIED, 1, 2);
-//    }
-//    @Override
-//    public  void deleted() {
-//        if (managedState.equals(OBJECT_DELETED)) {
-//            throw new RuntimeException("Invalid object state, cannot delete deleted object.");
-//        }
-//        firePropertyChange(ModelBaseI.OBJECT_DELETED, 0, 1);
-//        managedState = OBJECT_DELETED;
-//    }
 }
