@@ -1,6 +1,5 @@
 package de.cebitec.mgx.api;
 
-import de.cebitec.gpms.rest.RESTMembershipI;
 import de.cebitec.mgx.api.access.AccessBaseI;
 import de.cebitec.mgx.api.access.AttributeAccessI;
 import de.cebitec.mgx.api.access.DNAExtractAccessI;
@@ -37,14 +36,15 @@ public abstract class MGXMasterI implements ModelBaseI<MGXMasterI> {
 
     public static final DataFlavor DATA_FLAVOR = new DataFlavor(MGXMasterI.class, "MGXMasterI");
     //
-    private final PropertyChangeSupport pcs = new ParallelPropertyChangeSupport(this);
+    private final PropertyChangeSupport pcs = new ParallelPropertyChangeSupport(this, true);
     private String managedState = OBJECT_MANAGED;
-    
+
     public MGXMasterI() {
         //super(null, dataflavor);
     }
 
-    public abstract RESTMembershipI getMembership();
+//    public abstract RESTMembershipI getMembership();
+    public abstract String getRoleName();
 
     public abstract String getProject();
 
@@ -85,7 +85,7 @@ public abstract class MGXMasterI implements ModelBaseI<MGXMasterI> {
     public abstract <T extends MGXDataModelBaseI<T>> TaskAccessI<T> Task();
 
     @Override
-    public final void modified() {
+    public final synchronized void modified() {
         if (managedState.equals(OBJECT_DELETED)) {
             throw new RuntimeException("Invalid object state, cannot modify deleted object.");
         }
@@ -93,12 +93,17 @@ public abstract class MGXMasterI implements ModelBaseI<MGXMasterI> {
     }
 
     @Override
-    public final void deleted() {
+    public final synchronized void deleted() {
         if (managedState.equals(OBJECT_DELETED)) {
             throw new RuntimeException("Invalid object state, cannot delete deleted object.");
         }
         firePropertyChange(ModelBaseI.OBJECT_DELETED, 0, 1);
         managedState = OBJECT_DELETED;
+    }
+
+    @Override
+    public final synchronized boolean isDeleted() {
+        return managedState.equals(OBJECT_DELETED);
     }
 
     @Override
