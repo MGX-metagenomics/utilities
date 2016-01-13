@@ -34,7 +34,7 @@ public class EventDistributor implements Runnable, AutoCloseable {
     public void run() {
         try {
             while (!exit) {
-                AccumulatedEvent aEvent = in.poll(5, TimeUnit.MILLISECONDS);
+                AccumulatedEvent aEvent = in.poll(2, TimeUnit.MILLISECONDS);
                 if (aEvent != null) {
                     startReceivers();
                     PropertyChangeListener[] listeners = aEvent.getListeners();
@@ -54,7 +54,7 @@ public class EventDistributor implements Runnable, AutoCloseable {
         }
     }
 
-    void startReceivers() {
+    final void startReceivers() {
         if (receivers.size() == MAX_RECV_THREADS) {
             return;
         }
