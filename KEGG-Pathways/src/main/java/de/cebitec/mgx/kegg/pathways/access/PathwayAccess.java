@@ -1,6 +1,7 @@
 package de.cebitec.mgx.kegg.pathways.access;
 
 import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.WebResource;
 import de.cebitec.mgx.kegg.pathways.KEGGException;
 import de.cebitec.mgx.kegg.pathways.KEGGMaster;
 import static de.cebitec.mgx.kegg.pathways.access.AccessBase.copyFile;
@@ -253,10 +254,13 @@ public class PathwayAccess extends AccessBase {
 
         assert !isValid(pw);
 
-        final ClientResponse cr = getKEGGResource().path("/kegg-bin/show_pathway")
+        final WebResource wr = getKEGGResource()
+                .path("/kegg-bin/show_pathway")
                 .queryParam("org_name", "map")
-                .queryParam("mapno", pw.getMapNum().substring(3))
-                .get(ClientResponse.class);
+                .queryParam("mapno", pw.getMapNum().substring(3));
+        //System.err.println("GET: "+wr.getURI().toASCIIString());
+
+        ClientResponse cr = wr.header("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.1").get(ClientResponse.class);
         catchException(cr);
         final Map<ECNumberI, Set<Rectangle>> data = new HashMap<>();
         // fetch and parse
