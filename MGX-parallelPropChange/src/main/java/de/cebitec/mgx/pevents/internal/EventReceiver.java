@@ -36,7 +36,7 @@ public class EventReceiver implements Runnable {
     public void run() {
         try {
             while (!exit) {
-                DistributionEvent dEvent = in.poll(5, TimeUnit.MILLISECONDS);
+                DistributionEvent dEvent = in.poll(2, TimeUnit.MILLISECONDS);
                 if (dEvent != null) {
                     //Logger.getLogger(EventReceiver.class.getName()).log(Level.INFO, "receiver " + id + " got event");
                     PropertyChangeEvent event = dEvent.getEvent();
