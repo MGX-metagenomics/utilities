@@ -46,6 +46,7 @@ public class MGXOptions {
                 mavenBundle().groupId("de.cebitec.gpms").artifactId("GPMS-DTO").version("1.1"),
                 mavenBundle().groupId("de.cebitec.gpms").artifactId("GPMS-core-api").version("1.1"),
                 mavenBundle().groupId("de.cebitec.gpms").artifactId("GPMS-rest-api").version("1.1"),
+                mavenBundle().groupId("de.cebitec.gpms").artifactId("GPMS-model").version("1.1"),
                 mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-restgpms"),
                 mavenBundle().groupId("de.cebitec.mgx").artifactId("ProtoBuf-Serializer").version("1.0")
         );

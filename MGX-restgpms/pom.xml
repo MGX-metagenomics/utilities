@@ -35,13 +35,14 @@
                             com.sun.jersey.api.client,
                             com.sun.jersey.api.client.filter,
                             com.sun.jersey.api.client.config,
+                            com.sun.jersey.client.urlconnection,
                             de.cebitec.gpms.core,
                             de.cebitec.gpms.rest,
                             de.cebitec.gpms.dto,
+                            de.cebitec.gpms.model,
                             de.cebitec.mgx.protobuf.serializer
                         </Import-Package>
                         <Export-Package>de.cebitec.mgx.restgpms</Export-Package>
-                        <Private-Package>de.cebitec.mgx.restgpms.*</Private-Package>
                     </instructions>
                 </configuration>
             </plugin>
@@ -78,16 +79,10 @@
             <version>1.1</version>
         </dependency>
         <dependency>
-            <groupId>de.cebitec.gpms</groupId>
-            <artifactId>GPMS-DTO</artifactId>
-            <version>1.1</version>
-        </dependency>
-        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>ProtoBuf-Serializer</artifactId>
             <version>1.0</version>
         </dependency>
-        
         <dependency>
             <groupId>org.ops4j.pax.exam</groupId>
             <artifactId>pax-exam-container-forked</artifactId>
@@ -141,6 +136,22 @@
             <artifactId>logback-classic</artifactId>
             <version>1.1.2</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-client</artifactId>
+            <version>1.18.2</version>
+        </dependency>
+        <dependency>
+            <groupId>de.cebitec.gpms</groupId>
+            <artifactId>GPMS-DTO</artifactId>
+            <version>1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>de.cebitec.gpms</groupId>
+            <artifactId>GPMS-model</artifactId>
+            <version>1.1</version>
+            <type>jar</type>
         </dependency>
     </dependencies>
 
