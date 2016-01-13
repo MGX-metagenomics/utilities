@@ -21,28 +21,38 @@ public class ParallelPropertyChangeSupport extends PropertyChangeSupport impleme
 
     private static EventDistributor distributor = null;
     private static int numInstances = 0;
-    private final boolean traceDuplicates;
+    private final boolean traceErrors;
+    private final boolean returnImmediate;
     private static final Logger LOG = Logger.getLogger(ParallelPropertyChangeSupport.class.getName());
 
     public ParallelPropertyChangeSupport(Object sourceBean) {
-        this(sourceBean, false);
+        this(sourceBean, true, false);
     }
 
-    public ParallelPropertyChangeSupport(Object sourceBean, boolean traceDuplicates) {
+    public ParallelPropertyChangeSupport(Object sourceBean, boolean traceErrors) {
+        this(sourceBean, traceErrors, false);
+    }
+
+    public ParallelPropertyChangeSupport(Object sourceBean, boolean traceErrors, boolean returnImmediate) {
         super(sourceBean);
         numInstances++;
-        this.traceDuplicates = traceDuplicates;
+        this.traceErrors = traceErrors;
+        this.returnImmediate = returnImmediate;
     }
 
     @Override
-    public void addPropertyChangeListener(PropertyChangeListener listener) {
+    public final void addPropertyChangeListener(PropertyChangeListener listener) {
         if (listener == null) {
+            if (traceErrors) {
+                throw new IllegalArgumentException("null PropertyChangeListener added");
+            }
             return;
         }
-        if (traceDuplicates) {
+        if (traceErrors) {
             for (PropertyChangeListener pcl : getPropertyChangeListeners()) {
-                if (pcl.equals(listener)) {
+                if (pcl == listener) {
                     LOG.log(Level.INFO, "Duplicate PropertyChangeListener added: {0}", listener.toString());
+                    throw new IllegalArgumentException("Duplicate PropertyChangeListener added");
                 }
             }
         }
@@ -53,15 +63,28 @@ public class ParallelPropertyChangeSupport extends PropertyChangeSupport impleme
     }
 
     @Override
-    public void removePropertyChangeListener(PropertyChangeListener listener) {
+    public final void removePropertyChangeListener(PropertyChangeListener listener) {
         if (listener == null) {
             return;
+        }
+        if (traceErrors) {
+            boolean found = false;
+            PropertyChangeListener[] propertyChangeListeners = getPropertyChangeListeners();
+            for (PropertyChangeListener propertyChangeListener : propertyChangeListeners) {
+                if (propertyChangeListener.equals(listener)) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                throw new IllegalArgumentException("PropertyChangeLister " + listener + " cannot be removed because it is not a registered listener.");
+            }
         }
         super.removePropertyChangeListener(listener);
     }
 
     @Override
-    public void firePropertyChange(PropertyChangeEvent event) {
+    public final void firePropertyChange(PropertyChangeEvent event) {
         PropertyChangeListener[] listeners = getPropertyChangeListeners();
         if (listeners.length == 0) {
             return;
@@ -69,7 +92,9 @@ public class ParallelPropertyChangeSupport extends PropertyChangeSupport impleme
 
         AccumulatedEvent aEvent = new AccumulatedEvent(listeners, event);
         distributor.distributeEvent(aEvent);
-        aEvent.await();
+        if (!returnImmediate) {
+            aEvent.await();
+        }
     }
 
     private synchronized void startDistributor() {
@@ -81,7 +106,7 @@ public class ParallelPropertyChangeSupport extends PropertyChangeSupport impleme
     }
 
     @Override
-    public synchronized void close() throws Exception {
+    public final synchronized void close() {
         numInstances--;
         if (numInstances == 0 && distributor != null) {
             distributor.close();
