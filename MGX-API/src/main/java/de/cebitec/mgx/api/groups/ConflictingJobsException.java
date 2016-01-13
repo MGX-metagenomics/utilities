@@ -25,7 +25,7 @@ public class ConflictingJobsException extends Exception {
 
     @Override
     public String getMessage() {
-        StringBuilder sb = new StringBuilder("Conflicts remain for group " + group.getName()+ ": \n");
+        StringBuilder sb = new StringBuilder("Conflicts remain for group " + group.getDisplayName()+ ": \n");
         for (Map.Entry<SeqRunI, Set<JobI>> e : conflicts.entrySet()) {
             sb.append(e.getKey().getName()).append(": ");
             for (JobI j : e.getValue()) {
