@@ -4,10 +4,12 @@
  */
 package de.cebitec.mgx.restgpms;
 
+import de.cebitec.gpms.core.DataSourceI;
+import de.cebitec.gpms.core.GPMSException;
+import de.cebitec.gpms.core.MasterI;
+import de.cebitec.gpms.core.MembershipI;
 import de.cebitec.gpms.core.ProjectClassI;
-import de.cebitec.gpms.rest.RESTMasterI;
-import de.cebitec.gpms.rest.RESTMembershipI;
-import de.cebitec.gpms.rest.RESTProjectI;
+import de.cebitec.gpms.core.ProjectI;
 import java.util.Iterator;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -38,6 +40,7 @@ public class GPMSTest {
                 mavenBundle().groupId("de.cebitec.gpms").artifactId("GPMS-DTO").version("1.1"),
                 mavenBundle().groupId("de.cebitec.gpms").artifactId("GPMS-core-api").version("1.1"),
                 mavenBundle().groupId("de.cebitec.gpms").artifactId("GPMS-rest-api").version("1.1"),
+                mavenBundle().groupId("de.cebitec.gpms").artifactId("GPMS-model").version("1.1"),
                 mavenBundle().groupId("de.cebitec.mgx").artifactId("ProtoBuf-Serializer").version("1.0"),
                 systemProperty("org.ops4j.pax.logging.DefaultServiceLog.level").value("WARN"),
                 bundle("reference:file:target/classes")
@@ -47,7 +50,7 @@ public class GPMSTest {
     @Test
     public void testGetProjectClasses() {
         System.out.println("getProjectClasses");
-        GPMS gpms = TestMaster.get();
+        GPMSClient gpms = TestMaster.get();
         gpms.login("mgx_unittestRO", "gut-isM5iNt");
         Iterator<ProjectClassI> projectClasses = gpms.getProjectClasses();
         assertNotNull(projectClasses);
@@ -55,27 +58,54 @@ public class GPMSTest {
         while (projectClasses.hasNext()) {
             ProjectClassI pc = projectClasses.next();
             assertEquals("MGX", pc.getName());
+            assertEquals(3, pc.getRoles().size()); // user, admin, guest
             cnt++;
         }
         assertEquals(1, cnt);
     }
 
     @Test
-    public void testGetMemberships() {
+    public void testGetMemberships() throws GPMSException {
         System.out.println("getMemberships");
-        GPMS gpms = TestMaster.get();
+        GPMSClient gpms = TestMaster.get();
         gpms.login("mgx_unittestRO", "gut-isM5iNt");
-        Iterator<RESTMembershipI> memberships = gpms.getMemberships();
+        Iterator<MembershipI> memberships = gpms.getMemberships();
         assertNotNull(memberships);
         int cnt = 0;
+        DataSourceI restDS = null;
         while (memberships.hasNext()) {
-            RESTMembershipI m = memberships.next();
-            RESTProjectI project = m.getProject();
+            MembershipI m = memberships.next();
+            ProjectI project = m.getProject();
             assertNotNull(project);
             assertEquals("MGX_Unittest", project.getName());
+            assertNotNull(project.getDataSources());
+            assertFalse(project.getDataSources().isEmpty());
+            for (DataSourceI rds : project.getDataSources()) {
+                restDS = rds;
+            }
             cnt++;
         }
         assertEquals(1, cnt);
+
+        assertNotNull(restDS);
+        //assertNotEquals("", restDS.getURL().toASCIIString());
+
+    }
+
+    @Test
+    public void testRESTDataSource() throws GPMSException {
+        System.out.println("testRESTDataSource");
+        GPMSClient gpms = TestMaster.get();
+        gpms.login("mgx_unittestRO", "gut-isM5iNt");
+        Iterator<MembershipI> memberships = gpms.getMemberships();
+        int cnt = 0;
+        MasterI master = null;
+        while (memberships.hasNext()) {
+            MembershipI m = memberships.next();
+            master = gpms.createMaster(m);
+            break;
+        }
+        assertNotNull(master);
     }
 
     @Test
@@ -92,7 +122,7 @@ public class GPMSTest {
         System.out.println("testLoginTwice");
         String login = "mgx_unittestRO";
         String password = "gut-isM5iNt";
-        GPMS gpms = TestMaster.get();
+        GPMSClient gpms = TestMaster.get();
         assertNotNull(gpms);
         boolean result = gpms.login(login, password);
         assertTrue(result);
@@ -106,7 +136,7 @@ public class GPMSTest {
         System.out.println("testInvalidLogin");
         String login = "WRONG";
         String password = "WRONG";
-        GPMS gpms = TestMaster.get();
+        GPMSClient gpms = TestMaster.get();
         assertNotNull(gpms);
         gpms.logout();
         boolean result = gpms.login(login, password);
@@ -116,7 +146,7 @@ public class GPMSTest {
     @Test
     public void testInvalidLogin2() {
         System.out.println("testInvalidLogin2");
-        GPMS gpms = TestMaster.get();
+        GPMSClient gpms = TestMaster.get();
         assertNotNull(gpms);
 
         // call login() with wrong credentials on an instance that is already
@@ -130,7 +160,7 @@ public class GPMSTest {
     @Test
     public void testPing() {
         System.out.println("ping");
-        GPMS gpms = TestMaster.get();
+        GPMSClient gpms = TestMaster.get();
         gpms.login("mgx_unittestRO", "gut-isM5iNt");
         long result = gpms.ping();
         assertTrue(result > 100000);
@@ -139,18 +169,18 @@ public class GPMSTest {
     }
 
     @Test
-    public void testCreateMaster() {
+    public void testCreateMaster() throws GPMSException {
         System.out.println("createMaster");
-        GPMS gpms = TestMaster.get();
+        GPMSClient gpms = TestMaster.get();
         gpms.login("mgx_unittestRO", "gut-isM5iNt");
-        Iterator<RESTMembershipI> memberships = gpms.getMemberships();
+        Iterator<MembershipI> memberships = gpms.getMemberships();
         assertNotNull(memberships);
         int cnt = 0;
         while (memberships.hasNext()) {
-            RESTMembershipI m = memberships.next();
-            RESTProjectI project = m.getProject();
+            MembershipI m = memberships.next();
+            ProjectI project = m.getProject();
             assertNotNull(project);
-            RESTMasterI result = gpms.createMaster(m);
+            MasterI result = gpms.createMaster(m);
             assertNotNull(result);
             cnt++;
         }
