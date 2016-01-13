@@ -3,10 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package de.cebitec.mgx.api.model;
 
-import de.cebitec.mgx.api.MGXMasterI;
 import java.awt.datatransfer.DataFlavor;
 
 /**
@@ -15,13 +13,15 @@ import java.awt.datatransfer.DataFlavor;
  */
 public abstract class RegionI extends LocationBase<RegionI> {
 
-    public RegionI(MGXMasterI m, int start, int stop, DataFlavor df) {
-        super(m, start, stop, df);
+    public static final DataFlavor DATA_FLAVOR = new DataFlavor(RegionI.class, "RegionI");
+
+    public RegionI(int start, int stop) {
+        super(start, stop);
     }
 
     public abstract long getReferenceId();
 
-    public abstract void setReference(Long reference_id);
+    public abstract void setReference(long reference_id);
 
     public abstract String getName();
 
@@ -40,7 +40,6 @@ public abstract class RegionI extends LocationBase<RegionI> {
      */
     public abstract int getFrame();
 
-    @Override
-    public abstract int compareTo(RegionI o);
-    
+//    @Override
+//    public abstract int compareTo(RegionI o);
 }

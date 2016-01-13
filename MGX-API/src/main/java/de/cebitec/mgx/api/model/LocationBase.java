@@ -5,36 +5,37 @@
  */
 package de.cebitec.mgx.api.model;
 
-import de.cebitec.mgx.api.MGXMasterI;
-import java.awt.datatransfer.DataFlavor;
 import org.apache.commons.math3.util.FastMath;
 
 /**
  *
  * @author sjaenick
  */
-public abstract class LocationBase<T extends LocationBase<T>> extends Identifiable<T> {
+//public abstract class LocationBase<T extends LocationBase<T>> extends Identifiable<T> implements LocationI {
+public abstract class LocationBase<T extends LocationBase<T>> implements LocationI {
 
     private final int start;
     private final int stop;
     private int min = -1;
     private int max = -1;
 
-    public LocationBase(MGXMasterI m, int start, int stop, DataFlavor df) {
-        super(m, df);
+    public LocationBase(int start, int stop) {
+        //super(m, df);
         this.start = start;
         this.stop = stop;
-
     }
 
+    @Override
     public final int getStart() {
         return start;
     }
 
+    @Override
     public final int getStop() {
         return stop;
     }
 
+    @Override
     public final int getMax() {
         if (max == -1) {
             max = FastMath.max(start, stop);
@@ -42,6 +43,7 @@ public abstract class LocationBase<T extends LocationBase<T>> extends Identifiab
         return max;
     }
 
+    @Override
     public final int getMin() {
         if (min == -1) {
             min = FastMath.min(start, stop);
