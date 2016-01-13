@@ -30,7 +30,7 @@ public class AccessBase {
 
     public AccessBase(KEGGMaster master) {
         this.master = master;
-        pool = Executors.newFixedThreadPool(30);
+        pool = Executors.newFixedThreadPool(5);
     }
 
     ExecutorService getPool() {
