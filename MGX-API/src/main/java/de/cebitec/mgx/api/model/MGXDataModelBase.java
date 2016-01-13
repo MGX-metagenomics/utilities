@@ -73,6 +73,11 @@ public abstract class MGXDataModelBase<T extends MGXDataModelBaseI<T>> implement
     }
 
     @Override
+    public final boolean isDeleted() {
+        return managedState.equals(OBJECT_DELETED);
+    }
+
+    @Override
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         pcs.addPropertyChangeListener(listener);
     }
