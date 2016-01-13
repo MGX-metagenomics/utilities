@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
-import org.junit.Test;
 
 /**
  *
@@ -12,7 +11,7 @@ import org.junit.Test;
  */
 public class TestMaster {
 
-    public static GPMS get() {
+    public static GPMSClient get() {
         
         String serverURI = "https://mgx.cebitec.uni-bielefeld.de/MGX-maven-web/webresources/";
         
@@ -28,7 +27,7 @@ public class TestMaster {
             }
         }
         
-        GPMS gpms = new GPMS("MyServer", serverURI);
+        GPMSClient gpms = new GPMSClient("MyServer", serverURI);
         return gpms;
     }
 }
