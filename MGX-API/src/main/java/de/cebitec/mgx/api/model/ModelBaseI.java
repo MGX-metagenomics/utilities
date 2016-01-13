@@ -34,6 +34,8 @@ public interface ModelBaseI<T extends ModelBaseI<T>> extends Transferable, Compa
     public void modified();
 
     public void deleted();
+    
+    public boolean isDeleted();
 
     public void addPropertyChangeListener(PropertyChangeListener listener);
 
