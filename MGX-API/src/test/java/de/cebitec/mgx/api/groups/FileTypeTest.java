@@ -6,8 +6,8 @@
 package de.cebitec.mgx.api.groups;
 
 import de.cebitec.mgx.osgiutils.MGXOptions;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Configuration;
 import static org.ops4j.pax.exam.CoreOptions.bundle;
