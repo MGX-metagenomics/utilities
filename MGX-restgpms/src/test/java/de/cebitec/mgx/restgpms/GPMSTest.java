@@ -10,9 +10,14 @@ import de.cebitec.gpms.core.MasterI;
 import de.cebitec.gpms.core.MembershipI;
 import de.cebitec.gpms.core.ProjectClassI;
 import de.cebitec.gpms.core.ProjectI;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Iterator;
+import java.util.Properties;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Assume;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Configuration;
 import static org.ops4j.pax.exam.CoreOptions.bundle;
@@ -118,6 +123,31 @@ public class GPMSTest {
     }
 
     @Test
+    public void testLoginGPMSInternal() {
+        System.out.println("testLoginGPMSInternal");
+
+        String login = null;
+        String password = null;
+
+        String config = System.getProperty("user.home") + "/.m2/mgx.junit";
+        File f = new File(config);
+        Assume.assumeTrue(f.exists() && f.canRead());
+        Properties p = new Properties();
+        try {
+            p.load(new FileInputStream(f));
+            login = p.getProperty("username");
+            password = p.getProperty("password");
+        } catch (IOException ex) {
+            System.out.println(ex.getMessage());
+        }
+        Assume.assumeNotNull(login);
+        Assume.assumeNotNull(password);
+        System.out.println("  using credentials for login " + login);
+        boolean result = TestMaster.get().login(login, password);
+        assertTrue(result);
+    }
+
+    @Test
     public void testLoginTwice() {
         System.out.println("testLoginTwice");
         String login = "mgx_unittestRO";
@@ -176,15 +206,20 @@ public class GPMSTest {
         Iterator<MembershipI> memberships = gpms.getMemberships();
         assertNotNull(memberships);
         int cnt = 0;
+        String projNames = "";
         while (memberships.hasNext()) {
             MembershipI m = memberships.next();
             ProjectI project = m.getProject();
             assertNotNull(project);
+            projNames += project.getName() + ", ";
             MasterI result = gpms.createMaster(m);
             assertNotNull(result);
             cnt++;
         }
-        assertEquals(1, cnt);
+        if (projNames.endsWith(", ")) {
+            projNames = projNames.substring(0, projNames.length() - 2);
+        }
+        assertEquals("mgx_unittestRO should only be a member of \'MGX_Unittest\', actual project list: " + projNames, 1, cnt);
     }
 
     @Test
