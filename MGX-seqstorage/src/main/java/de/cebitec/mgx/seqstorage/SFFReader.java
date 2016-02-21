@@ -24,7 +24,14 @@ public class SFFReader implements SeqReaderI<DNAQualitySequenceI> {
     private final String file;
     private DNAQualitySequenceI holder = null;
 
-    public SFFReader(String uri) throws SeqStoreException{
+    public SFFReader(String uri) throws SeqStoreException {
+        this(uri, false);
+    }
+    
+    public SFFReader(String uri, boolean is_compressed) throws SeqStoreException{
+        if (is_compressed) {
+            throw new SeqStoreException("Compressed SFF is not supported yet.");
+        }
         this.file = uri;        
         try {
             reader = new de.cebitec.mgx.sffreader.SFFReader(uri);
