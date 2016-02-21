@@ -10,13 +10,16 @@ import de.cebitec.mgx.sequence.DNAQualitySequenceI;
 import de.cebitec.mgx.sequence.DNASequenceI;
 import de.cebitec.mgx.sequence.FactoryI;
 import de.cebitec.mgx.sequence.SeqReaderI;
+import de.cebitec.mgx.sequence.SeqStoreException;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Configuration;
 import static org.ops4j.pax.exam.CoreOptions.bundle;
 import static org.ops4j.pax.exam.CoreOptions.junitBundles;
@@ -24,7 +27,6 @@ import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
 import static org.ops4j.pax.exam.CoreOptions.systemProperty;
 import org.ops4j.pax.exam.Option;
-import org.ops4j.pax.exam.junit.PaxExam;
 
 /**
  *
@@ -67,6 +69,59 @@ public class ReaderFactoryTest {
 
         f1.delete();
         f2.delete();
+        temp.delete();
+    }
+
+    @Test
+    public void testFASTQGZReader() throws Exception {
+        System.out.println("testFASTQGZReader");
+
+        File temp = File.createTempFile("temp", Long.toString(System.nanoTime()));
+        temp.delete();
+        temp.mkdirs();
+
+        File f1 = copyTestData(FastaReader.class, "de/cebitec/mgx/seqstorage/singleread.fq.gz", temp, "foo.fastq.gz");
+
+        FactoryI<DNASequenceI> rf = new ReaderFactory();
+        SeqReaderI<? extends DNASequenceI> reader = rf.<DNAQualitySequenceI>getReader(f1.getAbsolutePath());
+        assertNotNull(reader);
+        assertTrue(reader instanceof FASTQReader);
+
+        assertTrue(reader.hasMoreElements());
+        assertTrue(reader.hasQuality());
+        DNASequenceI seq = reader.nextElement();
+        assertNotNull(seq);
+        assertNotNull(seq.getSequence());
+        String nucl = new String(seq.getSequence());
+        assertEquals("AAAAA", nucl);
+
+        f1.delete();
+        temp.delete();
+    }
+
+    @Test
+    public void testSFFGZReader() throws Exception {
+        System.out.println("testSFFGZReader");
+
+        File temp = File.createTempFile("temp", Long.toString(System.nanoTime()));
+        temp.delete();
+        temp.mkdirs();
+
+        File f1 = copyTestData(FastaReader.class, "de/cebitec/mgx/seqstorage/multipleRead.sff.gz", temp, "foo.sff.gz");
+
+        FactoryI<DNASequenceI> rf = new ReaderFactory();
+        SeqReaderI<? extends DNASequenceI> reader = null;
+        try {
+            reader = rf.<DNAQualitySequenceI>getReader(f1.getAbsolutePath());
+        } catch (SeqStoreException ex) {
+            if (!ex.getMessage().contains("Compressed SFF is not supported")) {
+                fail(ex.getMessage());
+            }
+        }
+        
+        assertNull(reader);
+
+        f1.delete();
         temp.delete();
     }
 
