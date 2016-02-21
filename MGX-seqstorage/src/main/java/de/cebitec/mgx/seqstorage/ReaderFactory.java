@@ -50,7 +50,7 @@ public class ReaderFactory implements FactoryI<DNASequenceI> {
         boolean is_compressed = false;
 
         // check for gzip magic
-        if ((cbuf[0] == 0x1f) && (cbuf[1] == 0x8b)) {
+        if ((cbuf[0] == 0x1f) && (cbuf[1] == 0xfffd)) {
             try {
                 GZIPInputStream gzis = new GZIPInputStream(new FileInputStream(file));
                 InputStreamReader isr = new InputStreamReader(gzis);
@@ -80,12 +80,7 @@ public class ReaderFactory implements FactoryI<DNASequenceI> {
                 break;
             case '.':
                 if (cbuf[1] == 's' && cbuf[2] == 'f' && cbuf[3] == 'f') {
-                    try {
-                        ret = new SFFReader(uri);
-                    } catch (SeqStoreException ex) {
-                        Logger.getLogger(ReaderFactory.class.getName()).log(Level.SEVERE, null, ex);
-                        throw ex;
-                    }
+                    ret = new SFFReader(uri, is_compressed);
                 }
                 break;
             default:
