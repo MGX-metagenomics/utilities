@@ -7,11 +7,8 @@ import de.cebitec.mgx.sequence.SeqStoreException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.io.InputStream;
 import java.util.zip.GZIPInputStream;
 
 /**
@@ -19,6 +16,8 @@ import java.util.zip.GZIPInputStream;
  * @author sjaenick
  */
 public class ReaderFactory implements FactoryI<DNASequenceI> {
+
+    private final static byte[] GZIP_MAGIC = new byte[]{31, -117}; // 0x8b 0x1f
 
     public ReaderFactory() {
     }
@@ -38,9 +37,9 @@ public class ReaderFactory implements FactoryI<DNASequenceI> {
             throw new SeqStoreException(uri + " is empty.");
         }
 
-        char[] cbuf = new char[4];
-        try (FileReader fr = new FileReader(uri)) {
-            fr.read(cbuf, 0, 4);
+        byte[] buf = new byte[4];
+        try (InputStream in = new FileInputStream(uri)) {
+            in.read(buf);
         } catch (FileNotFoundException ex) {
             throw new SeqStoreException("Sequence file " + uri + " missing");
         } catch (IOException ex) {
@@ -50,21 +49,17 @@ public class ReaderFactory implements FactoryI<DNASequenceI> {
         boolean is_compressed = false;
 
         // check for gzip magic
-        if ((cbuf[0] == 0x1f) && (cbuf[1] == 0xfffd)) {
-            try {
-                GZIPInputStream gzis = new GZIPInputStream(new FileInputStream(file));
-                InputStreamReader isr = new InputStreamReader(gzis);
-                isr.read(cbuf, 0, 4);
-                isr.close();
-                gzis.close();
-                is_compressed = true;
+        if ((buf[0] == GZIP_MAGIC[0]) && (buf[1] == GZIP_MAGIC[1])) {
+            try (GZIPInputStream gzis = new GZIPInputStream(new FileInputStream(file))) {
+                gzis.read(buf);
             } catch (IOException ex) {
                 throw new SeqStoreException("Could not read sequence file: " + ex.getMessage());
             }
+            is_compressed = true;
         }
 
         SeqReaderI<? extends DNASequenceI> ret = null;
-        switch (cbuf[0]) {
+        switch (buf[0]) {
             case '>':
                 ret = new FastaReader(uri, is_compressed);
                 break;
@@ -79,12 +74,12 @@ public class ReaderFactory implements FactoryI<DNASequenceI> {
                 }
                 break;
             case '.':
-                if (cbuf[1] == 's' && cbuf[2] == 'f' && cbuf[3] == 'f') {
+                if (buf[1] == 's' && buf[2] == 'f' && buf[3] == 'f') {
                     ret = new SFFReader(uri, is_compressed);
                 }
                 break;
             default:
-                throw new SeqStoreException("Unsupported file type (" + new String(cbuf) + ")");
+                throw new SeqStoreException("Unsupported file type (" + new String(buf) + ")");
         }
 
         return ret;
