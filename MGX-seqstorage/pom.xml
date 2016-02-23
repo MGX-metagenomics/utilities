@@ -39,17 +39,19 @@
                     <execution>
                         <goals>
                             <goal>manifest</goal>
-                            <goal>wrap</goal>
+                         <!--   <goal>wrap</goal> -->
                         </goals>
                     </execution>
                 </executions>
                 <configuration>
                     <instructions>
-                        <Import-Package>de.cebitec.mgx.sffreader,de.cebitec.mgx.sequence,de.cebitec.mgx.braf,de.cebitec.mgx.sffreader.datatypes,org.apache.commons.math3.util,gnu.trove,gnu.trove.map</Import-Package>
+                        <Import-Package>org.osgi.framework,de.cebitec.mgx.sffreader,de.cebitec.mgx.sequence,de.cebitec.mgx.braf,de.cebitec.mgx.sffreader.datatypes,org.apache.commons.math3.util,gnu.trove,gnu.trove.map</Import-Package>
                         <Export-Package>de.cebitec.mgx.seqstorage,de.cebitec.mgx.seqstorage.encoding</Export-Package>
                         <Private-Package>de.cebitec.mgx.seqstorage.encoding</Private-Package>
-                        <Require-Capability>osgi.extender; filter:="(osgi.extender=osgi.serviceloader.registrar)"</Require-Capability>
+                 <!--       <Require-Capability>osgi.extender; filter:="(osgi.extender=osgi.serviceloader.registrar)"</Require-Capability>
                         <Provide-Capability>osgi.serviceloader; osgi.serviceloader=de.cebitec.mgx.sequence.FactoryI</Provide-Capability>
+                        -->
+                        <Bundle-Activator>de.cebitec.mgx.seqstorage.Activator</Bundle-Activator>
                     </instructions>
                 </configuration>
             </plugin>
@@ -70,7 +72,6 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>de.cebitec.mgx.seqstorage.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -147,7 +148,7 @@
             <version>${logback.version}</version>
             <scope>test</scope>
         </dependency>
-        
+        <!--
         <dependency>
             <groupId>org.apache.aries.spifly</groupId>
             <artifactId>org.apache.aries.spifly.dynamic.bundle</artifactId>
@@ -157,16 +158,27 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>osgi-over-slf4j</artifactId>
-            <version>1.7.13</version>
+            <version>1.7.14</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-jdk14</artifactId>
-            <version>1.7.13</version>
+            <version>1.7.14</version>
             <scope>runtime</scope>
+           <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions> 
         </dependency>
-        
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.14</version>
+            <scope>runtime</scope>
+        </dependency> -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
