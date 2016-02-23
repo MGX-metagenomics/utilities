@@ -112,7 +112,6 @@ public class Jersey1RESTAccess implements RESTAccessI {
 //    public String getName() {
 //        return dataSourceName;
 //    }
-
     private WebResource getWebResource() {
         return client.resource(resource);
     }
@@ -143,6 +142,8 @@ public class Jersey1RESTAccess implements RESTAccessI {
                     throw ex;
                 }
                 return put(obj, c, buildPath, numRetries - 1); // retry
+            } else if (ex.getCause() != null && ex.getCause() instanceof Exception) {
+                throw new RESTException(ex.getCause());
             } else {
                 throw ex; // rethrow
             }
@@ -158,6 +159,8 @@ public class Jersey1RESTAccess implements RESTAccessI {
         } catch (ClientHandlerException ex) {
             if (ex.getCause() != null && ex.getCause() instanceof SSLHandshakeException) {
                 put(obj, path); // retry
+            } else if (ex.getCause() != null && ex.getCause() instanceof Exception) {
+                throw new RESTException(ex.getCause());
             } else {
                 throw ex; // rethrow
             }
@@ -173,6 +176,8 @@ public class Jersey1RESTAccess implements RESTAccessI {
         } catch (ClientHandlerException ex) {
             if (ex.getCause() != null && ex.getCause() instanceof SSLHandshakeException) {
                 get(path); // retry
+            } else if (ex.getCause() != null && ex.getCause() instanceof Exception) {
+                throw new RESTException(ex.getCause());
             } else {
                 throw ex; // rethrow
             }
@@ -188,6 +193,8 @@ public class Jersey1RESTAccess implements RESTAccessI {
         } catch (ClientHandlerException ex) {
             if (ex.getCause() != null && ex.getCause() instanceof SSLHandshakeException) {
                 return get(c, path); // retry
+            } else if (ex.getCause() != null && ex.getCause() instanceof Exception) {
+                throw new RESTException(ex.getCause());
             } else {
                 throw ex; // rethrow
             }
@@ -204,6 +211,8 @@ public class Jersey1RESTAccess implements RESTAccessI {
         } catch (ClientHandlerException ex) {
             if (ex.getCause() != null && ex.getCause() instanceof SSLHandshakeException) {
                 return delete(clazz, path); // retry
+            } else if (ex.getCause() != null && ex.getCause() instanceof Exception) {
+                throw new RESTException(ex.getCause());
             } else {
                 throw ex; // rethrow
             }
@@ -219,6 +228,8 @@ public class Jersey1RESTAccess implements RESTAccessI {
         } catch (ClientHandlerException ex) {
             if (ex.getCause() != null && ex.getCause() instanceof SSLHandshakeException) {
                 delete(path); // retry
+            } else if (ex.getCause() != null && ex.getCause() instanceof Exception) {
+                throw new RESTException(ex.getCause());
             } else {
                 throw ex; // rethrow
             }
@@ -233,6 +244,8 @@ public class Jersey1RESTAccess implements RESTAccessI {
         } catch (ClientHandlerException ex) {
             if (ex.getCause() != null && ex.getCause() instanceof SSLHandshakeException) {
                 post(obj, path);
+            } else if (ex.getCause() != null && ex.getCause() instanceof Exception) {
+                throw new RESTException(ex.getCause());
             } else {
                 throw ex; // rethrow
             }
@@ -248,6 +261,8 @@ public class Jersey1RESTAccess implements RESTAccessI {
         } catch (ClientHandlerException ex) {
             if (ex.getCause() != null && ex.getCause() instanceof SSLHandshakeException) {
                 return post(obj, targetClass, path);
+            } else if (ex.getCause() != null && ex.getCause() instanceof Exception) {
+                throw new RESTException(ex.getCause());
             } else {
                 throw ex; // rethrow
             }
