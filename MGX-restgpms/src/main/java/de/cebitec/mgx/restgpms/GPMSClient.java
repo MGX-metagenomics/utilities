@@ -254,4 +254,9 @@ public class GPMSClient implements GPMSClientI {
     public UserI getUser() {
         return user;
     }
+
+    @Override
+    public boolean loggedIn() {
+        return loggedin;
+    }
 }
