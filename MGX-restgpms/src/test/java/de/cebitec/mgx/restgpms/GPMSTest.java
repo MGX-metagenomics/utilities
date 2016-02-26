@@ -56,7 +56,11 @@ public class GPMSTest {
     public void testGetProjectClasses() {
         System.out.println("getProjectClasses");
         GPMSClient gpms = TestMaster.get();
-        gpms.login("mgx_unittestRO", "gut-isM5iNt");
+        try {
+            gpms.login("mgx_unittestRO", "gut-isM5iNt");
+        } catch (GPMSException ex) {
+            fail(ex.getMessage());
+        }
         Iterator<ProjectClassI> projectClasses = gpms.getProjectClasses();
         assertNotNull(projectClasses);
         int cnt = 0;
@@ -118,7 +122,12 @@ public class GPMSTest {
         System.out.println("testLogin");
         String login = "mgx_unittestRO";
         String password = "gut-isM5iNt";
-        boolean result = TestMaster.get().login(login, password);
+        boolean result = false;
+        try {
+            result = TestMaster.get().login(login, password);
+        } catch (GPMSException ex) {
+            fail(ex.getMessage());
+        }
         assertTrue(result);
     }
 
@@ -143,7 +152,12 @@ public class GPMSTest {
         Assume.assumeNotNull(login);
         Assume.assumeNotNull(password);
         System.out.println("  using credentials for login " + login);
-        boolean result = TestMaster.get().login(login, password);
+        boolean result = false;
+        try {
+            result = TestMaster.get().login(login, password);
+        } catch (GPMSException ex) {
+            fail(ex.getMessage());
+        }
         assertTrue(result);
     }
 
@@ -154,10 +168,19 @@ public class GPMSTest {
         String password = "gut-isM5iNt";
         GPMSClient gpms = TestMaster.get();
         assertNotNull(gpms);
-        boolean result = gpms.login(login, password);
+        boolean result = false;
+        try {
+            result = gpms.login(login, password);
+        } catch (GPMSException ex) {
+            fail(ex.getMessage());
+        }
         assertTrue(result);
         gpms.logout();
-        result = gpms.login(login, password);
+        try {
+            result = gpms.login(login, password);
+        } catch (GPMSException ex) {
+            fail(ex.getMessage());
+        }
         assertTrue(result);
     }
 
@@ -169,7 +192,12 @@ public class GPMSTest {
         GPMSClient gpms = TestMaster.get();
         assertNotNull(gpms);
         gpms.logout();
-        boolean result = gpms.login(login, password);
+        boolean result = false;
+        try {
+            result = gpms.login(login, password);
+        } catch (GPMSException ex) {
+            fail(ex.getMessage());
+        }
         assertFalse(result);
     }
 
@@ -183,7 +211,12 @@ public class GPMSTest {
         // logged in successfully
         String login = "WRONG";
         String password = "WRONG";
-        boolean result = gpms.login(login, password);
+        boolean result = false;
+        try {
+            result = gpms.login(login, password);
+        } catch (GPMSException ex) {
+            fail(ex.getMessage());
+        }
         assertFalse(result);
     }
 
@@ -191,7 +224,11 @@ public class GPMSTest {
     public void testPing() {
         System.out.println("ping");
         GPMSClient gpms = TestMaster.get();
-        gpms.login("mgx_unittestRO", "gut-isM5iNt");
+        try {
+            gpms.login("mgx_unittestRO", "gut-isM5iNt");
+        } catch (GPMSException ex) {
+            fail(ex.getMessage());
+        }
         long result = gpms.ping();
         assertTrue(result > 100000);
         gpms.logout();
@@ -222,10 +259,10 @@ public class GPMSTest {
         assertEquals("mgx_unittestRO should only be a member of \'MGX_Unittest\', actual project list: " + projNames, 1, cnt);
     }
 
-    @Test
-    public void testGetError() {
-        System.out.println("getError");
-        String result = TestMaster.get().getError();
-        assertNull(result);
-    }
+//    @Test
+//    public void testGetError() {
+//        System.out.println("getError");
+//        String result = TestMaster.get().getError();
+//        assertNull(result);
+//    }
 }
