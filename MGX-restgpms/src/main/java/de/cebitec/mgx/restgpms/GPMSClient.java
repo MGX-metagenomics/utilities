@@ -208,10 +208,7 @@ public class GPMSClient implements GPMSClientI {
         return loggedin;
     }
 
-//    public String getError() {
-//        return error;
-//    }
-
+    @Override
     public long ping() {
         try {
             WebResource wr = getResource();
@@ -225,7 +222,7 @@ public class GPMSClient implements GPMSClientI {
             if (ex.getCause() != null && ex.getCause() instanceof SSLHandshakeException) {
                 return ping(); //retry
             } else if (ex.getCause() != null && ex.getCause() instanceof UnknownHostException) {
-                //error = "Could not resolve server address. Check your internet connection.";
+                return -1;
             }
         }
         return -1;
