@@ -33,6 +33,8 @@ import de.cebitec.gpms.model.ProjectClass;
 import de.cebitec.gpms.model.Role;
 import de.cebitec.gpms.model.User;
 import de.cebitec.gpms.rest.GPMSClientI;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.UnknownHostException;
@@ -55,7 +57,8 @@ public class GPMSClient implements GPMSClientI {
     private final String servername;
     private UserI user;
     private boolean loggedin = false;
-    private String error;
+    //private String error;
+    private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
     public GPMSClient(String servername, String gpmsBaseURI) {
         if (gpmsBaseURI == null) {
@@ -94,7 +97,7 @@ public class GPMSClient implements GPMSClientI {
                 ret.add(pClass);
             }
         } else {
-            error = Status.fromStatusCode(response.getStatus()).getReasonPhrase();
+//            error = Status.fromStatusCode(response.getStatus()).getReasonPhrase();
             return null;
         }
         return ret.iterator();
@@ -134,7 +137,7 @@ public class GPMSClient implements GPMSClientI {
                 } catch (URISyntaxException ex) {
                     throw new GPMSException(ex);
                 }
-                
+
                 // reconstruct GPMS appserver datasource from project DTO data
                 DataSource_ApplicationServerI restDS = new GPMSDataSourceAppServer(null, dsURI, null);
 
@@ -147,7 +150,7 @@ public class GPMSClient implements GPMSClientI {
                 ret.add(new Membership(proj, role));
             }
         } else {
-            error = Status.fromStatusCode(response.getStatus()).getReasonPhrase();
+//            error = Status.fromStatusCode(response.getStatus()).getReasonPhrase();
             return null;
         }
         return ret.iterator();
@@ -161,7 +164,7 @@ public class GPMSClient implements GPMSClientI {
     }
 
     @Override
-    public synchronized boolean login(String login, String password) {
+    public synchronized boolean login(String login, String password) throws GPMSException {
         if (login == null || password == null) {
             return false;
         }
@@ -170,7 +173,6 @@ public class GPMSClient implements GPMSClientI {
         client.addFilter(new HTTPBasicAuthFilter(login, password));
         loggedin = false;
         user = null;
-        error = null;
 
         ClientResponse response;
         try {
@@ -179,12 +181,10 @@ public class GPMSClient implements GPMSClientI {
             if (che.getCause() != null && che.getCause() instanceof SSLHandshakeException) {
                 return login(login, password);
             } else if (che.getCause() != null && che.getCause() instanceof UnknownHostException) {
-                error = "Could not resolve server address. Check your internet connection.";
-                return false;
+                throw new GPMSException("Could not resolve server address. Check your internet connection.");
             }
             // most common cause here: server down
-            error = che.getCause().getMessage();
-            return false;
+            throw new GPMSException(che.getCause().getMessage());
         }
 
         switch (Status.fromStatusCode(response.getStatus())) {
@@ -196,22 +196,21 @@ public class GPMSClient implements GPMSClientI {
                 }
                 break;
             case UNAUTHORIZED:
-                error = "Wrong username/password";
-                break;
+                throw new GPMSException("Wrong username/password");
             case GATEWAY_TIMEOUT:
-                error = "Connection refused, server down?";
-                break;
+                throw new GPMSException("Connection refused, server down?");
             default:
-                error = Status.fromStatusCode(response.getStatus()).getReasonPhrase();
-                break;
+                throw new GPMSException(Status.fromStatusCode(response.getStatus()).getReasonPhrase());
         }
+
+        pcs.firePropertyChange(PROP_LOGGEDIN, !loggedin, loggedin);
 
         return loggedin;
     }
 
-    public String getError() {
-        return error;
-    }
+//    public String getError() {
+//        return error;
+//    }
 
     public long ping() {
         try {
@@ -226,7 +225,7 @@ public class GPMSClient implements GPMSClientI {
             if (ex.getCause() != null && ex.getCause() instanceof SSLHandshakeException) {
                 return ping(); //retry
             } else if (ex.getCause() != null && ex.getCause() instanceof UnknownHostException) {
-                error = "Could not resolve server address. Check your internet connection.";
+                //error = "Could not resolve server address. Check your internet connection.";
             }
         }
         return -1;
@@ -236,8 +235,9 @@ public class GPMSClient implements GPMSClientI {
     public void logout() {
         client = null;
         user = null;
-        error = null;
+        //error = null;
         loggedin = false;
+        pcs.firePropertyChange(PROP_LOGGEDIN, !loggedin, loggedin);
     }
 
     @Override
@@ -258,5 +258,15 @@ public class GPMSClient implements GPMSClientI {
     @Override
     public boolean loggedIn() {
         return loggedin;
+    }
+
+    @Override
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        pcs.addPropertyChangeListener(listener);
+    }
+
+    @Override
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        pcs.removePropertyChangeListener(listener);
     }
 }
