@@ -108,7 +108,7 @@ public class GPMSClient implements GPMSClientI {
         if (m == null) {
             throw new IllegalArgumentException("REST MembershipI is null");
         }
-        return new RESTMaster(m, user);
+        return new RESTMaster(this, m, user);
     }
 
     @Override
