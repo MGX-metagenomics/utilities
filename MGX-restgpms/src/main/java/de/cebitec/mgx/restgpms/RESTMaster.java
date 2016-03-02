@@ -5,6 +5,7 @@ import de.cebitec.gpms.core.MembershipI;
 import de.cebitec.gpms.core.ProjectI;
 import de.cebitec.gpms.core.RoleI;
 import de.cebitec.gpms.core.UserI;
+import de.cebitec.gpms.rest.GPMSClientI;
 import java.util.logging.Logger;
 
 /**
@@ -17,7 +18,7 @@ public class RESTMaster implements MasterI {
     private final UserI user;
     private static final Logger LOG = Logger.getLogger(RESTMaster.class.getName());
     
-    public RESTMaster(MembershipI m, UserI user) {
+    public RESTMaster(GPMSClientI gpmsclient, MembershipI m, UserI user) {
         this.membership = m;
         this.user = user;
     }
