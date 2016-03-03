@@ -31,6 +31,10 @@ public abstract class RegionI extends LocationBase<RegionI> {
 
     public abstract void setDescription(String description);
 
+    public abstract String getType();
+
+    public abstract void setType(String type);
+
     public abstract int getLength();
 
     public abstract boolean isFwdStrand();
