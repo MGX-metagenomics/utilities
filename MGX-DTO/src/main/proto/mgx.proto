@@ -348,6 +348,7 @@ message RegionDTO {
     optional string description = 3;
     required int32 start = 4;
     required int32 stop = 5;
+    optional string type = 6;
 }
 
 message RegionDTOList  {
