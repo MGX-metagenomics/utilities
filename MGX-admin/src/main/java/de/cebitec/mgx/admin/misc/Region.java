@@ -13,11 +13,20 @@ import java.io.Serializable;
 public class Region implements Serializable {
 
     private Long id;
+    private String type;
     private String name;
     private String description;
     private Reference reference;
     private int start;
     private int stop;
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 
     public Reference getReference() {
         return reference;
@@ -69,6 +78,6 @@ public class Region implements Serializable {
 
     @Override
     public String toString() {
-        return "de.cebitec.mgx.model.db.Region";
+        return "de.cebitec.mgx.Region";
     }
 }

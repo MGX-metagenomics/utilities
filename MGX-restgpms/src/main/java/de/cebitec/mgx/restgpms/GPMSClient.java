@@ -57,7 +57,6 @@ public class GPMSClient implements GPMSClientI {
     private final String servername;
     private UserI user;
     private boolean loggedin = false;
-    //private String error;
     private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
     public GPMSClient(String servername, String gpmsBaseURI) {
@@ -66,6 +65,9 @@ public class GPMSClient implements GPMSClientI {
         }
         if (!gpmsBaseURI.endsWith("/")) {
             gpmsBaseURI += "/";
+        }
+        if (!gpmsBaseURI.startsWith("https://")) {
+            throw new IllegalArgumentException("MGX requires a secured connection.");
         }
         this.servername = servername;
         this.gpmsBaseURI = gpmsBaseURI;
@@ -105,6 +107,9 @@ public class GPMSClient implements GPMSClientI {
 
     @Override
     public MasterI createMaster(final MembershipI m) {
+        if (!loggedin) {
+            throw new IllegalArgumentException("Not logged in.");
+        }
         if (m == null) {
             throw new IllegalArgumentException("REST MembershipI is null");
         }
@@ -114,44 +119,46 @@ public class GPMSClient implements GPMSClientI {
     @Override
     public Iterator<MembershipI> getMemberships() throws GPMSException {
         List<MembershipI> ret = new ArrayList<>();
-        ClientResponse response = getResource().path("GPMS").path("GPMSBean").path("listMemberships").get(ClientResponse.class);
-        if (Status.fromStatusCode(response.getStatus()) == Status.OK) {
-            MembershipDTOList list = response.<MembershipDTOList>getEntity(MembershipDTOList.class);
-            for (MembershipDTO mdto : list.getMembershipList()) {
+        if (loggedin) {
+            ClientResponse response = getResource().path("GPMS").path("GPMSBean").path("listMemberships").get(ClientResponse.class);
+            if (Status.fromStatusCode(response.getStatus()) == Status.OK) {
+                MembershipDTOList list = response.<MembershipDTOList>getEntity(MembershipDTOList.class);
+                for (MembershipDTO mdto : list.getMembershipList()) {
 
-                ProjectDTO projectDTO = mdto.getProject();
-                ProjectClassI pclass = new ProjectClass(projectDTO.getProjectClass().getName(), new HashSet<RoleI>());
+                    ProjectDTO projectDTO = mdto.getProject();
+                    ProjectClassI pclass = new ProjectClass(projectDTO.getProjectClass().getName(), new HashSet<RoleI>());
 
-                for (RoleDTO rdto : mdto.getProject().getProjectClass().getRoles().getRoleList()) {
-                    RoleI role = new Role(pclass, rdto.getName());
-                    pclass.getRoles().add(role);
+                    for (RoleDTO rdto : mdto.getProject().getProjectClass().getRoles().getRoleList()) {
+                        RoleI role = new Role(pclass, rdto.getName());
+                        pclass.getRoles().add(role);
+                    }
+
+                    // create an artificial datasource based on the base URI for the app server
+                    String projectBaseURI = projectDTO.hasBaseURI() && !projectDTO.getBaseURI().equals("")
+                            ? projectDTO.getBaseURI()
+                            : gpmsBaseURI + projectDTO.getName();
+                    URI dsURI;
+                    try {
+                        dsURI = new URI(projectBaseURI);
+                    } catch (URISyntaxException ex) {
+                        throw new GPMSException(ex);
+                    }
+
+                    // reconstruct GPMS appserver datasource from project DTO data
+                    DataSource_ApplicationServerI restDS = new GPMSDataSourceAppServer(null, dsURI, null);
+
+                    List<DataSourceI> dsList = new ArrayList<>(1);
+                    dsList.add(restDS);
+                    ProjectI proj = new Project(projectDTO.getName(), pclass, dsList, false);
+
+                    RoleI role = new Role(pclass, mdto.getRole().getName());
+
+                    ret.add(new Membership(proj, role));
                 }
-
-                // create an artificial datasource based on the base URI for the app server
-                String projectBaseURI = projectDTO.hasBaseURI() && !projectDTO.getBaseURI().equals("")
-                        ? projectDTO.getBaseURI()
-                        : gpmsBaseURI + projectDTO.getName();
-                URI dsURI;
-                try {
-                    dsURI = new URI(projectBaseURI);
-                } catch (URISyntaxException ex) {
-                    throw new GPMSException(ex);
-                }
-
-                // reconstruct GPMS appserver datasource from project DTO data
-                DataSource_ApplicationServerI restDS = new GPMSDataSourceAppServer(null, dsURI, null);
-
-                List<DataSourceI> dsList = new ArrayList<>(1);
-                dsList.add(restDS);
-                ProjectI proj = new Project(projectDTO.getName(), pclass, dsList, false);
-
-                RoleI role = new Role(pclass, mdto.getRole().getName());
-
-                ret.add(new Membership(proj, role));
-            }
-        } else {
+            } else {
 //            error = Status.fromStatusCode(response.getStatus()).getReasonPhrase();
-            return null;
+                return null;
+            }
         }
         return ret.iterator();
     }
@@ -217,7 +224,7 @@ public class GPMSClient implements GPMSClientI {
             }
             return wr.path("GPMS").path("GPMSBean").path("ping").get(GPMSLong.class).getValue();
         } catch (UniformInterfaceException ufie) {
-            System.err.println("MSG: " + ufie.getMessage());
+            System.err.println("GPMSClient MSG: " + ufie.getMessage());
         } catch (ClientHandlerException ex) {
             if (ex.getCause() != null && ex.getCause() instanceof SSLHandshakeException) {
                 return ping(); //retry
@@ -232,7 +239,6 @@ public class GPMSClient implements GPMSClientI {
     public void logout() {
         client = null;
         user = null;
-        //error = null;
         loggedin = false;
         pcs.firePropertyChange(PROP_LOGGEDIN, !loggedin, loggedin);
     }
