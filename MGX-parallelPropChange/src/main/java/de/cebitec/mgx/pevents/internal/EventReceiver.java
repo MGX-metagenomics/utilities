@@ -58,7 +58,7 @@ public class EventReceiver implements Runnable {
                         pcl.propertyChange(event);
                         start = System.currentTimeMillis() - start;
                         if (start >= 100) {
-                            Logger.getLogger(EventReceiver.class.getName()).log(Level.INFO, "Slow processing of propertyChange ({0} ms) for target {1}", new Object[]{start, pcl.toString()});
+                            Logger.getLogger(EventReceiver.class.getName()).log(Level.INFO, "Slow processing of propertyChange {0} ({1} ms) for target {2}", new Object[]{event.getPropertyName(), start, pcl.toString()});
                         }
                     }
                     dEvent.processed();

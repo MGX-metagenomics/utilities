@@ -22,6 +22,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import javax.sql.DataSource;
 import org.biojava.bio.Annotation;
 import org.biojava.bio.BioException;
@@ -41,37 +44,48 @@ public class App {
     public static final String GLOBAL_DIR = "/vol/mgx-data/GLOBAL/references/";
 
     public static void main(String[] args) throws Exception {
-        Console con = System.console();
-        char[] password = con.readPassword("Admin password: ");
-        DataSource ds = createDataSource(new String(password));
-        Connection conn = ds.getConnection();
-        List<String> globalRefs = listReferences(conn);
+//        Console con = System.console();
+//        char[] password = con.readPassword("Admin password: ");
+//        DataSource ds = createDataSource(new String(password));
+//        Connection conn = ds.getConnection();
+//        List<String> globalRefs = listReferences(conn);
 
         List<String> fnames = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader("/homes/sjaenick/genomes.txt"))) {
+        try (BufferedReader br = new BufferedReader(new FileReader("/home/sj/genomes.txt"))) {
             String line;
             while ((line = br.readLine()) != null) {
-                fnames.add(line);
+                fnames.add("/home/sj/" + line);
             }
         }
 
-        for (String fn : fnames) {
-            Map<Pair<String, Reference>, String> refs = readReference(fn);
-            for (Map.Entry<Pair<String, Reference>, String> me : refs.entrySet()) {
-                Pair<String, Reference> p = me.getKey();
-                if (!globalRefs.contains(p.getSecond().getName())) {
-                    globalRefs.add(p.getSecond().getName());
-                    System.err.println("importing " + p.getSecond().getName());
-                    //saveReference(p.getFirst(), p.getSecond(), me.getValue(), conn);
-                } else {
-                    System.err.println("skipping " + p.getSecond().getName() + ", already present");
+        ExecutorService pool = Executors.newFixedThreadPool(8);
+        final CountDownLatch allDone = new CountDownLatch(fnames.size());
+
+        for (final String fn : fnames) {
+            pool.submit(new Runnable() {
+                @Override
+                public void run() {
+                    readReference(fn);
+                    allDone.countDown();
                 }
-            }
+            });
+//            for (Map.Entry<Pair<String, Reference>, String> me : refs.entrySet()) {
+//                Pair<String, Reference> p = me.getKey();
+//                if (!globalRefs.contains(p.getSecond().getName())) {
+//                    globalRefs.add(p.getSecond().getName());
+//                    System.err.println("importing " + p.getSecond().getName());
+//                    //saveReference(p.getFirst(), p.getSecond(), me.getValue(), conn);
+//                } else {
+//                    System.err.println("skipping " + p.getSecond().getName() + ", already present");
+//                }
+//            }
         }
+        allDone.await();
     }
 
-    private static Map<Pair<String, Reference>, String> readReference(String fname) {
-        Map<Pair<String, Reference>, String> ret = new HashMap<>();
+    private static void readReference(String fname) {
+        Map<Pair<String, Reference>, String> ret = null; //new HashMap<>();
+        String seqname = "";
 
         try {
             BufferedReader br = new BufferedReader(new FileReader(fname));
@@ -86,7 +100,7 @@ public class App {
                 seqs = RichSequence.IOTools.readEMBLDNA(br, ns);
             }
 
-            String seqname;
+            seqname = "";
             String genomeSeq = null;
 
             while (seqs.hasNext()) {
@@ -117,8 +131,11 @@ public class App {
                     continue;
                 }
 
+                seqname = seqname.trim();
+                //System.err.println("Name: " + seqname + "      (" + fname + ")");
+
                 Reference ref = new Reference();
-                ref.setName(seqname.trim());
+                ref.setName(seqname);
                 ref.setRegions(new LinkedList<Region>());
 
                 Iterator<Feature> iter = rs.features();
@@ -129,45 +146,50 @@ public class App {
                         if (genomeSeq == null) {
                             genomeSeq = elem.getSequence().seqString();
                         }
-
-                        Region region = new Region();
-                        region.setReference(ref);
-                        Annotation annot = elem.getAnnotation();
-                        region.setName((String) annot.getProperty("locus_tag"));
-                        if (annot.containsProperty("product")) {
-                            region.setDescription((String) annot.getProperty("product"));
-                        } else if (annot.containsProperty("function")) {
-                            region.setDescription((String) annot.getProperty("function"));
-                        } else {
-                            region.setDescription("");
-                        }
-
-                        int abs_start, abs_stop;
-                        if (elem.getStrand().getValue() == 1) {
-                            abs_start = elem.getLocation().getMin() - 1;
-                            abs_stop = elem.getLocation().getMax() - 1;
-                        } else {
-                            abs_stop = elem.getLocation().getMin() - 1;
-                            abs_start = elem.getLocation().getMax() - 1;
-                        }
-                        region.setStart(abs_start);
-                        region.setStop(abs_stop);
-
-                        ref.getRegions().add(region);
+//
+//                        Region region = new Region();
+//                        region.setReference(ref);
+//                        Annotation annot = elem.getAnnotation();
+//                        region.setName((String) annot.getProperty("locus_tag"));
+//                        if (annot.containsProperty("product")) {
+//                            region.setDescription((String) annot.getProperty("product"));
+//                        } else if (annot.containsProperty("function")) {
+//                            region.setDescription((String) annot.getProperty("function"));
+//                        } else {
+//                            region.setDescription("");
+//                        }
+//
+//                        int abs_start, abs_stop;
+//                        if (elem.getStrand().getValue() == 1) {
+//                            abs_start = elem.getLocation().getMin() - 1;
+//                            abs_stop = elem.getLocation().getMax() - 1;
+//                        } else {
+//                            abs_stop = elem.getLocation().getMin() - 1;
+//                            abs_start = elem.getLocation().getMax() - 1;
+//                        }
+//                        region.setStart(abs_start);
+//                        region.setStop(abs_stop);
+//
+//                        ref.getRegions().add(region);
                     }
                 }
 
-                ref.setLength(genomeSeq.length());
+                if (genomeSeq == null || genomeSeq.isEmpty()) {
+                    System.err.println(fname + " NO SEQ!!!");
+                } else {
+                    ref.setLength(genomeSeq.length());
+                }
 
                 //System.out.println(ref.getName() + " has " + String.valueOf(ref.getLength()) + "bp");
-                ret.put(new Pair<>(rs.getName(), ref), genomeSeq);
+                //ret.put(new Pair<>(rs.getName(), ref), genomeSeq);
                 //saveReference(rs.getName(), ref, genomeSeq, conn);
             }
 
             br.close();
         } catch (IOException | NoSuchElementException | BioException ex) {
+            System.err.println(fname + ": " + ex.getMessage() + "   (" + seqname + ")");
         }
-        return ret;
+        //return ret;
     }
 
     private static void saveReference(String accession, Reference ref, String dnaSeq, Connection conn) throws Exception {
