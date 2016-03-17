@@ -6,43 +6,52 @@ import de.cebitec.gpms.core.ProjectI;
 import de.cebitec.gpms.core.RoleI;
 import de.cebitec.gpms.core.UserI;
 import de.cebitec.gpms.rest.GPMSClientI;
+import de.cebitec.gpms.rest.RESTMasterI;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 /**
  *
  * @author sjaenick
  */
-public class RESTMaster implements MasterI {
+public class RESTMaster implements RESTMasterI, PropertyChangeListener {
 
-    private final MembershipI membership;
+    private final ProjectI project;
+    private final RoleI role;
     private final UserI user;
+    private final GPMSClientI gpmsclient;
     private static final Logger LOG = Logger.getLogger(RESTMaster.class.getName());
     private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
     public RESTMaster(GPMSClientI gpmsclient, MembershipI m, UserI user) {
-        this.membership = m;
+        project = m.getProject();
+        role = m.getRole();
         this.user = user;
-        gpmsclient.addPropertyChangeListener(new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                if (evt.getPropertyName().equals(GPMSClientI.PROP_LOGGEDIN)) {
-                    pcs.firePropertyChange(new PropertyChangeEvent(this, MasterI.PROP_LOGGEDIN, evt.getOldValue(), evt.getNewValue()));
-                }
-            }
-        });
+        this.gpmsclient = gpmsclient;
+        gpmsclient.addPropertyChangeListener(this);
+    }
+
+    @Override
+    public String getServerName() {
+        return gpmsclient.getServerName();
+    }
+
+    @Override
+    public void logout() {
+        close();
     }
 
     @Override
     public final ProjectI getProject() {
-        return membership.getProject();
+        return project;
     }
 
     @Override
     public final RoleI getRole() {
-        return membership.getRole();
+        return role;
     }
 
     @Override
@@ -62,6 +71,7 @@ public class RESTMaster implements MasterI {
 
     @Override
     public final void close() {
+        gpmsclient.logout();
     }
 
     @Override
@@ -73,4 +83,50 @@ public class RESTMaster implements MasterI {
     public void removePropertyChangeListener(PropertyChangeListener listener) {
         pcs.removePropertyChangeListener(listener);
     }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        if (evt.getSource().equals(gpmsclient) && evt.getPropertyName().equals(GPMSClientI.PROP_LOGGEDIN)) {
+            gpmsclient.removePropertyChangeListener(this);
+            pcs.firePropertyChange(new PropertyChangeEvent(this, MasterI.PROP_LOGGEDIN, evt.getOldValue(), evt.getNewValue()));
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 79 * hash + Objects.hashCode(this.project);
+        hash = 79 * hash + Objects.hashCode(this.role);
+        hash = 79 * hash + Objects.hashCode(this.user);
+        hash = 79 * hash + Objects.hashCode(this.gpmsclient);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final RESTMaster other = (RESTMaster) obj;
+        if (!Objects.equals(this.project, other.project)) {
+            return false;
+        }
+        if (!Objects.equals(this.role, other.role)) {
+            return false;
+        }
+        if (!Objects.equals(this.user, other.user)) {
+            return false;
+        }
+        if (!Objects.equals(this.gpmsclient, other.gpmsclient)) {
+            return false;
+        }
+        return true;
+    }
+
 }
