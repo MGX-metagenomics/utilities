@@ -102,6 +102,24 @@ public class GPMSTest {
     }
 
     @Test
+    public void testGetMembershipsRW() throws GPMSException {
+        System.out.println("getMembershipsRW");
+        GPMSClient gpms = TestMaster.get();
+        gpms.login("mgx_unittestRW", "hL0amo3oLae");
+        Iterator<MembershipI> memberships = gpms.getMemberships();
+        assertNotNull(memberships);
+        int cnt = 0;
+        while (memberships.hasNext()) {
+            MembershipI m = memberships.next();
+            assertNotNull(m.getProject());
+            System.err.println("  "+ m.getProject().getName());
+            assertNotNull(m.getRole());
+            cnt++;
+        }
+        assertEquals(2, cnt);
+    }
+
+    @Test
     public void testRESTDataSource() throws GPMSException {
         System.out.println("testRESTDataSource");
         GPMSClient gpms = TestMaster.get();
@@ -262,6 +280,42 @@ public class GPMSTest {
         }
         assertEquals("mgx_unittestRO should only be a member of \'MGX_Unittest\', actual project list: " + projNames, 1, cnt);
     }
+
+//    @Test
+//    public void testGetMembershipsPrivate() throws GPMSException {
+//        System.out.println("testGetMembershipsPrivate");
+//
+//        String login = null;
+//        String password = null;
+//
+//        String config = System.getProperty("user.home") + "/.m2/mgx.junit";
+//        File f = new File(config);
+//        Assume.assumeTrue(f.exists() && f.canRead());
+//        Properties p = new Properties();
+//        try {
+//            p.load(new FileInputStream(f));
+//            login = p.getProperty("username");
+//            password = p.getProperty("password");
+//        } catch (IOException ex) {
+//            System.out.println(ex.getMessage());
+//        }
+//        Assume.assumeNotNull(login);
+//        Assume.assumeNotNull(password);
+//        System.out.println("  using credentials for login " + login);
+//
+//        GPMSClient gpms = TestMaster.get();
+//        gpms.login(login, password);
+//        Iterator<MembershipI> memberships = gpms.getMemberships();
+//        assertNotNull(memberships);
+//        int cnt = 0;
+//        while (memberships.hasNext()) {
+//            MembershipI m = memberships.next();
+//            ProjectI project = m.getProject();
+//            System.err.println("     got project " + project.getName());
+//            cnt++;
+//        }
+//        assertTrue(cnt > 0);
+//    }
 
 //    @Test
 //    public void testGetError() {
