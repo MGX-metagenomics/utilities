@@ -10,9 +10,9 @@ import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 import de.cebitec.gpms.core.DataSourceI;
+import de.cebitec.gpms.core.DataSourceTypeI;
 import de.cebitec.gpms.core.DataSource_ApplicationServerI;
 import de.cebitec.gpms.core.GPMSException;
-import de.cebitec.gpms.core.MasterI;
 import de.cebitec.gpms.core.MembershipI;
 import de.cebitec.gpms.core.ProjectClassI;
 import de.cebitec.gpms.core.ProjectI;
@@ -33,6 +33,7 @@ import de.cebitec.gpms.model.ProjectClass;
 import de.cebitec.gpms.model.Role;
 import de.cebitec.gpms.model.User;
 import de.cebitec.gpms.rest.GPMSClientI;
+import de.cebitec.gpms.rest.RESTMasterI;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.net.URI;
@@ -43,6 +44,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import javax.net.ssl.SSLHandshakeException;
 
 /**
@@ -58,6 +60,13 @@ public class GPMSClient implements GPMSClientI {
     private UserI user;
     private boolean loggedin = false;
     private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+
+    private final static DataSourceTypeI REST_DSTYPE = new DataSourceTypeI() {
+        @Override
+        public String getName() {
+            return "artificial REST datasource type";
+        }
+    };
 
     public GPMSClient(String servername, String gpmsBaseURI) {
         if (gpmsBaseURI == null) {
@@ -106,7 +115,7 @@ public class GPMSClient implements GPMSClientI {
     }
 
     @Override
-    public MasterI createMaster(final MembershipI m) {
+    public RESTMasterI createMaster(final MembershipI m) {
         if (!loggedin) {
             throw new IllegalArgumentException("Not logged in.");
         }
@@ -144,8 +153,8 @@ public class GPMSClient implements GPMSClientI {
                         throw new GPMSException(ex);
                     }
 
-                    // reconstruct GPMS appserver datasource from project DTO data
-                    DataSource_ApplicationServerI restDS = new GPMSDataSourceAppServer(null, dsURI, null);
+                    // reconstruct artificial GPMS appserver datasource from project DTO data
+                    DataSource_ApplicationServerI restDS = new GPMSDataSourceAppServer("artificial REST datasource", dsURI, REST_DSTYPE);
 
                     List<DataSourceI> dsList = new ArrayList<>(1);
                     dsList.add(restDS);
@@ -156,7 +165,6 @@ public class GPMSClient implements GPMSClientI {
                     ret.add(new Membership(proj, role));
                 }
             } else {
-//            error = Status.fromStatusCode(response.getStatus()).getReasonPhrase();
                 return null;
             }
         }
@@ -272,4 +280,33 @@ public class GPMSClient implements GPMSClientI {
     public void removePropertyChangeListener(PropertyChangeListener listener) {
         pcs.removePropertyChangeListener(listener);
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 97 * hash + Objects.hashCode(this.servername);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final GPMSClient other = (GPMSClient) obj;
+        if (!Objects.equals(this.gpmsBaseURI, other.gpmsBaseURI)) {
+            return false;
+        }
+        if (!Objects.equals(this.servername, other.servername)) {
+            return false;
+        }
+        return true;
+    }
+
 }
