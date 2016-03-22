@@ -29,6 +29,15 @@ public abstract class MGXDataModelBase<T extends MGXDataModelBaseI<T>> implement
     public MGXDataModelBase(MGXMasterI master, DataFlavor dataFlavor) {
         this.master = master;
         this.dataflavor = dataFlavor;
+        
+        master.addPropertyChangeListener(new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                if (ModelBaseI.OBJECT_DELETED.equals(evt.getPropertyName())) {
+                    deleted();
+                }
+            }
+        });
     }
 
     @Override
@@ -74,7 +83,7 @@ public abstract class MGXDataModelBase<T extends MGXDataModelBaseI<T>> implement
 
     @Override
     public final boolean isDeleted() {
-        return managedState.equals(OBJECT_DELETED);
+        return master.isDeleted() || managedState.equals(OBJECT_DELETED);
     }
 
     @Override
