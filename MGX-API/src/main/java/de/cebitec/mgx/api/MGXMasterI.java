@@ -37,11 +37,15 @@ public abstract class MGXMasterI implements ModelBaseI<MGXMasterI> {
     public static final DataFlavor DATA_FLAVOR = new DataFlavor(MGXMasterI.class, "MGXMasterI");
     //
     private final PropertyChangeSupport pcs = new ParallelPropertyChangeSupport(this, true);
-    private String managedState = OBJECT_MANAGED;
+    private volatile String managedState = OBJECT_MANAGED;
 
     public MGXMasterI() {
         //super(null, dataflavor);
     }
+
+    public abstract String getServerName();
+
+    public abstract void logout();
 
 //    public abstract RESTMembershipI getMembership();
     public abstract String getRoleName();
@@ -119,20 +123,20 @@ public abstract class MGXMasterI implements ModelBaseI<MGXMasterI> {
     @Override
     public final void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
         PropertyChangeEvent evt = new PropertyChangeEvent(this, propertyName, oldValue, newValue);
-        firePropertyChange(evt);
+        pcs.firePropertyChange(evt);
     }
 
     @Override
     public final void firePropertyChange(String propertyName, int oldValue, int newValue) {
         PropertyChangeEvent evt = new PropertyChangeEvent(this, propertyName, oldValue, newValue);
-        firePropertyChange(evt);
+        pcs.firePropertyChange(evt);
         //pcs.firePropertyChange(propertyName, oldValue, newValue);
     }
 
     @Override
     public final void firePropertyChange(String propertyName, boolean oldValue, boolean newValue) {
         PropertyChangeEvent evt = new PropertyChangeEvent(this, propertyName, oldValue, newValue);
-        firePropertyChange(evt);
+        pcs.firePropertyChange(evt);
     }
 
     @Override
@@ -158,5 +162,10 @@ public abstract class MGXMasterI implements ModelBaseI<MGXMasterI> {
             throw new UnsupportedFlavorException(flavor);
         }
     }
-
+    
+    @Override
+    public abstract int hashCode();
+    
+    @Override
+    public abstract boolean equals(Object o);
 }
