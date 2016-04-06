@@ -23,4 +23,25 @@ public abstract class Identifiable<T extends MGXDataModelBase<T>> extends MGXDat
     public final long getId() {
         return id;
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash = (int) (31 * hash + this.id);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o != null && o instanceof Identifiable) {
+            Identifiable other = (Identifiable) o;
+
+            if ((this.id == INVALID_IDENTIFIER && other.getId() != INVALID_IDENTIFIER) || (this.id != INVALID_IDENTIFIER && this.id != other.getId())) {
+                return false;
+            }
+
+            return this.getId() == other.getId() && this.getMaster().equals(other.getMaster());
+        }
+        return false;
+    }
 }

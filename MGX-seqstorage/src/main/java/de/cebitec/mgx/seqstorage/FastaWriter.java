@@ -6,6 +6,8 @@ import de.cebitec.mgx.sequence.SeqWriterI;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -24,13 +26,20 @@ public class FastaWriter implements SeqWriterI<DNASequenceI> {
     }
 
     @Override
-    public synchronized void addSequence(DNASequenceI seq) throws IOException {
+    public synchronized void addSequence(DNASequenceI seq) throws SeqStoreException {
+        if (seqout == null) {
+            throw new SeqStoreException("Writer has already been closed.");
+        }
         StringBuilder sb = new StringBuilder(">");
         sb.append(new String(seq.getName()));
         sb.append(System.lineSeparator());
         sb.append(new String(seq.getSequence()).toUpperCase());
         sb.append(System.lineSeparator());
-        seqout.write(sb.toString());
+        try {
+            seqout.write(sb.toString());
+        } catch (IOException ex) {
+            throw new SeqStoreException(ex.getMessage());
+        }
     }
 
     @Override
