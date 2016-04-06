@@ -52,9 +52,6 @@ public abstract class JobI extends Identifiable<JobI> {
     public abstract JobI setCreator(String created_by);
 
     @Override
-    public abstract int hashCode();
-
-    @Override
     public abstract boolean equals(Object object);
 
     @Override

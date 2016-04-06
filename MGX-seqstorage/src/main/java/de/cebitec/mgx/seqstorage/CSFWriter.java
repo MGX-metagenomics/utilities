@@ -58,22 +58,28 @@ public class CSFWriter implements SeqWriterI<DNASequenceI> {
     }
 
     @Override
-    public synchronized void addSequence(DNASequenceI seq) throws IOException {
+    public synchronized void addSequence(DNASequenceI seq) throws SeqStoreException {
+        if (seqout == null || nameout == null) {
+            throw new SeqStoreException("Writer has already been closed.");
+        }
+        try {
+            // save sequence id and offset
+            byte[] id = ByteUtils.longToBytes(seq.getId());
+            byte[] encoded_offset = ByteUtils.longToBytes(seqout_offset);
+            nameout.write(id);
+            nameout.write(encoded_offset);
 
-        // save sequence id and offset
-        byte[] id = ByteUtils.longToBytes(seq.getId());
-        byte[] encoded_offset = ByteUtils.longToBytes(seqout_offset);
-        nameout.write(id);
-        nameout.write(encoded_offset);
+            // encode sequence and write to seqout
+            byte[] encoded = FourBitEncoder.encode(seq.getSequence());
+            seqout.write(encoded);
+            seqout.write(FourBitEncoder.RECORD_SEPARATOR);
 
-        // encode sequence and write to seqout
-        byte[] encoded = FourBitEncoder.encode(seq.getSequence());
-        seqout.write(encoded);
-        seqout.write(FourBitEncoder.RECORD_SEPARATOR);
-
-        // update offset
-        seqout_offset += encoded.length;
-        seqout_offset++; // separator char
+            // update offset
+            seqout_offset += encoded.length;
+            seqout_offset++; // separator char
+        } catch (IOException ex) {
+            throw new SeqStoreException(ex.getMessage());
+        }
     }
 
     @Override
