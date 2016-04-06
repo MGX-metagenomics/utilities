@@ -104,14 +104,6 @@ public class Jersey1RESTAccess implements RESTAccessI {
         this.resource = appServer.getURL();
     }
 
-//    @Override
-//    public final URI getURL() {
-//        return resource;
-//    }
-//    @Override
-//    public String getName() {
-//        return dataSourceName;
-//    }
     private WebResource getWebResource() {
         return client.resource(resource);
     }

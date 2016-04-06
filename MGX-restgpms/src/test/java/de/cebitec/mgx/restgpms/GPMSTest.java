@@ -10,6 +10,8 @@ import de.cebitec.gpms.core.MasterI;
 import de.cebitec.gpms.core.MembershipI;
 import de.cebitec.gpms.core.ProjectClassI;
 import de.cebitec.gpms.core.ProjectI;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -32,7 +34,7 @@ import org.ops4j.pax.exam.junit.PaxExam;
  *
  * @author sj
  */
-@RunWith(PaxExam.class)
+//@RunWith(PaxExam.class)
 public class GPMSTest {
 
     @Configuration
@@ -112,7 +114,7 @@ public class GPMSTest {
         while (memberships.hasNext()) {
             MembershipI m = memberships.next();
             assertNotNull(m.getProject());
-            System.err.println("  "+ m.getProject().getName());
+            System.err.println("  " + m.getProject().getName());
             assertNotNull(m.getRole());
             cnt++;
         }
@@ -147,6 +149,29 @@ public class GPMSTest {
             fail(ex.getMessage());
         }
         assertTrue(result);
+    }
+
+    @Test
+    public void testLoginPropertyChange() {
+        System.out.println("testLoginPropertyChange");
+        String login = "mgx_unittestRO";
+        String password = "gut-isM5iNt";
+        boolean result = false;
+        final GPMSClient cli = TestMaster.get();
+        try {
+            result = cli.login(login, password);
+        } catch (GPMSException ex) {
+            fail(ex.getMessage());
+        }
+        assertTrue(result);
+        cli.addPropertyChangeListener(new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                assertFalse(cli.loggedIn());
+            }
+        });
+        cli.logout();
+        assertFalse(cli.loggedIn());
     }
 
     @Test
@@ -316,7 +341,6 @@ public class GPMSTest {
 //        }
 //        assertTrue(cnt > 0);
 //    }
-
 //    @Test
 //    public void testGetError() {
 //        System.out.println("getError");
