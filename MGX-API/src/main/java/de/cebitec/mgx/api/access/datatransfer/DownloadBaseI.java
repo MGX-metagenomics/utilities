@@ -8,20 +8,11 @@ package de.cebitec.mgx.api.access.datatransfer;
 public abstract class DownloadBaseI extends TransferBaseI {
     
     private CallbackI cb = null;
-    private String error_message = "";
 
     protected void abortTransfer(String reason, long total) {
         setErrorMessage(reason);
         fireTaskChange(TransferBaseI.NUM_ELEMENTS_TRANSFERRED, total);
         fireTaskChange(TransferBaseI.TRANSFER_FAILED, 1);
-    }
-
-    public String getErrorMessage() {
-        return error_message;
-    }
-
-    protected void setErrorMessage(String msg) {
-        error_message = msg;
     }
 
     public void setProgressCallback(CallbackI cb) {

@@ -46,9 +46,6 @@ public abstract class ToolI extends Identifiable<ToolI> {
     public abstract ToolI setXML(String xmlData);
 
     @Override
-    public abstract int hashCode();
-
-    @Override
     public int compareTo(ToolI o) {
         return getName().compareTo(o.getName());
     }

@@ -29,6 +29,15 @@ public abstract class MGXDataModelBase<T extends MGXDataModelBaseI<T>> implement
     public MGXDataModelBase(MGXMasterI master, DataFlavor dataFlavor) {
         this.master = master;
         this.dataflavor = dataFlavor;
+
+        master.addPropertyChangeListener(new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                if (ModelBaseI.OBJECT_DELETED.equals(evt.getPropertyName())) {
+                    deleted();
+                }
+            }
+        });
     }
 
     @Override
@@ -58,7 +67,7 @@ public abstract class MGXDataModelBase<T extends MGXDataModelBaseI<T>> implement
     @Override
     public void modified() {
         if (managedState.equals(OBJECT_DELETED)) {
-            throw new RuntimeException("Invalid object state, cannot modify deleted object.");
+            throw new RuntimeException("Invalid object state for " + getClass().getSimpleName() + ", cannot modify deleted object.");
         }
         firePropertyChange(ModelBaseI.OBJECT_MODIFIED, 1, 2);
     }
@@ -66,7 +75,7 @@ public abstract class MGXDataModelBase<T extends MGXDataModelBaseI<T>> implement
     @Override
     public void deleted() {
         if (managedState.equals(OBJECT_DELETED)) {
-            throw new RuntimeException("Invalid object state, cannot delete deleted object.");
+            throw new RuntimeException("Invalid object state for " + getClass().getSimpleName() + ", cannot delete deleted object.");
         }
         firePropertyChange(ModelBaseI.OBJECT_DELETED, 0, 1);
         managedState = OBJECT_DELETED;
@@ -74,7 +83,7 @@ public abstract class MGXDataModelBase<T extends MGXDataModelBaseI<T>> implement
 
     @Override
     public final boolean isDeleted() {
-        return managedState.equals(OBJECT_DELETED);
+        return master.isDeleted() || managedState.equals(OBJECT_DELETED);
     }
 
     @Override
