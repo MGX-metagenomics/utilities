@@ -116,7 +116,7 @@ public class GPMSClient implements GPMSClientI {
 
     @Override
     public RESTMasterI createMaster(final MembershipI m) {
-        if (!loggedin) {
+        if (!loggedIn()) {
             throw new IllegalArgumentException("Not logged in.");
         }
         if (m == null) {
@@ -128,7 +128,7 @@ public class GPMSClient implements GPMSClientI {
     @Override
     public Iterator<MembershipI> getMemberships() throws GPMSException {
         List<MembershipI> ret = new ArrayList<>();
-        if (loggedin) {
+        if (loggedIn()) {
             ClientResponse response = getResource().path("GPMS").path("GPMSBean").path("listMemberships").get(ClientResponse.class);
             if (Status.fromStatusCode(response.getStatus()) == Status.OK) {
                 MembershipDTOList list = response.<MembershipDTOList>getEntity(MembershipDTOList.class);
@@ -180,6 +180,10 @@ public class GPMSClient implements GPMSClientI {
 
     @Override
     public synchronized boolean login(String login, String password) throws GPMSException {
+        if (loggedIn()) {
+            throw new GPMSException("Already logged in as " + getUser().getLogin());
+
+        }
         if (login == null || password == null) {
             return false;
         }
@@ -224,7 +228,7 @@ public class GPMSClient implements GPMSClientI {
     }
 
     @Override
-    public long ping() {
+    public final long ping() {
         try {
             WebResource wr = getResource();
             if (wr == null) { // e.g. after logging out
@@ -244,11 +248,18 @@ public class GPMSClient implements GPMSClientI {
     }
 
     @Override
-    public void logout() {
-        client = null;
-        user = null;
-        loggedin = false;
-        pcs.firePropertyChange(PROP_LOGGEDIN, !loggedin, loggedin);
+    public synchronized void logout() {
+        if (loggedIn()) {
+            // set loggedin to false first, so calls to loggedIn() will return false
+            loggedin = false;
+            // notify all listeners of logout operation in progress
+            // so they can execute shutdown hooks, if necessary
+            pcs.firePropertyChange(PROP_LOGGEDIN, true, false);
+            // after the property chance has been processed,
+            // release resources
+            client = null;
+            user = null;
+        }
     }
 
     @Override
@@ -257,17 +268,17 @@ public class GPMSClient implements GPMSClientI {
     }
 
     @Override
-    public String getServerName() {
+    public final String getServerName() {
         return servername;
     }
 
     @Override
-    public UserI getUser() {
+    public final UserI getUser() {
         return user;
     }
 
     @Override
-    public boolean loggedIn() {
+    public final boolean loggedIn() {
         return loggedin;
     }
 

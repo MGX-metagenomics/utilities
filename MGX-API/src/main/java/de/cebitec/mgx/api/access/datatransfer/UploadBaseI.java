@@ -7,7 +7,6 @@ package de.cebitec.mgx.api.access.datatransfer;
 public abstract class UploadBaseI extends TransferBaseI {
 
     private CallbackI cb = null;
-    private String error_message = "";
     protected static int DEFAULT_CHUNK_SIZE = 2048;
     protected int chunk_size = DEFAULT_CHUNK_SIZE;
 
@@ -23,14 +22,6 @@ public abstract class UploadBaseI extends TransferBaseI {
         setErrorMessage(reason);
         fireTaskChange(TransferBaseI.NUM_ELEMENTS_TRANSFERRED, total);
         fireTaskChange(TransferBaseI.TRANSFER_FAILED, total);
-    }
-
-    public String getErrorMessage() {
-        return error_message;
-    }
-
-    protected void setErrorMessage(String msg) {
-        error_message = msg;
     }
 
     public void setProgressCallback(CallbackI cb) {
