@@ -16,6 +16,7 @@ import de.cebitec.mgx.api.access.StatisticsAccessI;
 import de.cebitec.mgx.api.access.TaskAccessI;
 import de.cebitec.mgx.api.access.TermAccessI;
 import de.cebitec.mgx.api.access.ToolAccessI;
+import de.cebitec.mgx.api.exception.MGXException;
 import de.cebitec.mgx.api.model.AttributeTypeI;
 import de.cebitec.mgx.api.model.MGXDataModelBaseI;
 import de.cebitec.mgx.api.model.ModelBaseI;
@@ -45,7 +46,7 @@ public abstract class MGXMasterI implements ModelBaseI<MGXMasterI> {
 
     public abstract String getServerName();
 
-    public abstract void logout();
+    public abstract void close();
 
 //    public abstract RESTMembershipI getMembership();
     public abstract String getRoleName();
@@ -56,37 +57,37 @@ public abstract class MGXMasterI implements ModelBaseI<MGXMasterI> {
 
     public abstract void log(Level lvl, String msg);
 
-    public abstract HabitatAccessI Habitat();
+    public abstract HabitatAccessI Habitat() throws MGXException;
 
-    public abstract SampleAccessI Sample();
+    public abstract SampleAccessI Sample() throws MGXException;
 
-    public abstract DNAExtractAccessI DNAExtract();
+    public abstract DNAExtractAccessI DNAExtract() throws MGXException;
 
-    public abstract SeqRunAccessI SeqRun();
+    public abstract SeqRunAccessI SeqRun() throws MGXException;
 
-    public abstract ToolAccessI Tool();
+    public abstract ToolAccessI Tool() throws MGXException;
 
-    public abstract JobAccessI Job();
+    public abstract JobAccessI Job() throws MGXException;
 
-    public abstract AttributeAccessI Attribute();
+    public abstract AttributeAccessI Attribute() throws MGXException;
 
-    public abstract AccessBaseI<AttributeTypeI> AttributeType();
+    public abstract AccessBaseI<AttributeTypeI> AttributeType() throws MGXException;
 
-    public abstract ObservationAccessI Observation();
+    public abstract ObservationAccessI Observation() throws MGXException;
 
-    public abstract SequenceAccessI Sequence();
+    public abstract SequenceAccessI Sequence() throws MGXException;
 
-    public abstract TermAccessI Term();
+    public abstract TermAccessI Term() throws MGXException;
 
-    public abstract FileAccessI File();
+    public abstract FileAccessI File() throws MGXException;
 
-    public abstract ReferenceAccessI Reference();
+    public abstract ReferenceAccessI Reference() throws MGXException;
 
-    public abstract MappingAccessI Mapping();
+    public abstract MappingAccessI Mapping() throws MGXException;
 
-    public abstract StatisticsAccessI Statistics();
+    public abstract StatisticsAccessI Statistics() throws MGXException;
 
-    public abstract <T extends MGXDataModelBaseI<T>> TaskAccessI<T> Task();
+    public abstract <T extends MGXDataModelBaseI<T>> TaskAccessI<T> Task() throws MGXException;
 
     @Override
     public final synchronized void modified() {
@@ -106,7 +107,7 @@ public abstract class MGXMasterI implements ModelBaseI<MGXMasterI> {
     }
 
     @Override
-    public final synchronized boolean isDeleted() {
+    public synchronized boolean isDeleted() {
         return managedState.equals(OBJECT_DELETED);
     }
 
@@ -162,10 +163,10 @@ public abstract class MGXMasterI implements ModelBaseI<MGXMasterI> {
             throw new UnsupportedFlavorException(flavor);
         }
     }
-    
+
     @Override
     public abstract int hashCode();
-    
+
     @Override
     public abstract boolean equals(Object o);
 }

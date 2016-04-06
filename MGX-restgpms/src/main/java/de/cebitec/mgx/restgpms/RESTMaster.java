@@ -19,16 +19,16 @@ import java.util.logging.Logger;
  */
 public class RESTMaster implements RESTMasterI, PropertyChangeListener {
 
-    private final ProjectI project;
-    private final RoleI role;
-    private final UserI user;
+    private ProjectI project;
+    private RoleI role;
+    private UserI user;
     private final GPMSClientI gpmsclient;
     private static final Logger LOG = Logger.getLogger(RESTMaster.class.getName());
     private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
     public RESTMaster(GPMSClientI gpmsclient, MembershipI m, UserI user) {
-        project = m.getProject();
-        role = m.getRole();
+        this.project = m.getProject();
+        this.role = m.getRole();
         this.user = user;
         this.gpmsclient = gpmsclient;
         gpmsclient.addPropertyChangeListener(this);
@@ -37,11 +37,6 @@ public class RESTMaster implements RESTMasterI, PropertyChangeListener {
     @Override
     public String getServerName() {
         return gpmsclient.getServerName();
-    }
-
-    @Override
-    public void logout() {
-        close();
     }
 
     @Override
@@ -71,7 +66,10 @@ public class RESTMaster implements RESTMasterI, PropertyChangeListener {
 
     @Override
     public final void close() {
-        gpmsclient.logout();
+        //gpmsclient.logout();
+        project = null;
+        role = null;
+        user = null;
     }
 
     @Override
@@ -87,8 +85,14 @@ public class RESTMaster implements RESTMasterI, PropertyChangeListener {
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getSource().equals(gpmsclient) && evt.getPropertyName().equals(GPMSClientI.PROP_LOGGEDIN)) {
-            gpmsclient.removePropertyChangeListener(this);
-            pcs.firePropertyChange(new PropertyChangeEvent(this, MasterI.PROP_LOGGEDIN, evt.getOldValue(), evt.getNewValue()));
+            if (evt.getNewValue() instanceof Boolean) {
+                Boolean newVal = (Boolean) evt.getNewValue();
+                if (!newVal) {
+                    gpmsclient.removePropertyChangeListener(this);
+                    pcs.firePropertyChange(new PropertyChangeEvent(this, MasterI.PROP_LOGGEDIN, evt.getOldValue(), evt.getNewValue()));
+                    close();
+                }
+            }
         }
     }
 

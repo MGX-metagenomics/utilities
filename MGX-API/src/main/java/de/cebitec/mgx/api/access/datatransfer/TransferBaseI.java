@@ -14,13 +14,23 @@ public abstract class TransferBaseI {
     public static final String NUM_ELEMENTS_TRANSFERRED = "numElementsTransferred";
     public static final String TRANSFER_FAILED = "transferFailed";
     public static final String TRANSFER_COMPLETED = "transferCompleted";
+    //
+    private volatile String error_message = "";
 
     public TransferBaseI() {
         this.pcs = new ParallelPropertyChangeSupport(this);
     }
 
-    protected void fireTaskChange(String propName, long total_elements) {
-        pcs.firePropertyChange(propName, 0, total_elements);
+    public final synchronized String getErrorMessage() {
+        return error_message;
+    }
+
+    protected final synchronized void setErrorMessage(String msg) {
+        error_message = msg;
+    }
+
+    protected void fireTaskChange(String propName, Object newVal) {
+        pcs.firePropertyChange(propName, 0, newVal);
     }
 
     public void addPropertyChangeListener(PropertyChangeListener p) {
