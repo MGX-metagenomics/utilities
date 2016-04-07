@@ -82,9 +82,9 @@ public class ParallelPropertyChangeSupport extends PropertyChangeSupport impleme
                 }
             }
             if (!found) {
-                LOG.log(Level.INFO, "PropertyChangeListener {0} cannot be removed because it is not a registered listener.", listener.getClass().getSimpleName());
+                LOG.log(Level.INFO, "PropertyChangeListener {0} cannot be removed because it is not a registered listener.", listener);
                 for (PropertyChangeListener propertyChangeListener : propertyChangeListeners) {
-                    LOG.log(Level.INFO, "  listener: {0}", propertyChangeListener.getClass().getSimpleName());
+                    LOG.log(Level.INFO, "  listener: {0}", propertyChangeListener);
                 }
                 //throw new IllegalArgumentException("PropertyChangeListener " + listener + " cannot be removed because it is not a registered listener.");
             }
