@@ -23,21 +23,24 @@ public abstract class MGXDataModelBase<T extends MGXDataModelBaseI<T>> implement
     private final MGXMasterI master;
     private final DataFlavor dataflavor;
     private final PropertyChangeSupport pcs = new ParallelPropertyChangeSupport(this, true);
+    private final PropertyChangeListener stateListener;
     //
     private String managedState = OBJECT_MANAGED;
 
     public MGXDataModelBase(MGXMasterI master, DataFlavor dataFlavor) {
         this.master = master;
         this.dataflavor = dataFlavor;
-
-        master.addPropertyChangeListener(new PropertyChangeListener() {
+        
+        stateListener = new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 if (ModelBaseI.OBJECT_DELETED.equals(evt.getPropertyName())) {
                     deleted();
                 }
             }
-        });
+        };
+
+        master.addPropertyChangeListener(stateListener);
     }
 
     @Override
@@ -78,6 +81,7 @@ public abstract class MGXDataModelBase<T extends MGXDataModelBaseI<T>> implement
             throw new RuntimeException("Invalid object state for " + getClass().getSimpleName() + ", cannot delete deleted object.");
         }
         firePropertyChange(ModelBaseI.OBJECT_DELETED, 0, 1);
+        master.removePropertyChangeListener(stateListener);
         managedState = OBJECT_DELETED;
     }
 
