@@ -42,11 +42,11 @@ public class EventDistributor implements Runnable, AutoCloseable {
                     CountDownLatch allDelivered = new CountDownLatch(listeners.length);
                     //Logger.getLogger(EventDistributor.class.getName()).log(Level.INFO, "ED got event for {0} targets", listeners.length);
                     for (PropertyChangeListener pcl : listeners) {
-                        DistributionEvent dEvent = new DistributionEvent(allDelivered, event, pcl);
+                        DistributionEvent dEvent = new DistributionEvent(allDelivered, aEvent.getSource(), event, pcl);
                         out.add(dEvent);
                     }
                     allDelivered.await();
-                    aEvent.processed();
+                    aEvent.delivered();
                 }
             }
         } catch (InterruptedException ex) {
@@ -88,7 +88,7 @@ public class EventDistributor implements Runnable, AutoCloseable {
                 }
                 //pcl.propertyChange(event.getEvent());
             }
-            event.processed();
+            event.delivered();
         } else {
             in.add(event);
         }

@@ -21,10 +21,12 @@ public class ParallelPropertyChangeSupport extends PropertyChangeSupport impleme
 
     private static EventDistributor distributor = null;
     private static int numInstances = 0;
+    private volatile boolean closed = false;
     private final boolean traceErrors;
     private final boolean returnImmediate;
     private static final Logger LOG = Logger.getLogger(ParallelPropertyChangeSupport.class.getSimpleName());
     private final Object source;
+    private final Object LOCK = new Object();
 
     public ParallelPropertyChangeSupport(Object sourceBean) {
         this(sourceBean, true, false);
@@ -50,18 +52,20 @@ public class ParallelPropertyChangeSupport extends PropertyChangeSupport impleme
             }
             return;
         }
-        if (traceErrors) {
-            for (PropertyChangeListener pcl : getPropertyChangeListeners()) {
-                if (pcl == listener) {
-                    LOG.log(Level.INFO, "Duplicate PropertyChangeListener added: {0}", listener.getClass().getSimpleName());
-//                    throw new IllegalArgumentException("Duplicate PropertyChangeListener added");
+        synchronized (LOCK) {
+            if (traceErrors) {
+                for (PropertyChangeListener pcl : getPropertyChangeListeners()) {
+                    if (pcl == listener) {
+                        LOG.log(Level.INFO, "Duplicate PropertyChangeListener added: {0}", listener.getClass().getSimpleName());
+                        //throw new IllegalArgumentException("Duplicate PropertyChangeListener added");
+                    }
                 }
             }
+            super.addPropertyChangeListener(listener);
         }
         if (distributor == null) {
             startDistributor();
         }
-        super.addPropertyChangeListener(listener);
     }
 
     @Override
@@ -72,24 +76,31 @@ public class ParallelPropertyChangeSupport extends PropertyChangeSupport impleme
             }
             return;
         }
-        if (traceErrors) {
-            boolean found = false;
-            PropertyChangeListener[] propertyChangeListeners = getPropertyChangeListeners();
-            for (PropertyChangeListener propertyChangeListener : propertyChangeListeners) {
-                if (propertyChangeListener.equals(listener)) {
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
-                LOG.log(Level.INFO, "PropertyChangeListener {0} cannot be removed because it is not a registered listener.", listener);
+        synchronized (LOCK) {
+            if (traceErrors) {
+                boolean found = false;
+                PropertyChangeListener[] propertyChangeListeners = getPropertyChangeListeners();
                 for (PropertyChangeListener propertyChangeListener : propertyChangeListeners) {
-                    LOG.log(Level.INFO, "  listener: {0}", propertyChangeListener);
+                    if (propertyChangeListener.equals(listener)) {
+                        found = true;
+                        break;
+                    }
                 }
-                //throw new IllegalArgumentException("PropertyChangeListener " + listener + " cannot be removed because it is not a registered listener.");
+                if (!found) {
+                    LOG.log(Level.INFO, "PropertyChangeListener {0} cannot be removed because it is not a registered listener.", listener);
+                    for (PropertyChangeListener propertyChangeListener : propertyChangeListeners) {
+                        LOG.log(Level.INFO, "  listener: {0}", propertyChangeListener);
+                    }
+                    //throw new IllegalArgumentException("PropertyChangeListener " + listener + " cannot be removed because it is not a registered listener.");
+                }
             }
+            super.removePropertyChangeListener(listener);
         }
-        super.removePropertyChangeListener(listener);
+    }
+
+    @Override
+    public synchronized PropertyChangeListener[] getPropertyChangeListeners() {
+        return super.getPropertyChangeListeners();
     }
 
     @Override
@@ -99,14 +110,14 @@ public class ParallelPropertyChangeSupport extends PropertyChangeSupport impleme
             return;
         }
 
-        AccumulatedEvent aEvent = new AccumulatedEvent(listeners, event);
+        AccumulatedEvent aEvent = new AccumulatedEvent(this, listeners, event);
         distributor.distributeEvent(aEvent);
         if (!returnImmediate) {
             aEvent.await();
         }
     }
 
-    private synchronized void startDistributor() {
+    private synchronized static void startDistributor() {
         assert distributor == null;
         distributor = new EventDistributor();
         Thread thread = new Thread(distributor, "AsyncPCS-Distributor");
@@ -116,10 +127,13 @@ public class ParallelPropertyChangeSupport extends PropertyChangeSupport impleme
 
     @Override
     public final synchronized void close() {
-        numInstances--;
-        if (numInstances == 0 && distributor != null) {
-            distributor.close();
-            distributor = null;
+        if (!closed) {
+            closed = true;
+            numInstances--;
+            if (numInstances == 0 && distributor != null) {
+                distributor.close();
+                distributor = null;
+            }
         }
     }
 
