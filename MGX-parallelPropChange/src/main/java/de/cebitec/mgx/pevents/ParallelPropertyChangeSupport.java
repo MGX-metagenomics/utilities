@@ -23,7 +23,8 @@ public class ParallelPropertyChangeSupport extends PropertyChangeSupport impleme
     private static int numInstances = 0;
     private final boolean traceErrors;
     private final boolean returnImmediate;
-    private static final Logger LOG = Logger.getLogger(ParallelPropertyChangeSupport.class.getName());
+    private static final Logger LOG = Logger.getLogger(ParallelPropertyChangeSupport.class.getSimpleName());
+    private final Object source;
 
     public ParallelPropertyChangeSupport(Object sourceBean) {
         this(sourceBean, true, false);
@@ -35,13 +36,14 @@ public class ParallelPropertyChangeSupport extends PropertyChangeSupport impleme
 
     public ParallelPropertyChangeSupport(Object sourceBean, boolean traceErrors, boolean returnImmediate) {
         super(sourceBean);
+        this.source = sourceBean;
         numInstances++;
         this.traceErrors = traceErrors;
         this.returnImmediate = returnImmediate;
     }
 
     @Override
-    public final void addPropertyChangeListener(PropertyChangeListener listener) {
+    public final synchronized void addPropertyChangeListener(PropertyChangeListener listener) {
         if (listener == null) {
             if (traceErrors) {
                 throw new IllegalArgumentException("null PropertyChangeListener added");
@@ -51,8 +53,8 @@ public class ParallelPropertyChangeSupport extends PropertyChangeSupport impleme
         if (traceErrors) {
             for (PropertyChangeListener pcl : getPropertyChangeListeners()) {
                 if (pcl == listener) {
-                    LOG.log(Level.INFO, "Duplicate PropertyChangeListener added: {0}", listener.toString());
-                    throw new IllegalArgumentException("Duplicate PropertyChangeListener added");
+                    LOG.log(Level.INFO, "Duplicate PropertyChangeListener added: {0}", listener.getClass().getSimpleName());
+//                    throw new IllegalArgumentException("Duplicate PropertyChangeListener added");
                 }
             }
         }
@@ -63,8 +65,11 @@ public class ParallelPropertyChangeSupport extends PropertyChangeSupport impleme
     }
 
     @Override
-    public final void removePropertyChangeListener(PropertyChangeListener listener) {
+    public final synchronized void removePropertyChangeListener(PropertyChangeListener listener) {
         if (listener == null) {
+            if (traceErrors) {
+                throw new IllegalArgumentException("null PropertyChangeListener removed");
+            }
             return;
         }
         if (traceErrors) {
@@ -77,7 +82,11 @@ public class ParallelPropertyChangeSupport extends PropertyChangeSupport impleme
                 }
             }
             if (!found) {
-                throw new IllegalArgumentException("PropertyChangeLister " + listener + " cannot be removed because it is not a registered listener.");
+                LOG.log(Level.INFO, "PropertyChangeListener {0} cannot be removed because it is not a registered listener.", listener.getClass().getSimpleName());
+                for (PropertyChangeListener propertyChangeListener : propertyChangeListeners) {
+                    LOG.log(Level.INFO, "  listener: {0}", propertyChangeListener.getClass().getSimpleName());
+                }
+                //throw new IllegalArgumentException("PropertyChangeListener " + listener + " cannot be removed because it is not a registered listener.");
             }
         }
         super.removePropertyChangeListener(listener);
@@ -114,4 +123,18 @@ public class ParallelPropertyChangeSupport extends PropertyChangeSupport impleme
         }
     }
 
+    @Override
+    protected void finalize() throws Throwable {
+        super.finalize();
+        close();
+        if (traceErrors) {
+            PropertyChangeListener[] propertyChangeListeners = getPropertyChangeListeners();
+            if (propertyChangeListeners != null && propertyChangeListeners.length > 0) {
+                LOG.log(Level.INFO, "Removing PropertyChangeSupport for source {0} with remaining listeners:", source.getClass().getSimpleName());
+                for (PropertyChangeListener pcl : propertyChangeListeners) {
+                    LOG.log(Level.INFO, "  {0}", pcl.getClass().getSimpleName());
+                }
+            }
+        }
+    }
 }
