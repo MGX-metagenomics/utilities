@@ -39,6 +39,8 @@ public interface ReplicateGroupI extends ModelBaseI<ReplicateGroupI>, PropertyCh
     Collection<ReplicateI> getReplicates();
 
     long getNumSequences();
+    
+    int getNextReplicateNum();
 
     boolean isActive();
 
