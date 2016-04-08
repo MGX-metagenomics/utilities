@@ -41,11 +41,12 @@ public interface VGroupManagerI extends PropertyChangeListener {
 
     List<Pair<VisualizationGroupI, DistributionI<Long>>> getDistributions() throws ConflictingJobsException;
 
-    List<Pair<VisualizationGroupI, TreeI<Long>>> getHierarchies();
+    List<Pair<VisualizationGroupI, TreeI<Long>>> getHierarchies() throws ConflictingJobsException;
+
+    void setSelectedVisualizationGroup(VisualizationGroupI group);
 
     VisualizationGroupI getSelectedVisualizationGroup();
 
-    //boolean hasVizGroup(String name);
     void registerResolver(ConflictResolver cr);
 
     void removeVisualizationGroup(VisualizationGroupI vg);
@@ -54,7 +55,7 @@ public interface VGroupManagerI extends PropertyChangeListener {
 
     boolean selectAttributeType(AttributeRank rank, String aType);
 
-    void setSelectedVizGroup(VisualizationGroupI group);
+    boolean selectAttributeType(String aType);
 
     <T> Future<T> submit(Fetcher<T> f);
 
@@ -71,5 +72,7 @@ public interface VGroupManagerI extends PropertyChangeListener {
 
     //boolean hasReplicateGroup(String name);
     public void setSelectedReplicateGroup(ReplicateGroupI replicateGroup);
+
+    public ReplicateGroupI getSelectedReplicateGroup();
 
 }
