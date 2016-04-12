@@ -30,8 +30,8 @@ public abstract class MGXDataModelBase<T extends MGXDataModelBaseI<T>> implement
     public MGXDataModelBase(MGXMasterI master, DataFlavor dataFlavor) {
         this.master = master;
         this.dataflavor = dataFlavor;
-        
-        stateListener = new PropertyChangeListener() {
+
+        stateListener = master == null ? null : new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 if (ModelBaseI.OBJECT_DELETED.equals(evt.getPropertyName())) {
@@ -40,7 +40,9 @@ public abstract class MGXDataModelBase<T extends MGXDataModelBaseI<T>> implement
             }
         };
 
-        master.addPropertyChangeListener(stateListener);
+        if (master != null) {
+            master.addPropertyChangeListener(stateListener);
+        }
     }
 
     @Override
@@ -81,13 +83,17 @@ public abstract class MGXDataModelBase<T extends MGXDataModelBaseI<T>> implement
             throw new RuntimeException("Invalid object state for " + getClass().getSimpleName() + ", cannot delete deleted object.");
         }
         firePropertyChange(ModelBaseI.OBJECT_DELETED, 0, 1);
-        master.removePropertyChangeListener(stateListener);
+        if (master != null) {
+            master.removePropertyChangeListener(stateListener);
+        }
         managedState = OBJECT_DELETED;
     }
 
     @Override
     public final boolean isDeleted() {
-        return master.isDeleted() || managedState.equals(OBJECT_DELETED);
+        return master != null 
+                ? (master.isDeleted() || managedState.equals(OBJECT_DELETED)) 
+                : managedState.equals(OBJECT_DELETED);
     }
 
     @Override
