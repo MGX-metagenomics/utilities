@@ -9,6 +9,7 @@ import de.cebitec.mgx.api.misc.AttributeRank;
 import de.cebitec.mgx.api.misc.DistributionI;
 import de.cebitec.mgx.api.misc.Fetcher;
 import de.cebitec.mgx.api.misc.Pair;
+import de.cebitec.mgx.api.model.SeqRunI;
 import de.cebitec.mgx.api.model.tree.TreeI;
 import de.cebitec.mgx.api.visualization.ConflictResolver;
 import java.beans.PropertyChangeListener;
@@ -38,7 +39,7 @@ public interface VGroupManagerI extends PropertyChangeListener {
     List<VisualizationGroupI> getActiveVisualizationGroups();
 
     Collection<VisualizationGroupI> getAllVisualizationGroups();
-
+    
     List<Pair<VisualizationGroupI, DistributionI<Long>>> getDistributions() throws ConflictingJobsException;
 
     List<Pair<VisualizationGroupI, TreeI<Long>>> getHierarchies() throws ConflictingJobsException;
@@ -56,6 +57,8 @@ public interface VGroupManagerI extends PropertyChangeListener {
     boolean selectAttributeType(AttributeRank rank, String aType);
 
     boolean selectAttributeType(String aType);
+    
+    String getSelectedAttributeType();
 
     <T> Future<T> submit(Fetcher<T> f);
 
