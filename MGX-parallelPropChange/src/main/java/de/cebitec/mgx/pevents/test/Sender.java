@@ -7,7 +7,6 @@ package de.cebitec.mgx.pevents.test;
 
 import de.cebitec.mgx.pevents.ParallelPropertyChangeSupport;
 import java.beans.PropertyChangeListener;
-import java.util.UUID;
 
 /**
  *
@@ -15,9 +14,10 @@ import java.util.UUID;
  */
 public class Sender {
 
-    private final ParallelPropertyChangeSupport pcs = new ParallelPropertyChangeSupport(UUID.randomUUID().toString());
+    private final ParallelPropertyChangeSupport pcs;
 
-    public Sender() {
+    public Sender(String source) {
+        pcs = new ParallelPropertyChangeSupport(source);
 //        assert pcs.getPropertyChangeListeners().length == 0;
     }
 

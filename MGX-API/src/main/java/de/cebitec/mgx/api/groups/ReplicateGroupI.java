@@ -44,6 +44,8 @@ public interface ReplicateGroupI extends ModelBaseI<ReplicateGroupI>, PropertyCh
     DistributionI<Double> getStdvDistribution();
 
     long getNumSequences();
+    
+    int getNextReplicateNum();
 
     boolean isActive();
 

@@ -26,7 +26,7 @@ public class EventTarget implements PropertyChangeListener {
 
     @Override
     public void propertyChange(PropertyChangeEvent event) {
-
+        //Logger.getLogger(EventReceiver.class.getName()).log(Level.SEVERE, "receiver "+i+ " got event "+event);
         try {
             Thread.sleep(0, i);
         } catch (InterruptedException ex) {
