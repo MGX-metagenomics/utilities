@@ -28,7 +28,7 @@ public abstract class EventBase {
         return event;
     }
 
-    public void processed() {
+    public void delivered() {
         latch.countDown();
     }
 

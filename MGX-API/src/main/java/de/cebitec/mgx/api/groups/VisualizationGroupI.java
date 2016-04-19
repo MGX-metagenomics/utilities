@@ -54,7 +54,7 @@ public interface VisualizationGroupI extends ModelBaseI<VisualizationGroupI>, Pr
 
     public DistributionI<Long> getDistribution() throws ConflictingJobsException;
 
-    public TreeI<Long> getHierarchy();
+    public TreeI<Long> getHierarchy() throws ConflictingJobsException;
 
     public int getId();
 
@@ -63,7 +63,7 @@ public interface VisualizationGroupI extends ModelBaseI<VisualizationGroupI>, Pr
     public void close();
 
     public String getName();
-    
+
     public String getDisplayName();
 
     public long getNumSequences();

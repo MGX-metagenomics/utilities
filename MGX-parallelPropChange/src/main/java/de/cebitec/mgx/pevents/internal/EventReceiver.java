@@ -23,6 +23,8 @@ public class EventReceiver implements Runnable {
     private final int id;
     private volatile boolean exit = false;
 
+    private static boolean DEBUG = true;
+
     public EventReceiver(BlockingQueue<DistributionEvent> in, int id) {
         this.in = in;
         this.id = id;
@@ -34,38 +36,50 @@ public class EventReceiver implements Runnable {
 
     @Override
     public void run() {
-        try {
-            while (!exit) {
-                DistributionEvent dEvent = in.poll(2, TimeUnit.MILLISECONDS);
-                if (dEvent != null) {
-                    //Logger.getLogger(EventReceiver.class.getName()).log(Level.INFO, "receiver " + id + " got event");
-                    PropertyChangeEvent event = dEvent.getEvent();
-                    
-//                     // debug code
-//                    assert event != null;
-//                    assert event.getPropertyName() != null;
-//                    assert event.getOldValue() != null;
-//                    assert event.getNewValue() != null;
-                    
-                    PropertyChangeListener pcl = dEvent.getTarget();
-                    if (pcl instanceof PropertyChangeListenerProxy) {
-                        PropertyChangeListenerProxy pclp = (PropertyChangeListenerProxy) pcl;
-                        if (pclp.getPropertyName().equals(event.getPropertyName())) {
-                            pclp.propertyChange(event);
-                        }
-                    } else {
-                        long start = System.currentTimeMillis();
-                        pcl.propertyChange(event);
-                        start = System.currentTimeMillis() - start;
-                        if (start >= 100) {
-                            Logger.getLogger(EventReceiver.class.getName()).log(Level.INFO, "Slow processing of propertyChange {0} ({1} ms) for target {2}", new Object[]{event.getPropertyName(), start, pcl.toString()});
+        while (!exit) {
+            DistributionEvent dEvent = null;
+            try {
+                dEvent = in.poll(2, TimeUnit.MILLISECONDS);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(EventReceiver.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            if (dEvent != null) {
+                PropertyChangeEvent event = dEvent.getEvent();
+                PropertyChangeListener target = dEvent.getTarget();
+
+                if (DEBUG) {
+                    //
+                    // additional test if the target listener has been removed before the event was delivered
+                    //
+                    PropertyChangeListener[] propertyChangeListeners = dEvent.getSource().getPropertyChangeListeners();
+                    boolean stillThere = false;
+                    for (PropertyChangeListener pcl : propertyChangeListeners) {
+                        if (pcl.equals(target)) {
+                            stillThere = true;
+                            break;
                         }
                     }
-                    dEvent.processed();
+                    if (!stillThere) {
+                        Logger.getLogger(EventReceiver.class.getName()).log(Level.INFO, "target listener {0} was removed before event could be delivered", target);
+                    }
                 }
+
+                if (target instanceof PropertyChangeListenerProxy) {
+                    PropertyChangeListenerProxy pclp = (PropertyChangeListenerProxy) target;
+                    if (pclp.getPropertyName().equals(event.getPropertyName())) {
+                        pclp.propertyChange(event);
+                    }
+                } else {
+                    long start = System.currentTimeMillis();
+                    target.propertyChange(event);
+                    start = System.currentTimeMillis() - start;
+                    if (start >= 100) {
+                        Logger.getLogger(EventReceiver.class.getName()).log(Level.INFO, "Slow processing of propertyChange {0} ({1} ms) for target {2}", new Object[]{event.getPropertyName(), start, target.toString()});
+                    }
+                }
+                dEvent.delivered();
             }
-        } catch (InterruptedException ex) {
-            Logger.getLogger(EventReceiver.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
