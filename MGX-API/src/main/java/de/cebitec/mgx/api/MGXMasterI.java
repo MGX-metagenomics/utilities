@@ -1,7 +1,7 @@
 package de.cebitec.mgx.api;
 
-import de.cebitec.mgx.api.access.AccessBaseI;
 import de.cebitec.mgx.api.access.AttributeAccessI;
+import de.cebitec.mgx.api.access.AttributeTypeAccessI;
 import de.cebitec.mgx.api.access.DNAExtractAccessI;
 import de.cebitec.mgx.api.access.FileAccessI;
 import de.cebitec.mgx.api.access.HabitatAccessI;
@@ -17,7 +17,6 @@ import de.cebitec.mgx.api.access.TaskAccessI;
 import de.cebitec.mgx.api.access.TermAccessI;
 import de.cebitec.mgx.api.access.ToolAccessI;
 import de.cebitec.mgx.api.exception.MGXException;
-import de.cebitec.mgx.api.model.AttributeTypeI;
 import de.cebitec.mgx.api.model.MGXDataModelBaseI;
 import de.cebitec.mgx.api.model.ModelBaseI;
 import de.cebitec.mgx.pevents.ParallelPropertyChangeSupport;
@@ -71,7 +70,7 @@ public abstract class MGXMasterI implements ModelBaseI<MGXMasterI> {
 
     public abstract AttributeAccessI Attribute() throws MGXException;
 
-    public abstract AccessBaseI<AttributeTypeI> AttributeType() throws MGXException;
+    public abstract AttributeTypeAccessI AttributeType() throws MGXException;
 
     public abstract ObservationAccessI Observation() throws MGXException;
 
