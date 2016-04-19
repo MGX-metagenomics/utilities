@@ -19,7 +19,13 @@ import java.util.Iterator;
  *
  * @author sj
  */
-public interface AttributeAccessI extends AccessBaseI<AttributeI> {
+public interface AttributeAccessI {
+
+    public AttributeI create(JobI job, AttributeTypeI attrType, String attrValue, AttributeI parent) throws MGXException;
+    
+    public AttributeI fetch(long id) throws MGXException;
+    
+    public Iterator<AttributeI> ByJob(JobI job) throws MGXException;
 
     public Iterator<AttributeI> BySeqRun(final SeqRunI seqrun) throws MGXException;
 
@@ -28,6 +34,6 @@ public interface AttributeAccessI extends AccessBaseI<AttributeI> {
     public TreeI<Long> getHierarchy(AttributeTypeI attrType, JobI job) throws MGXException;
 
     public Iterator<SequenceI> search(String term, boolean exact, SeqRunI[] targets) throws MGXException;
-    
+
     public Iterator<String> find(String term, SeqRunI[] targets) throws MGXException;
 }
