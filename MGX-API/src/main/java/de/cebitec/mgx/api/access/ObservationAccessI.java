@@ -7,6 +7,7 @@
 package de.cebitec.mgx.api.access;
 
 import de.cebitec.mgx.api.exception.MGXException;
+import de.cebitec.mgx.api.model.AttributeI;
 import de.cebitec.mgx.api.model.ObservationI;
 import de.cebitec.mgx.api.model.SequenceI;
 import java.util.Iterator;
@@ -18,5 +19,7 @@ import java.util.Iterator;
 public interface ObservationAccessI {
 
     public Iterator<ObservationI> ByRead(SequenceI seq) throws MGXException;
+    
+    public ObservationI create(SequenceI seq, AttributeI attr, int start, int stop) throws MGXException;
     
 }
