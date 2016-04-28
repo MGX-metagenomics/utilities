@@ -5,6 +5,7 @@
  */
 package de.cebitec.mgx.api.groups;
 
+import de.cebitec.mgx.api.misc.DistributionI;
 import de.cebitec.mgx.api.model.ModelBaseI;
 import java.awt.Color;
 import java.awt.datatransfer.DataFlavor;
@@ -37,6 +38,10 @@ public interface ReplicateGroupI extends ModelBaseI<ReplicateGroupI>, PropertyCh
     void setColor(Color color);
 
     Collection<ReplicateI> getReplicates();
+    
+    DistributionI<Double> getMeanDistribution();
+    
+    DistributionI<Double> getStdvDistribution();
 
     long getNumSequences();
     
