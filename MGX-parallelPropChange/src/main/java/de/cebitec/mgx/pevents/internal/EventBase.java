@@ -23,6 +23,10 @@ public abstract class EventBase {
         this.latch = latch;
         this.event = event;
     }
+    
+    public CountDownLatch getLatch() {
+        return latch;
+    }
 
     public PropertyChangeEvent getEvent() {
         return event;

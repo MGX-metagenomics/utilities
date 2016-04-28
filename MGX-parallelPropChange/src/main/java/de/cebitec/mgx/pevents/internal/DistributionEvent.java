@@ -6,9 +6,7 @@
 package de.cebitec.mgx.pevents.internal;
 
 import de.cebitec.mgx.pevents.ParallelPropertyChangeSupport;
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.concurrent.CountDownLatch;
 
 /**
  *
@@ -19,10 +17,10 @@ public class DistributionEvent extends EventBase {
     private final PropertyChangeListener target;
     private final ParallelPropertyChangeSupport source;
 
-    public DistributionEvent(CountDownLatch latch, ParallelPropertyChangeSupport source, PropertyChangeEvent event, PropertyChangeListener target) {
-        super(latch, event);
+    public DistributionEvent(AccumulatedEvent accEvent, PropertyChangeListener target) {
+        super(accEvent.getLatch(), accEvent.getEvent());
         this.target = target;
-        this.source = source;
+        this.source = accEvent.getSource();
     }
 
     public ParallelPropertyChangeSupport getSource() {

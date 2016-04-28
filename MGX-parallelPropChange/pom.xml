@@ -28,6 +28,12 @@
             <scope>test</scope>
             <version>4.12</version>
         </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+            <version>4.3.1</version>
+            <type>jar</type>
+        </dependency>
     </dependencies>
     
     <build>
@@ -40,6 +46,7 @@
                     <instructions>
                         <Export-Package>de.cebitec.mgx.pevents</Export-Package>
                         <Private-Package>de.cebitec.mgx.pevents.*</Private-Package>
+                        <Bundle-Activator>de.cebitec.mgx.pevents.Activator</Bundle-Activator>
                     </instructions>
                 </configuration>
             </plugin>
