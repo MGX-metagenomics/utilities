@@ -11,7 +11,6 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import java.io.IOException;
 
 /**
@@ -22,8 +21,8 @@ public abstract class MGXDataModelBase<T extends MGXDataModelBaseI<T>> implement
 
     private final MGXMasterI master;
     private final DataFlavor dataflavor;
-    private final PropertyChangeSupport pcs = new ParallelPropertyChangeSupport(this, true);
-    private final PropertyChangeListener stateListener;
+    private final ParallelPropertyChangeSupport pcs = new ParallelPropertyChangeSupport(this, true);
+    private final StateListener stateListener;
     //
     private String managedState = OBJECT_MANAGED;
 
@@ -31,14 +30,7 @@ public abstract class MGXDataModelBase<T extends MGXDataModelBaseI<T>> implement
         this.master = master;
         this.dataflavor = dataFlavor;
 
-        stateListener = master == null ? null : new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                if (ModelBaseI.OBJECT_DELETED.equals(evt.getPropertyName())) {
-                    deleted();
-                }
-            }
-        };
+        stateListener = master == null ? null : new StateListener();
 
         if (master != null) {
             master.addPropertyChangeListener(stateListener);
@@ -74,7 +66,7 @@ public abstract class MGXDataModelBase<T extends MGXDataModelBaseI<T>> implement
         if (managedState.equals(OBJECT_DELETED)) {
             throw new RuntimeException("Invalid object state for " + getClass().getSimpleName() + ", cannot modify deleted object.");
         }
-        firePropertyChange(ModelBaseI.OBJECT_MODIFIED, 1, 2);
+        firePropertyChange(OBJECT_MODIFIED, 1, 2);
     }
 
     @Override
@@ -82,17 +74,18 @@ public abstract class MGXDataModelBase<T extends MGXDataModelBaseI<T>> implement
         if (managedState.equals(OBJECT_DELETED)) {
             throw new RuntimeException("Invalid object state for " + getClass().getSimpleName() + ", cannot delete deleted object.");
         }
-        firePropertyChange(ModelBaseI.OBJECT_DELETED, 0, 1);
+        firePropertyChange(OBJECT_DELETED, 0, 1);
         if (master != null) {
             master.removePropertyChangeListener(stateListener);
         }
         managedState = OBJECT_DELETED;
+        pcs.close();
     }
 
     @Override
     public final boolean isDeleted() {
-        return master != null 
-                ? (master.isDeleted() || managedState.equals(OBJECT_DELETED)) 
+        return master != null
+                ? (master.isDeleted() || managedState.equals(OBJECT_DELETED))
                 : managedState.equals(OBJECT_DELETED);
     }
 
@@ -128,6 +121,16 @@ public abstract class MGXDataModelBase<T extends MGXDataModelBaseI<T>> implement
     @Override
     public void firePropertyChange(PropertyChangeEvent event) {
         pcs.firePropertyChange(event);
+    }
+
+    private class StateListener implements PropertyChangeListener {
+
+        @Override
+        public void propertyChange(PropertyChangeEvent evt) {
+            if (OBJECT_DELETED.equals(evt.getPropertyName())) {
+                deleted();
+            }
+        }
     }
 
 }
