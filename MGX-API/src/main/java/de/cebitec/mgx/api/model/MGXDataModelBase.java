@@ -21,7 +21,7 @@ public abstract class MGXDataModelBase<T extends MGXDataModelBaseI<T>> implement
 
     private final MGXMasterI master;
     private final DataFlavor dataflavor;
-    private final ParallelPropertyChangeSupport pcs = new ParallelPropertyChangeSupport(this, true);
+    private ParallelPropertyChangeSupport pcs;
     private final StateListener stateListener;
     //
     private String managedState = OBJECT_MANAGED;
@@ -79,7 +79,10 @@ public abstract class MGXDataModelBase<T extends MGXDataModelBaseI<T>> implement
             master.removePropertyChangeListener(stateListener);
         }
         managedState = OBJECT_DELETED;
-        pcs.close();
+        if (pcs != null) {
+            pcs.close();
+            pcs = null;
+        }
     }
 
     @Override
@@ -90,37 +93,50 @@ public abstract class MGXDataModelBase<T extends MGXDataModelBaseI<T>> implement
     }
 
     @Override
-    public void addPropertyChangeListener(PropertyChangeListener listener) {
+    public synchronized void addPropertyChangeListener(PropertyChangeListener listener) {
+        if (pcs == null) {
+            pcs = new ParallelPropertyChangeSupport(this, true);
+        }
         pcs.addPropertyChangeListener(listener);
     }
 
     @Override
     public void removePropertyChangeListener(PropertyChangeListener listener) {
-        pcs.removePropertyChangeListener(listener);
+        if (pcs != null) {
+            pcs.removePropertyChangeListener(listener);
+        }
     }
 
     @Override
     public void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
-        PropertyChangeEvent evt = new PropertyChangeEvent(this, propertyName, oldValue, newValue);
-        firePropertyChange(evt);
+        if (pcs != null) {
+            PropertyChangeEvent evt = new PropertyChangeEvent(this, propertyName, oldValue, newValue);
+            firePropertyChange(evt);
+        }
     }
 
     @Override
     public void firePropertyChange(String propertyName, int oldValue, int newValue) {
-        PropertyChangeEvent evt = new PropertyChangeEvent(this, propertyName, oldValue, newValue);
-        firePropertyChange(evt);
+        if (pcs != null) {
+            PropertyChangeEvent evt = new PropertyChangeEvent(this, propertyName, oldValue, newValue);
+            firePropertyChange(evt);
+        }
         //pcs.firePropertyChange(propertyName, oldValue, newValue);
     }
 
     @Override
     public void firePropertyChange(String propertyName, boolean oldValue, boolean newValue) {
-        PropertyChangeEvent evt = new PropertyChangeEvent(this, propertyName, oldValue, newValue);
-        firePropertyChange(evt);
+        if (pcs != null) {
+            PropertyChangeEvent evt = new PropertyChangeEvent(this, propertyName, oldValue, newValue);
+            firePropertyChange(evt);
+        }
     }
 
     @Override
     public void firePropertyChange(PropertyChangeEvent event) {
-        pcs.firePropertyChange(event);
+        if (pcs != null) {
+            pcs.firePropertyChange(event);
+        }
     }
 
     private class StateListener implements PropertyChangeListener {
