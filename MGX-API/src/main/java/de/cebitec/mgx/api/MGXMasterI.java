@@ -24,7 +24,6 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import java.io.IOException;
 import java.util.logging.Level;
 
@@ -36,7 +35,7 @@ public abstract class MGXMasterI implements ModelBaseI<MGXMasterI> {
 
     public static final DataFlavor DATA_FLAVOR = new DataFlavor(MGXMasterI.class, "MGXMasterI");
     //
-    private final PropertyChangeSupport pcs = new ParallelPropertyChangeSupport(this, true);
+    private final ParallelPropertyChangeSupport pcs = new ParallelPropertyChangeSupport(this, true);
     private volatile String managedState = OBJECT_MANAGED;
 
     public MGXMasterI() {
@@ -103,10 +102,11 @@ public abstract class MGXMasterI implements ModelBaseI<MGXMasterI> {
         }
         firePropertyChange(ModelBaseI.OBJECT_DELETED, 0, 1);
         managedState = OBJECT_DELETED;
+        pcs.close();
     }
 
     @Override
-    public synchronized boolean isDeleted() {
+    public boolean isDeleted() {
         return managedState.equals(OBJECT_DELETED);
     }
 

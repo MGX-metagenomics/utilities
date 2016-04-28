@@ -21,7 +21,7 @@ public interface ModelBaseI<T extends ModelBaseI<T>> extends Transferable, Compa
     public final static String OBJECT_MANAGED = "objectManaged";
     public final static String OBJECT_DELETED = "objectDeleted";
     public final static String OBJECT_MODIFIED = "objectModified";
-
+    
     @Override
     public DataFlavor[] getTransferDataFlavors();
 
