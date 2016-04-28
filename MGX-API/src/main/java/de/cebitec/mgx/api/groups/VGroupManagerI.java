@@ -49,6 +49,8 @@ public interface VGroupManagerI extends PropertyChangeListener {
     VisualizationGroupI getSelectedVisualizationGroup();
 
     void registerResolver(ConflictResolver cr);
+    
+    ConflictResolver getResolver();
 
     void removeVisualizationGroup(VisualizationGroupI vg);
 
