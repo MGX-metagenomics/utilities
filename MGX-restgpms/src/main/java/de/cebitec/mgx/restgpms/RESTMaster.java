@@ -19,7 +19,7 @@ import java.util.logging.Logger;
  */
 public class RESTMaster implements RESTMasterI, PropertyChangeListener {
 
-    private ProjectI project;
+    private final ProjectI project;
     private RoleI role;
     private UserI user;
     private final GPMSClientI gpmsclient;
@@ -67,7 +67,7 @@ public class RESTMaster implements RESTMasterI, PropertyChangeListener {
     @Override
     public final void close() {
         //gpmsclient.logout();
-        project = null;
+        //project = null;
         role = null;
         user = null;
     }
