@@ -20,18 +20,12 @@ import java.util.logging.Logger;
 public class EventReceiver implements Runnable {
 
     private final BlockingQueue<DistributionEvent> in;
-    private final int id;
+    private final EventDistributor distributor;
     private volatile boolean exit = false;
 
-    private static boolean DEBUG = true;
-
-    public EventReceiver(BlockingQueue<DistributionEvent> in, int id) {
+    public EventReceiver(EventDistributor dist, BlockingQueue<DistributionEvent> in) {
+        this.distributor = dist;
         this.in = in;
-        this.id = id;
-    }
-
-    public void shutDown() {
-        exit = true;
     }
 
     @Override
@@ -39,43 +33,31 @@ public class EventReceiver implements Runnable {
         while (!exit) {
             DistributionEvent dEvent = null;
             try {
-                dEvent = in.poll(2, TimeUnit.MILLISECONDS);
+                dEvent = in.poll(500, TimeUnit.MILLISECONDS);
             } catch (InterruptedException ex) {
                 Logger.getLogger(EventReceiver.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
+
             if (dEvent != null) {
                 PropertyChangeEvent event = dEvent.getEvent();
                 PropertyChangeListener target = dEvent.getTarget();
 
-                if (DEBUG) {
-                    //
-                    // additional test if the target listener has been removed before the event was delivered
-                    //
-                    PropertyChangeListener[] propertyChangeListeners = dEvent.getSource().getPropertyChangeListeners();
-                    boolean stillThere = false;
-                    for (PropertyChangeListener pcl : propertyChangeListeners) {
-                        if (pcl.equals(target)) {
-                            stillThere = true;
-                            break;
-                        }
-                    }
-                    if (!stillThere) {
-                        Logger.getLogger(EventReceiver.class.getName()).log(Level.INFO, "target listener {0} was removed before event could be delivered", target);
-                    }
-                }
-
                 if (target instanceof PropertyChangeListenerProxy) {
                     PropertyChangeListenerProxy pclp = (PropertyChangeListenerProxy) target;
                     if (pclp.getPropertyName().equals(event.getPropertyName())) {
+                        distributor.acquireBusyLock();
                         pclp.propertyChange(event);
+                        distributor.releaseBusyLock();
                     }
                 } else {
                     long start = System.currentTimeMillis();
+                    //Logger.getLogger(getClass().getName()).log(Level.INFO, "Delivering event {0} to target {1} on thread {2}", new Object[]{event, target.getClass().getSimpleName(), Thread.currentThread().getName()});
+                    distributor.acquireBusyLock();
                     target.propertyChange(event);
+                    distributor.releaseBusyLock();
                     start = System.currentTimeMillis() - start;
                     if (start >= 100) {
-                        Logger.getLogger(EventReceiver.class.getName()).log(Level.INFO, "Slow processing of propertyChange {0} ({1} ms) for target {2}", new Object[]{event.getPropertyName(), start, target.toString()});
+                        Logger.getLogger(getClass().getName()).log(Level.INFO, "Slow processing of propertyChange {0} ({1} ms) for target {2} on thread {3}", new Object[]{event.getPropertyName(), start, target.getClass().getSimpleName(), Thread.currentThread().getName()});
                     }
                 }
                 dEvent.delivered();
@@ -83,4 +65,7 @@ public class EventReceiver implements Runnable {
         }
     }
 
+    void shutDown() {
+        exit = true;
+    }
 }

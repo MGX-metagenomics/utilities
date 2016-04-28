@@ -20,16 +20,16 @@ public class AccumulatedEvent extends EventBase {
     private final ParallelPropertyChangeSupport source;
 
     public AccumulatedEvent(ParallelPropertyChangeSupport source, PropertyChangeListener[] listeners, PropertyChangeEvent event) {
-        super(new CountDownLatch(1), event);
+        super(new CountDownLatch(listeners.length), event);
         this.listeners = listeners;
         this.source = source;
     }
-    
-    public ParallelPropertyChangeSupport getSource() {
+
+    public final ParallelPropertyChangeSupport getSource() {
         return source;
     }
 
-    public PropertyChangeListener[] getListeners() {
+    public final PropertyChangeListener[] getListeners() {
         return listeners;
     }
 
