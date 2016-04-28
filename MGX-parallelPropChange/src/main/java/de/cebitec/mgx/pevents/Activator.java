@@ -16,8 +16,8 @@ import org.osgi.framework.BundleContext;
  */
 public class Activator implements BundleActivator {
 
-    private static int numDirect = 0;
-    private static int numThreaded = 0;
+    private static long numDirect = 0;
+    private static long numThreaded = 0;
     private final static boolean DUMP_STATS = true;
 
     @Override
