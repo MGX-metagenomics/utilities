@@ -39,6 +39,8 @@ public interface VisualizationGroupI extends ModelBaseI<VisualizationGroupI>, Pr
     public static final String VISGROUP_DEACTIVATED = "visgroup_deactivated";
     public static final String VISGROUP_HAS_DIST = "vgroup_HasDist";
     public static final String VISGROUP_RENAMED = "vgroup_renamed";
+    
+    public VGroupManagerI getManager();
 
     public void addSeqRun(final SeqRunI sr);
 
