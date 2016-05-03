@@ -25,7 +25,7 @@ public class EventDistributor implements Runnable, AutoCloseable {
     private volatile boolean exit = false;
     private final Semaphore allDeliveryThreadsBusy;
     //
-    private static final int MAX_RECV_THREADS = 10;
+    private static final int MAX_RECV_THREADS = 11;
     public final static String RECVTHREAD_NAME_PREFIX = "pPCS-Receiver-";
 
     public EventDistributor() {
