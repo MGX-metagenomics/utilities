@@ -9,7 +9,6 @@ import de.cebitec.mgx.api.misc.AttributeRank;
 import de.cebitec.mgx.api.misc.DistributionI;
 import de.cebitec.mgx.api.misc.Fetcher;
 import de.cebitec.mgx.api.misc.Pair;
-import de.cebitec.mgx.api.model.SeqRunI;
 import de.cebitec.mgx.api.model.tree.TreeI;
 import de.cebitec.mgx.api.visualization.ConflictResolver;
 import java.beans.PropertyChangeListener;
@@ -52,7 +51,7 @@ public interface VGroupManagerI extends PropertyChangeListener {
     
     ConflictResolver getResolver();
 
-    void removeVisualizationGroup(VisualizationGroupI vg);
+    //void removeVisualizationGroup(VisualizationGroupI vg);
 
     void removePropertyChangeListener(PropertyChangeListener p);
 
@@ -73,7 +72,7 @@ public interface VGroupManagerI extends PropertyChangeListener {
 
     ReplicateI createReplicate(ReplicateGroupI rGroup);
 
-    void removeReplicateGroup(ReplicateGroupI vg);
+    //void removeReplicateGroup(ReplicateGroupI vg);
 
     //boolean hasReplicateGroup(String name);
     public void setSelectedReplicateGroup(ReplicateGroupI replicateGroup);
