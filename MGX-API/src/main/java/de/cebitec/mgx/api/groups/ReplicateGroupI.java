@@ -29,6 +29,8 @@ public interface ReplicateGroupI extends ModelBaseI<ReplicateGroupI>, PropertyCh
     String REPLICATEGROUP_REPLICATE_ADDED = "replicateGroup_replicate_added";
     String REPLICATEGROUP_REPLICATE_REMOVED = "replicateGroup_replicate_removed";
 
+    public VGroupManagerI getManager(); 
+    
     String getName();
 
     void setName(String name);
