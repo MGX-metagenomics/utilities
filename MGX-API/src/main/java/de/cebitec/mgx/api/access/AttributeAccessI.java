@@ -22,6 +22,8 @@ import java.util.Iterator;
 public interface AttributeAccessI {
 
     public AttributeI create(JobI job, AttributeTypeI attrType, String attrValue, AttributeI parent) throws MGXException;
+
+    public TaskI<AttributeI> delete(AttributeI attr) throws MGXException;
     
     public AttributeI fetch(long id) throws MGXException;
     

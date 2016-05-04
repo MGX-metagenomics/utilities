@@ -24,6 +24,8 @@ public interface SequenceAccessI extends AccessBaseI<SequenceI> {
 
     public void fetchSeqData(Iterable<SequenceI> sequences) throws MGXException;
 
+    public SequenceI fetch(SeqRunI seqrun, String name) throws MGXException;
+
     public void sendSequences(SeqRunI seqrun, SeqReaderI<? extends DNASequenceI> reader) throws MGXException;
 
     public void downloadSequencesForAttributes(Set<AttributeI> attrs, SeqWriterI<DNASequenceI> writer, boolean closeWriter) throws MGXException;
