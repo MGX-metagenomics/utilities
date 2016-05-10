@@ -13,6 +13,7 @@ import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
+import com.sun.jersey.api.client.filter.LoggingFilter;
 import com.sun.jersey.client.urlconnection.HTTPSProperties;
 import de.cebitec.gpms.core.DataSource_ApplicationServerI;
 import de.cebitec.gpms.core.UserI;
@@ -46,6 +47,8 @@ public class Jersey1RESTAccess implements RESTAccessI {
     private final ClientConfig cc;
     private final URI resource;
     private final int numRetriesAllowed = 5;
+
+    private final static boolean LOG_REQUESTS = false;
 
     public Jersey1RESTAccess(UserI user, DataSource_ApplicationServerI appServer, boolean verifySSL, Class... serializers) {
         cc = new DefaultClientConfig();
@@ -100,6 +103,9 @@ public class Jersey1RESTAccess implements RESTAccessI {
         cc.getClasses().add(de.cebitec.mgx.protobuf.serializer.PBWriter.class);
 
         client = Client.create(cc);
+        if (LOG_REQUESTS) {
+            client.addFilter(new LoggingFilter(System.out));
+        }
         client.addFilter(new HTTPBasicAuthFilter(user.getLogin(), user.getPassword()));
         this.resource = appServer.getURL();
     }
