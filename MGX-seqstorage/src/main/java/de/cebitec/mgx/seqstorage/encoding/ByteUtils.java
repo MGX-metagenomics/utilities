@@ -27,6 +27,14 @@ public class ByteUtils {
         return offset;
     }
 
+    public static long bytesToLong(byte[] b, int startIdx) {
+        long offset = 0;
+        for (int i = startIdx; i < 8 + startIdx; i++) {
+            offset = (offset << 8) + (b[i] & 0xff);
+        }
+        return offset;
+    }
+
     public static byte[] longToBytes(long l) {
         byte[] ret = new byte[8];
         ret[0] = (byte) (0xff & (l >> 56));
