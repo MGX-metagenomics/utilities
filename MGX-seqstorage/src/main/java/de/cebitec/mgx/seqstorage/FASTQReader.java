@@ -15,8 +15,8 @@ import java.util.Set;
 public class FASTQReader implements SeqReaderI<DNAQualitySequenceI> {
 
     private QualityDNASequence seq = null;
-    private ByteStreamTokenizer stream = null;
-    private String fastqfile = null;
+    private final ByteStreamTokenizer stream;
+    private final String fastqfile;
     public static final byte LINEBREAK = '\n';
 
     public FASTQReader(String filename, boolean gzipCompressed) throws SeqStoreException {
@@ -95,7 +95,6 @@ public class FASTQReader implements SeqReaderI<DNAQualitySequenceI> {
     public void close() {
         if (stream != null) {
             stream.close();
-            stream = null;
         }
     }
 
@@ -129,7 +128,7 @@ public class FASTQReader implements SeqReaderI<DNAQualitySequenceI> {
         return res;
     }
 
-    private byte[] convertQuality(byte[] in) throws SeqStoreException {
+    private static byte[] convertQuality(byte[] in) throws SeqStoreException {
         if (in == null) {
             throw new SeqStoreException("Cannot convert null quality string.");
         }
@@ -142,7 +141,7 @@ public class FASTQReader implements SeqReaderI<DNAQualitySequenceI> {
     }
 
     @Override
-    public boolean hasQuality() {
+    public final boolean hasQuality() {
         return true;
     }
 }
