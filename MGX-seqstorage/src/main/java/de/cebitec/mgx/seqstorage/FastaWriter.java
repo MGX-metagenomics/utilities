@@ -6,8 +6,6 @@ import de.cebitec.mgx.sequence.SeqWriterI;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -15,7 +13,7 @@ import java.util.logging.Logger;
  */
 public class FastaWriter implements SeqWriterI<DNASequenceI> {
 
-    private BufferedWriter seqout;
+    private final BufferedWriter seqout;
 
     public FastaWriter(String filename) throws SeqStoreException {
         try {
@@ -46,7 +44,6 @@ public class FastaWriter implements SeqWriterI<DNASequenceI> {
     public void close() throws IOException {
         if (seqout != null) {
             seqout.close();
-            seqout = null;
         }
     }
 }

@@ -16,10 +16,10 @@ import java.util.Set;
  */
 public class FastaReader implements SeqReaderI<DNASequenceI> {
 
-    private ByteStreamTokenizer stream = null;
+    private final ByteStreamTokenizer stream;
     private byte[] buf = null;
     private DNASequenceI seq = null;
-    private String fastafile = null;
+    private final String fastafile;
     public static final byte LINEBREAK = '\n';
 
     public FastaReader(String filename, boolean gzipCompressed) throws SeqStoreException {
@@ -117,7 +117,6 @@ public class FastaReader implements SeqReaderI<DNASequenceI> {
     public void close() {
         if (stream != null) {
             stream.close();
-            stream = null;
         }
     }
 

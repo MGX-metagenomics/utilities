@@ -15,8 +15,8 @@ import java.util.Set;
  */
 public class CSQFWriter implements SeqWriterI<DNAQualitySequenceI> {
 
-    private OutputStream seqout;
-    private OutputStream nameout;
+    private final OutputStream seqout;
+    private final OutputStream nameout;
     private long seqout_offset;
     private final String fname;
 
@@ -42,9 +42,6 @@ public class CSQFWriter implements SeqWriterI<DNAQualitySequenceI> {
 
     @Override
     public void addSequence(DNAQualitySequenceI seq) throws SeqStoreException {
-        if (seqout == null || nameout == null) {
-            throw new SeqStoreException("Writer has already been closed.");
-        }
         try {
             // save sequence id and offset
             byte[] id = ByteUtils.longToBytes(seq.getId());

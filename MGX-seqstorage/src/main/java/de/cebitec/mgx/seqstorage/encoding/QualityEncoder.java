@@ -66,7 +66,7 @@ public class QualityEncoder {
 
         int encodedSize = (int) (quality.length*compressedSize/8.0+2.9);        
         byte[] encoded = new byte[encodedSize];
-        encoded[0] = (byte) compressedSize;
+        encoded[0] = compressedSize;
         encoded[1] = (byte) min;
         byte[] bitBuffer = new byte[14];
         int resultPos = 2;
