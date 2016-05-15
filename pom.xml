@@ -26,7 +26,6 @@
         <module>NewickParser</module>
         <module>KEGG-Pathways</module>
         <module>ProtoBuf-Serializer</module>
-        <module>MGX-restgpms</module>
         <module>MGX-DTO</module>
         <module>MGX-admin</module>
         <module>BioJava-OSGi</module>
@@ -35,7 +34,6 @@
         <module>SFFReader</module>
         <module>MGX-BufferedRandomAccessFile</module>
         <module>MGX-isequences</module>
-        <!-- <module>MGX-seqholder</module> -->
         <module>MGX-seqstorage</module>
         <module>MGX-QualityControl</module>
         <module>MGX-ExecutorService</module>
