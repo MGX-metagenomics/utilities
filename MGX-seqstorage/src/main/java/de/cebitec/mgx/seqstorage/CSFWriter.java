@@ -17,8 +17,8 @@ import java.util.Set;
  */
 public class CSFWriter implements SeqWriterI<DNASequenceI> {
 
-    private OutputStream seqout;
-    private OutputStream nameout;
+    private final OutputStream seqout;
+    private final OutputStream nameout;
     private long seqout_offset;
     private final String fname;
 

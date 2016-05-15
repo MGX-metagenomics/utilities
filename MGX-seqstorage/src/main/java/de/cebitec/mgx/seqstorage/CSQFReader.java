@@ -82,8 +82,6 @@ public class CSQFReader implements SeqReaderI<DNAQualitySequenceI>{
         }
 
         try {
-            byte[] buf = new byte[600];
-            int bytesRead = 0;
             for (long id : ids) {
                 long offset = idx.getOffset(id);
                 if (offset == -1) {

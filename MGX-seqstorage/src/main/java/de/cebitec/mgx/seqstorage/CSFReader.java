@@ -21,8 +21,8 @@ import java.util.zip.GZIPInputStream;
  */
 public class CSFReader implements SeqReaderI<DNASequenceI> {
 
-    private ByteStreamTokenizer seqin;
-    private InputStream namein;
+    private final ByteStreamTokenizer seqin;
+    private final InputStream namein;
     private final String csffile;
     private final String namefile;
     private DNASequenceI holder = null;
@@ -114,11 +114,9 @@ public class CSFReader implements SeqReaderI<DNASequenceI> {
         try {
             if (seqin != null) {
                 seqin.close();
-                seqin = null;
             }
             if (namein != null) {
                 namein.close();
-                namein = null;
             }
             if (idx != null) {
                 idx.close();
