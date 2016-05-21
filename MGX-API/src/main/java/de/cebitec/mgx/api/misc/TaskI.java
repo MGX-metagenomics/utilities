@@ -56,6 +56,6 @@ public abstract class TaskI<T extends MGXDataModelBaseI<T>> {
 
     public abstract boolean done();
 
-    public abstract void finish();
+    protected abstract void finish();
 
 }
