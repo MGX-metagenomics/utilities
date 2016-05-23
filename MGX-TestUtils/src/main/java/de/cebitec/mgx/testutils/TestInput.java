@@ -8,6 +8,7 @@ package de.cebitec.mgx.testutils;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  *
@@ -15,7 +16,7 @@ import java.io.FileOutputStream;
  */
 public class TestInput {
 
-    public static File copyTestResource(Class clazz, String uri) throws Exception {
+    public static File copyTestResource(Class clazz, String uri) throws IOException {
         org.junit.Assert.assertNotNull("Test file " + uri + " missing", clazz.getClassLoader().getResource(uri));
         File f = null;
         try (BufferedInputStream is = new BufferedInputStream(clazz.getClassLoader().getResourceAsStream(uri))) {
