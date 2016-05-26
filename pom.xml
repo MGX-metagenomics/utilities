@@ -30,7 +30,6 @@
         <module>MGX-admin</module>
         <module>BioJava-OSGi</module>
         <module>SwingX-OSGi</module>
-        <module>MGX-API</module>
         <module>SFFReader</module>
         <module>MGX-BufferedRandomAccessFile</module>
         <module>MGX-isequences</module>
