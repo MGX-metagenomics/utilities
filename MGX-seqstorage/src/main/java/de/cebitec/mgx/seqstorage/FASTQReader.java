@@ -29,7 +29,10 @@ public class FASTQReader implements SeqReaderI<DNAQualitySequenceI> {
     }
 
     @Override
-    public boolean hasMoreElements() throws SeqStoreException {
+    public synchronized boolean hasMoreElements() throws SeqStoreException {
+        if (seq != null) {
+            return true;
+        }
 
         byte[] l1, l2, l3, l4;
 
@@ -87,8 +90,10 @@ public class FASTQReader implements SeqReaderI<DNAQualitySequenceI> {
     }
 
     @Override
-    public DNAQualitySequenceI nextElement() {
-        return seq;
+    public synchronized DNAQualitySequenceI nextElement() {
+        DNAQualitySequenceI ret = seq;
+        seq = null;
+        return ret;
     }
 
     @Override

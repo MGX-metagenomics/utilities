@@ -87,19 +87,19 @@ public class SFFReader implements SeqReaderI<DNAQualitySequenceI> {
     }
 
     @Override
-    public DNAQualitySequenceI nextElement() {
+    public final DNAQualitySequenceI nextElement() {
         DNAQualitySequenceI ret = holder;
         holder = null;
         return ret;
     }
 
     @Override
-    public void close() throws IOException {
+    public final void close() throws IOException {
         reader.close();
     }
 
     @Override
-    public boolean hasQuality() {
+    public final boolean hasQuality() {
         return true;
     }
 }

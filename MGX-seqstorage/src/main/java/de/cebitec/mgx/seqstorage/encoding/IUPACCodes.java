@@ -23,7 +23,5 @@ public class IUPACCodes {
     public static final byte V = A | C | G;
     public static final byte N = A | T | C | G;
     
-    public static final byte[] decoder = {'-', 'A', 'T', 'W', 'G', 'R', 'K', 'D', 'C', 'M', 'Y', 'H', 'S', 'V', 'B', 'N'};
-//    <Be-El> static readonly char[] BITS2CHAR = new char[] { '-', 'a', 't', 'w', 'g', 'r', 'k', 'd', 'c', 'm',
-//<Be-El>         'y', 'h', 's', 'v', 'b', 'n' };
+    public static final byte[] DECODE = {'-', 'A', 'T', 'W', 'G', 'R', 'K', 'D', 'C', 'M', 'Y', 'H', 'S', 'V', 'B', 'N'};
 }
