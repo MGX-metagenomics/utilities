@@ -35,9 +35,9 @@ public class FastaReader implements SeqReaderI<DNASequenceI> {
     }
 
     @Override
-    public boolean hasMoreElements() throws SeqStoreException {
-        if (stream == null) {
-            return false;
+    public synchronized boolean hasMoreElements() throws SeqStoreException {
+        if (seq != null) {
+            return true;
         }
 
         if (buf.length == 0) {
@@ -59,8 +59,8 @@ public class FastaReader implements SeqReaderI<DNASequenceI> {
         byte[] seqname = new byte[nameLen];
         System.arraycopy(buf, 1, seqname, 0, nameLen);
 
-        assert seqname[seqname.length-1] != '\r';
-        
+        assert seqname[seqname.length - 1] != '\r';
+
         // check sequence name for whitespaces and trim
         int trimPos = 0;
         for (int i = 0; i < seqname.length; i++) {
@@ -109,15 +109,15 @@ public class FastaReader implements SeqReaderI<DNASequenceI> {
     }
 
     @Override
-    public DNASequenceI nextElement() {
-        return seq;
+    public synchronized DNASequenceI nextElement() {
+        DNASequenceI ret = seq;
+        seq = null;
+        return ret;
     }
 
     @Override
     public void close() {
-        if (stream != null) {
-            stream.close();
-        }
+        stream.close();
     }
 
     @Override
@@ -151,7 +151,7 @@ public class FastaReader implements SeqReaderI<DNASequenceI> {
     }
 
     @Override
-    public boolean hasQuality() {
+    public final boolean hasQuality() {
         return false;
     }
 }

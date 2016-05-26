@@ -11,7 +11,7 @@ import java.util.zip.GZIPInputStream;
  *
  * @author Patrick Blumenkamp
  */
-public class CSQFReader implements SeqReaderI<DNAQualitySequenceI>{
+public class CSQFReader implements SeqReaderI<DNAQualitySequenceI> {
 
     private InputStream seqin;
     private InputStream namein;
@@ -20,7 +20,8 @@ public class CSQFReader implements SeqReaderI<DNAQualitySequenceI>{
     private DNAQualitySequenceI holder = null;
     private NMSReader idx = null;
     private BufferedRandomAccessFile raf = null;
-    
+    private byte[] record = new byte[16];
+
     public CSQFReader(String filename, boolean gzipCompressed) throws SeqStoreException {
         if (filename == null) {
             throw new SeqStoreException("No filename.");
@@ -33,13 +34,13 @@ public class CSQFReader implements SeqReaderI<DNAQualitySequenceI>{
         namefile = filename;
         try {
             FileMagic.validateMagic(namefile, FileMagic.NMS_MAGIC);
-            FileMagic.validateMagic(csqfile, FileMagic.CSQ_MAGIC);            
+            FileMagic.validateMagic(csqfile, FileMagic.CSQ_MAGIC);
             seqin = new BufferedInputStream(new FileInputStream(csqfile));
             if (gzipCompressed) {
                 InputStream gzstream = new GZIPInputStream(new FileInputStream(namefile));
-                namein = new BufferedInputStream(gzstream);               
+                namein = new BufferedInputStream(gzstream);
             } else {
-                namein = new BufferedInputStream(new FileInputStream(namefile));              
+                namein = new BufferedInputStream(new FileInputStream(namefile));
             }
             if (namein.skip(FileMagic.CSQ_MAGIC.length) < FileMagic.CSF_MAGIC.length) {
                 throw new SeqStoreException("Corrupted file " + csqfile);
@@ -48,7 +49,7 @@ public class CSQFReader implements SeqReaderI<DNAQualitySequenceI>{
             throw new SeqStoreException(ex.getMessage());
         }
     }
-        
+
     @Override
     public void delete() {
         close();
@@ -86,7 +87,7 @@ public class CSQFReader implements SeqReaderI<DNAQualitySequenceI>{
                 long offset = idx.getOffset(id);
                 if (offset == -1) {
                     throw new SeqStoreException("Sequence ID " + id + " not present in index.");
-                }                
+                }
                 result.add(getEntry(id, offset));
             }
         } catch (IOException ex) {
@@ -100,7 +101,7 @@ public class CSQFReader implements SeqReaderI<DNAQualitySequenceI>{
     }
 
     @Override
-    public boolean hasQuality() {
+    public final boolean hasQuality() {
         return true;
     }
 
@@ -111,29 +112,21 @@ public class CSQFReader implements SeqReaderI<DNAQualitySequenceI>{
                 // element in holder not yet retrieved
                 return true;
             }
-            
+
             if (raf == null) {
                 raf = new BufferedRandomAccessFile(csqfile, "r");
             }
-            
+
             /*
              * read new element
              */
-            // extract substring of element, removing last 8bytes (offset)
-            byte[] record = new byte[16];
-            byte[] seqId = new byte[8];
-            byte[] offset = new byte[8];
-            
-            if (namein.read(record) == -1) {
+            if (namein.read(record) != 16) {
                 return false;
             }
-            
+
             // extract sequence id and convert
-            System.arraycopy(record, 0, seqId, 0, 8);
-            System.arraycopy(record, 8, offset, 0, 8);
-            long sequence_id = ByteUtils.bytesToLong(seqId);
-            
-            holder = getEntry(sequence_id, ByteUtils.bytesToLong(offset));
+            long sequence_id = ByteUtils.bytesToLong(record, 0);
+            holder = getEntry(sequence_id, ByteUtils.bytesToLong(record, 8));
             return true;
         } catch (IOException ex) {
             return false;
@@ -142,7 +135,6 @@ public class CSQFReader implements SeqReaderI<DNAQualitySequenceI>{
 
     @Override
     public DNAQualitySequenceI nextElement() {
-        assert holder != null;
         DNAQualitySequenceI ret = holder;
         holder = null;
         return ret;
@@ -179,13 +171,13 @@ public class CSQFReader implements SeqReaderI<DNAQualitySequenceI>{
         }
         return -1;
     }
-    
-    private DNAQualitySequenceI getEntry(long id, long offset) throws IOException, SeqStoreException{
+
+    private DNAQualitySequenceI getEntry(long id, long offset) throws IOException, SeqStoreException {
         raf.seek(offset);
         byte[] buf = new byte[600];
         int bytesRead = raf.read(buf);
         int sepPos;
-        while ((sepPos = getSeparatorPos(buf, FourBitEncoder.RECORD_SEPARATOR)) == -1 && bytesRead != -1 && buf.length < sepPos*3+1) {
+        while ((sepPos = getSeparatorPos(buf, FourBitEncoder.RECORD_SEPARATOR)) == -1 && bytesRead != -1 && buf.length < sepPos * 3 + 1) {
             byte newbuf[] = new byte[buf.length * 2];
             System.arraycopy(buf, 0, newbuf, 0, buf.length);
             bytesRead = raf.read(newbuf, buf.length, buf.length);
@@ -193,7 +185,7 @@ public class CSQFReader implements SeqReaderI<DNAQualitySequenceI>{
         }
         byte[] encoded = ByteUtils.substring(buf, 0, sepPos - 1);
         byte[] decoded = FourBitEncoder.decode(encoded);
-        byte[] quality = ByteUtils.substring(buf, sepPos+1, (int)(decoded.length*buf[sepPos+1]/8.0+2.9)+sepPos);
+        byte[] quality = ByteUtils.substring(buf, sepPos + 1, (int) (decoded.length * buf[sepPos + 1] / 8.0 + 2.9) + sepPos);
 
         QualityDNASequence seq = new QualityDNASequence(id);
         seq.setSequence(decoded);

@@ -1,5 +1,7 @@
 package de.cebitec.mgx.seqstorage.encoding;
 
+import java.util.Arrays;
+
 /**
  *
  * @author sjaenick
@@ -7,8 +9,7 @@ package de.cebitec.mgx.seqstorage.encoding;
 public class ByteUtils {
 
     public static byte[] concat(byte[] b1, byte[] b2) {
-        byte[] tmp = new byte[b1.length + b2.length];
-        System.arraycopy(b1, 0, tmp, 0, b1.length);
+        byte[] tmp = Arrays.copyOf(b1, b1.length + b2.length);
         System.arraycopy(b2, 0, tmp, b1.length, b2.length);
         return tmp;
     }
@@ -20,11 +21,7 @@ public class ByteUtils {
     }
 
     public static long bytesToLong(byte[] b) {
-        long offset = 0;
-        for (int i = 0; i < 8; i++) {
-            offset = (offset << 8) + (b[i] & 0xff);
-        }
-        return offset;
+        return bytesToLong(b, 0);
     }
 
     public static long bytesToLong(byte[] b, int startIdx) {

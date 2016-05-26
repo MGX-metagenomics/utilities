@@ -106,7 +106,7 @@ public class ByteStreamTokenizer implements Iterator<byte[]> {
 
     @Override
     public byte[] next() {
-        assert elem != null;
+//        assert elem != null;
         byte[] ret = elem;
         elem = null;
         return ret;

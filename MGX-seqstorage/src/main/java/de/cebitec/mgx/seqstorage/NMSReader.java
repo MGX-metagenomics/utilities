@@ -49,12 +49,8 @@ public class NMSReader {
 
     public void close() {
         try {
-            if (nmsStream != null) {
-                nmsStream.close();
-            }
-            if (idx != null) {
-                idx.clear();
-            }
+            nmsStream.close();
+            idx.clear();
         } catch (IOException ex) {
             Logger.getLogger(CSFReader.class.getName()).log(Level.SEVERE, null, ex);
         }

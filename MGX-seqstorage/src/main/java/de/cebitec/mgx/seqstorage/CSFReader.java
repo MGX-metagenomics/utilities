@@ -28,6 +28,7 @@ public class CSFReader implements SeqReaderI<DNASequenceI> {
     private DNASequenceI holder = null;
     private NMSReader idx = null;
     private BufferedRandomAccessFile raf = null;
+    private final byte[] record = new byte[16];
 
     public CSFReader(String filename, boolean gzipCompressed) throws SeqStoreException {
         if (filename == null) {
@@ -58,7 +59,7 @@ public class CSFReader implements SeqReaderI<DNASequenceI> {
     }
 
     @Override
-    public boolean hasMoreElements() throws SeqStoreException {
+    public synchronized boolean hasMoreElements() throws SeqStoreException {
 
         if (holder != null) {
             // element in holder not yet retrieved
@@ -68,22 +69,16 @@ public class CSFReader implements SeqReaderI<DNASequenceI> {
         /*
          * read new element
          */
-
-        // extract substring of element, removing last 8bytes (offset)
-        byte[] record = new byte[16];
-        byte[] seqId = new byte[8];
-
         try {
-            if (namein.read(record) == -1) {
+            if (namein.read(record) != 16) {
                 return false;
             }
         } catch (IOException ex) {
-            seqId = null;
+            throw new SeqStoreException(ex.getMessage());
         }
 
         // extract sequence id and convert
-        System.arraycopy(record, 0, seqId, 0, 8);
-        long sequence_id = ByteUtils.bytesToLong(seqId);
+        long sequence_id = ByteUtils.bytesToLong(record, 0);
 
         if (!seqin.hasNext()) {
             return false;
@@ -91,10 +86,9 @@ public class CSFReader implements SeqReaderI<DNASequenceI> {
 
         byte[] dnasequence = seqin.next();
 
-        if ((seqId != null) && (dnasequence != null)) {
+        if (dnasequence != null) {
             DNASequenceI seq = new DNASequence(sequence_id);
             seq.setSequence(FourBitEncoder.decode(dnasequence));
-
             holder = seq;
             return true;
         }
@@ -102,8 +96,7 @@ public class CSFReader implements SeqReaderI<DNASequenceI> {
     }
 
     @Override
-    public DNASequenceI nextElement() {
-        assert holder != null;
+    public synchronized DNASequenceI nextElement() {
         DNASequenceI ret = holder;
         holder = null;
         return ret;
@@ -205,7 +198,7 @@ public class CSFReader implements SeqReaderI<DNASequenceI> {
     }
 
     @Override
-    public boolean hasQuality() {
+    public final boolean hasQuality() {
         return false;
     }
 
