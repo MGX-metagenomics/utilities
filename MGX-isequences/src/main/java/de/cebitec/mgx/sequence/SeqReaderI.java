@@ -6,7 +6,7 @@ import java.util.Set;
  *
  * @author sjaenick
  */
-public interface SeqReaderI<T> extends AutoCloseable {
+public interface SeqReaderI<T extends DNASequenceI> extends AutoCloseable {
 
     public void delete();
 
