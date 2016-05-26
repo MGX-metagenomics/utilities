@@ -10,11 +10,12 @@ import java.util.Arrays;
  * @author Patrick Blumenkamp
  */
 public class FileMagic {
-    
+
     public static final byte[] CSF_MAGIC = {'C', 'S', 'F', '\n'};
     public static final byte[] NMS_MAGIC = {'N', 'M', 'S', '\n'};
     public static final byte[] CSQ_MAGIC = {'C', 'S', 'Q', '\n'};
-    
+    public final static byte[] lineSeparator = System.lineSeparator().getBytes();
+
     public static void validateMagic(String filename, final byte[] magic) throws SeqStoreException {
         // validate magic
         FileInputStream fis = null;

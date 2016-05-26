@@ -87,7 +87,7 @@ public class FourBitEncoder {
 
         return encoded;
     }
-
+    
     public static byte[] decode(byte[] enc) {
 
         int dec_len = enc.length * 2;
@@ -106,7 +106,7 @@ public class FourBitEncoder {
             }
             // mask last 4 bits
             enc_base &= 0x0F;
-            decoded[dec_pos] = IUPACCodes.decoder[(int) enc_base];
+            decoded[dec_pos] = IUPACCodes.DECODE[(int) enc_base];
         }
 
         return decoded;

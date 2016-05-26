@@ -1,10 +1,11 @@
 package de.cebitec.mgx.seqstorage;
 
+import static de.cebitec.mgx.seqstorage.encoding.FileMagic.lineSeparator;
 import de.cebitec.mgx.sequence.DNASequenceI;
 import de.cebitec.mgx.sequence.SeqStoreException;
 import de.cebitec.mgx.sequence.SeqWriterI;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
+import java.io.BufferedOutputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 /**
@@ -13,11 +14,11 @@ import java.io.IOException;
  */
 public class FastaWriter implements SeqWriterI<DNASequenceI> {
 
-    private final BufferedWriter seqout;
+    private final BufferedOutputStream seqout;
 
     public FastaWriter(String filename) throws SeqStoreException {
         try {
-            seqout = new BufferedWriter(new FileWriter(filename));
+            seqout = new BufferedOutputStream(new FileOutputStream(filename));
         } catch (IOException ex) {
             throw new SeqStoreException("Cannot write to " + filename);
         }
@@ -28,13 +29,15 @@ public class FastaWriter implements SeqWriterI<DNASequenceI> {
         if (seqout == null) {
             throw new SeqStoreException("Writer has already been closed.");
         }
-        StringBuilder sb = new StringBuilder(">");
-        sb.append(new String(seq.getName()));
-        sb.append(System.lineSeparator());
-        sb.append(new String(seq.getSequence()).toUpperCase());
-        sb.append(System.lineSeparator());
+        if (seq == null) {
+            throw new SeqStoreException("null seq!");
+        }
         try {
-            seqout.write(sb.toString());
+            seqout.write('>');
+            seqout.write(seq.getName());
+            seqout.write(lineSeparator);
+            seqout.write(seq.getSequence());
+            seqout.write(lineSeparator);
         } catch (IOException ex) {
             throw new SeqStoreException(ex.getMessage());
         }
