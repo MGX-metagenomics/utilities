@@ -40,17 +40,11 @@ public class PBWriter implements MessageBodyWriter<Message> {
         byte[] bytes = baos.toByteArray();
         buffer.put(m, bytes);
 
-//        // test compression
-//        try {
-//            ByteArrayOutputStream tmp = new ByteArrayOutputStream();
-//            GZIPOutputStream gzs = new GZIPOutputStream(tmp);
-//            gzs.write(bytes);
-//            gzs.flush();
-//            int compressedSize = tmp.toByteArray().length;
-//            System.err.println(m.getClass().getName() + " compressed: "+compressedSize+ " uncompressed: "+bytes.length);
-//        } catch (IOException ex) {
-//            Logger.getLogger(PBWriter.class.getName()).log(Level.SEVERE, null, ex);
-//        }
+        int serSize = m.getSerializedSize();
+        int baoSize = baos.size();
+        if (serSize != baoSize || bytes.length != baoSize || serSize != bytes.length) {
+            Logger.getLogger(PBWriter.class.getName()).log(Level.INFO, "serialized size difference encountered: {0} vs {1} vs {2}", new Object[]{serSize, baoSize, bytes.length});
+        }
 
         return bytes.length;
     }
@@ -61,14 +55,23 @@ public class PBWriter implements MessageBodyWriter<Message> {
             OutputStream entityStream) throws IOException, WebApplicationException {
         byte[] data = buffer.remove(m);
         if (data == null) {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
             try {
-                m.writeTo(baos);
+                m.writeTo(entityStream);
             } catch (IOException e) {
                 Logger.getLogger(PBWriter.class.getName()).log(Level.SEVERE, null, e);
             }
-            data = baos.toByteArray();
+        } else {
+            entityStream.write(data);
         }
-        entityStream.write(data);
+    }
+
+    /*
+     * http://java-performance.info/various-methods-of-binary-serialization-in-java/
+     */
+    private static class PeekableBAOutputStream extends ByteArrayOutputStream {
+
+        public byte[] getArray() {
+            return this.buf;
+        }
     }
 }
