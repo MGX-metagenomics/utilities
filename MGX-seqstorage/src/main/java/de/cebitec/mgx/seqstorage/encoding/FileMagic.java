@@ -16,6 +16,9 @@ public class FileMagic {
     public static final byte[] CSQ_MAGIC = {'C', 'S', 'Q', '\n'};
     public final static byte[] lineSeparator = System.lineSeparator().getBytes();
 
+    private FileMagic() {
+    }
+
     public static void validateMagic(String filename, final byte[] magic) throws SeqStoreException {
         // validate magic
         FileInputStream fis = null;
