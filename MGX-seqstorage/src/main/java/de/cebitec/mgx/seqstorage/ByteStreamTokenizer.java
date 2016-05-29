@@ -1,9 +1,9 @@
 package de.cebitec.mgx.seqstorage;
 
 import de.cebitec.mgx.seqstorage.encoding.ByteUtils;
+import de.cebitec.mgx.sequence.SeqStoreException;
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
@@ -12,7 +12,7 @@ import java.util.zip.GZIPInputStream;
 public class ByteStreamTokenizer implements Iterator<byte[]> {
 
     private final InputStream in;
-    private final int DEFAULT_BUFSIZE = 49152;
+    private final static int DEFAULT_BUFSIZE = 49152;
     private final int bufferSize;
     private long bufferRefillPosition;
     private byte buffer[];
@@ -22,7 +22,7 @@ public class ByteStreamTokenizer implements Iterator<byte[]> {
     private byte elem[] = null;
     private boolean atEOF = false;
 
-    public ByteStreamTokenizer(String fname, boolean gzipCompressed, byte separatorChar, int skipBytes) throws FileNotFoundException, IOException {
+    public ByteStreamTokenizer(String fname, boolean gzipCompressed, byte separatorChar, int skipBytes) throws IOException, SeqStoreException {
         bufferSize = DEFAULT_BUFSIZE;
         buffer = new byte[bufferSize];
         separator = separatorChar;
@@ -35,7 +35,10 @@ public class ByteStreamTokenizer implements Iterator<byte[]> {
         } else {
             in = new BufferedInputStream(new FileInputStream(fname));
         }
-        in.skip(skipBytes);
+        long skipped = in.skip(skipBytes);
+        if (skipped != skipBytes) {
+            throw new SeqStoreException("Could not skip "+skipBytes+ " bytes.");
+        }
         fillBuffer();
     }
 
