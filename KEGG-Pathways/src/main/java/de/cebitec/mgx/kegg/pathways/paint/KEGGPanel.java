@@ -14,6 +14,7 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -36,7 +37,7 @@ public class KEGGPanel extends JPanel {
     private final transient KEGGMaster master;
     private final Map<Rectangle, String> toolTips;
     private int numDatasets = -1;
-    private transient Map<ECNumberI, Set<Rectangle>> coords = null;
+    private transient Map<ECNumberI, Collection<Rectangle>> coords = null;
 
     public KEGGPanel(KEGGMaster master) {
         super();
@@ -71,7 +72,7 @@ public class KEGGPanel extends JPanel {
         toolTips.clear();
 
         // default tooltips
-        for (Entry<ECNumberI, Set<Rectangle>> e : coords.entrySet()) {
+        for (Entry<ECNumberI, Collection<Rectangle>> e : coords.entrySet()) {
             for (Rectangle r : e.getValue()) {
                 toolTips.put(r, "<html><b>" + e.getKey().getNumber() + "</b><br><hr>");
             }
