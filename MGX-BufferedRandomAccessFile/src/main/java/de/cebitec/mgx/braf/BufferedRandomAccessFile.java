@@ -12,7 +12,7 @@ import java.io.RandomAccessFile;
  */
 public class BufferedRandomAccessFile extends RandomAccessFile {
 
-    private final byte buffer[];
+    private final byte[] buffer;
     private int buf_end = 0;
     private int buf_pos = 0;
     private long real_pos = 0;
@@ -61,7 +61,7 @@ public class BufferedRandomAccessFile extends RandomAccessFile {
     }
 
     @Override
-    public int read(byte b[], int off, int len) throws IOException {
+    public int read(byte[] b, int off, int len) throws IOException {
         int leftover = buf_end - buf_pos;
         if (len <= leftover) {
             System.arraycopy(buffer, buf_pos, b, off, len);
@@ -87,7 +87,7 @@ public class BufferedRandomAccessFile extends RandomAccessFile {
     @Override
     public long getFilePointer() throws IOException {
         long l = real_pos;
-        return (l - buf_end + buf_pos);
+        return l - buf_end + buf_pos;
     }
 
     @Override
