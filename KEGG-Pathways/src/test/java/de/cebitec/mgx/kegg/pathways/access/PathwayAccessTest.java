@@ -7,6 +7,7 @@ import de.cebitec.mgx.kegg.pathways.api.PathwayI;
 import de.cebitec.mgx.kegg.pathways.model.ECNumberFactory;
 import java.awt.Rectangle;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -84,7 +85,7 @@ public class PathwayAccessTest {
             }
         }
         assertNotNull(pw);
-        Map<ECNumberI, Set<Rectangle>> coords = getMaster().Pathways().getCoords(pw);
+        Map<ECNumberI, Collection<Rectangle>> coords = getMaster().Pathways().getCoords(pw);
         assertNotNull(coords);
         assertTrue(coords.size() > 45);
         assertTrue(coords.containsKey(ECNumberFactory.fromString("2.7.1.41")));
@@ -94,7 +95,7 @@ public class PathwayAccessTest {
     public void testGetMatchingPathways_ECNumberI() throws Exception {
         System.out.println("getMatchingPathways_forECNumberI");
         ECNumberI ec = ECNumberFactory.fromString("6.3.1.9");
-        Set<PathwayI> result = getMaster().Pathways().getMatchingPathways(ec);
+        Collection<PathwayI> result = getMaster().Pathways().getMatchingPathways(ec);
         assertEquals(1, result.size());
         //
         ec = ECNumberFactory.fromString("5.5.1.1");
@@ -108,7 +109,7 @@ public class PathwayAccessTest {
         Set<ECNumberI> qry = new HashSet<>();
         qry.add(ECNumberFactory.fromString("6.3.1.9"));
         qry.add(ECNumberFactory.fromString("5.5.1.1"));
-        Set<PathwayI> result = getMaster().Pathways().getMatchingPathways(qry);
+        Collection<PathwayI> result = getMaster().Pathways().getMatchingPathways(qry);
         assertEquals(5, result.size());
         result = getMaster().Pathways().getMatchingPathways(qry);
         assertEquals(5, result.size());
