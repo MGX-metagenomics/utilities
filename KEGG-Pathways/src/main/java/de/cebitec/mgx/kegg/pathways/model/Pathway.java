@@ -22,7 +22,7 @@ public class Pathway implements PathwayI {
     }
 
     @Override
-    public String getMapNum() {
+    public String getMapNumber() {
         return mapNum;
     }
 

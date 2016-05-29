@@ -7,7 +7,7 @@ package de.cebitec.mgx.kegg.pathways.api;
  */
 public interface PathwayI extends Comparable<PathwayI> {
 
-    String getMapNum();
+    String getMapNumber();
 
     String getName();
     

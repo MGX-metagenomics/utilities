@@ -11,16 +11,19 @@ import java.util.concurrent.ConcurrentMap;
  */
 public class ECNumberFactory {
 
-    private final static ConcurrentMap<String, ECNumber> cache = new ConcurrentHashMap<>();
+    private final static ConcurrentMap<String, ECNumberI> cache = new ConcurrentHashMap<>();
+
+    private ECNumberFactory() {
+    }
 
     public static ECNumberI fromString(String s) throws KEGGException {
         if (!cache.containsKey(s)) {
             if (s.split("[.]").length != 4) {
-                throw new KEGGException("invalid EC number: " + s);
+                throw new KEGGException("Invalid EC number: " + s);
             }
             synchronized (cache) {
                 if (!cache.containsKey(s)) {
-                    cache.put(s, new ECNumber(s));
+                    return cache.put(s, new ECNumber(s));
                 }
             }
         }

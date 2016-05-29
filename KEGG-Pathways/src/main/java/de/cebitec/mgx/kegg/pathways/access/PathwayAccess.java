@@ -7,7 +7,6 @@ import de.cebitec.mgx.kegg.pathways.KEGGMaster;
 import static de.cebitec.mgx.kegg.pathways.access.AccessBase.copyFile;
 import de.cebitec.mgx.kegg.pathways.api.ECNumberI;
 import de.cebitec.mgx.kegg.pathways.api.PathwayI;
-import de.cebitec.mgx.kegg.pathways.model.ECNumber;
 import de.cebitec.mgx.kegg.pathways.model.ECNumberFactory;
 import de.cebitec.mgx.kegg.pathways.model.Pathway;
 import java.awt.Rectangle;
@@ -121,14 +120,14 @@ public class PathwayAccess extends AccessBase {
     }
 
     public void fetchImageFromServer(PathwayI p) throws KEGGException {
-        File cacheFile = new File(getMaster().getCacheDir() + p.getMapNum() + ".png");
+        File cacheFile = new File(getMaster().getCacheDir() + p.getMapNumber() + ".png");
 
         if (isValid(cacheFile)) {
             return; // no need to refetch
         }
         // http://www.genome.jp/kegg/pathway/map/map00620.png
-        try (InputStream in = get(getKEGGResource(), "kegg/pathway/map/" + p.getMapNum() + ".png")) {
-            File tmpFile = File.createTempFile(p.getMapNum(), "tmp");
+        try (InputStream in = get(getKEGGResource(), "kegg/pathway/map/" + p.getMapNumber() + ".png")) {
+            File tmpFile = File.createTempFile(p.getMapNumber(), "tmp");
             try (OutputStream bw = new FileOutputStream(tmpFile)) {
                 int read;
                 byte[] bytes = new byte[1024];
@@ -150,7 +149,7 @@ public class PathwayAccess extends AccessBase {
 
     public BufferedImage getImage(PathwayI p) throws KEGGException {
         BufferedImage img = null;
-        File cacheFile = new File(getMaster().getCacheDir() + p.getMapNum() + ".png");
+        File cacheFile = new File(getMaster().getCacheDir() + p.getMapNumber() + ".png");
         if (!isValid(cacheFile)) {
             fetchImageFromServer(p);
         }
@@ -229,7 +228,7 @@ public class PathwayAccess extends AccessBase {
         final Map<ECNumberI, Set<Rectangle>> ret = new HashMap<>();
         try (Connection conn = getMaster().getConnection()) {
             try (PreparedStatement stmt = conn.prepareStatement("SELECT ec_num, x, y, width, height FROM coords WHERE pw_num=?")) {
-                stmt.setString(1, pw.getMapNum());
+                stmt.setString(1, pw.getMapNumber());
                 try (ResultSet rs = stmt.executeQuery()) {
                     while (rs.next()) {
                         ECNumberI ec = ECNumberFactory.fromString(rs.getString(1));
@@ -257,7 +256,7 @@ public class PathwayAccess extends AccessBase {
         final WebResource wr = getKEGGResource()
                 .path("/kegg-bin/show_pathway")
                 .queryParam("org_name", "map")
-                .queryParam("mapno", pw.getMapNum().substring(3));
+                .queryParam("mapno", pw.getMapNumber().substring(3));
         //System.err.println("GET: "+wr.getURI().toASCIIString());
 
         ClientResponse cr = wr.header("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.1").get(ClientResponse.class);
@@ -296,7 +295,8 @@ public class PathwayAccess extends AccessBase {
 
                         Matcher matcher = ecNumber.matcher(titleString);
                         if (matcher.find()) {
-                            ECNumberI ecNum = new ECNumber(titleString.substring(matcher.start(), matcher.end()));
+//                            ECNumberI ecNum = new ECNumber(titleString.substring(matcher.start(), matcher.end()));
+                            ECNumberI ecNum = ECNumberFactory.fromString(titleString.substring(matcher.start(), matcher.end()));
                             if (data.containsKey(ecNum)) {
                                 data.get(ecNum).add(rect);
                             } else {
@@ -314,11 +314,11 @@ public class PathwayAccess extends AccessBase {
         // save to db
         try (Connection conn = getMaster().getConnection()) {
             try (PreparedStatement stmt1 = conn.prepareStatement("DELETE FROM coords WHERE pw_num=?")) {
-                stmt1.setString(1, pw.getMapNum());
+                stmt1.setString(1, pw.getMapNumber());
                 stmt1.executeUpdate();
             }
             try (PreparedStatement stmt1 = conn.prepareStatement("DELETE FROM timestamps WHERE type=?")) {
-                stmt1.setString(1, COORDS + "_" + pw.getMapNum());
+                stmt1.setString(1, COORDS + "_" + pw.getMapNumber());
                 stmt1.executeUpdate();
             }
         } catch (SQLException ex) {
@@ -329,7 +329,7 @@ public class PathwayAccess extends AccessBase {
             for (Entry<ECNumberI, Set<Rectangle>> e : data.entrySet()) {
                 try (PreparedStatement stmt = conn.prepareStatement(INSERT_COORD)) {
                     for (Rectangle rect : e.getValue()) {
-                        stmt.setString(1, pw.getMapNum());
+                        stmt.setString(1, pw.getMapNumber());
                         stmt.setString(2, e.getKey().getNumber());
                         stmt.setInt(3, rect.x);
                         stmt.setInt(4, rect.y);
@@ -341,7 +341,7 @@ public class PathwayAccess extends AccessBase {
                 }
             }
 
-            setValid(COORDS + "_" + pw.getMapNum());
+            setValid(COORDS + "_" + pw.getMapNumber());
         } catch (SQLException ex) {
             throw new KEGGException(ex);
         }

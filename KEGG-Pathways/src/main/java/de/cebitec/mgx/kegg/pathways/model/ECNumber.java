@@ -11,7 +11,7 @@ public class ECNumber  implements ECNumberI {
 
     private final String number;
 
-    public ECNumber(String number) {
+    ECNumber(String number) {
         this.number = number;
     }
 
@@ -52,14 +52,14 @@ public class ECNumber  implements ECNumberI {
         String[] myEC = number.split("[.]");
         String[] other = o.getNumber().split("[.]");
         for (int i = 0; i < 4; i++) {
-            if (myEC[i].equals("-")) {
-                if (other[i].equals("-")) {
+            if ("-".equals(myEC[i])) {
+                if ("-".equals(other[i])) {
                     return 0; // both "-"
                 } else {
                     return 1;  // "-" vs number
                 }
-            } else if (other[i].equals("-")) {
-                if (myEC[i].equals("-")) {
+            } else if ("-".equals(other[i])) {
+                if ("-".equals(myEC[i])) {
                     return 0; // both "-"
                 } else {
                     return -1;  // "-" vs number
