@@ -78,7 +78,7 @@ public class PathwayAccessTest {
         assertNotNull(fetchall);
         PathwayI pw = null;
         for (PathwayI p : fetchall) {
-            if (p.getMapNum().equals("map00010")) {
+            if (p.getMapNumber().equals("map00010")) {
                 pw = p;
                 break;
             }
