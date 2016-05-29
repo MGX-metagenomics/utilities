@@ -46,7 +46,7 @@ public class Persister {
                 return false;
             }
         }
-        return f.renameTo(new File(prefix + a.getName()));
+        return f != null && f.renameTo(new File(prefix + a.getName()));
     }
 
     private static String join(float[] d, String separator) {
