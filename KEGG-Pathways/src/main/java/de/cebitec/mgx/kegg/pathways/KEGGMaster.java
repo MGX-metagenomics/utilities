@@ -14,6 +14,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -141,7 +142,9 @@ public class KEGGMaster implements AutoCloseable {
                             + "   mapnum VARCHAR(10), "
                             + "   name VARCHAR(512), "
                             + "   UNIQUE(mapnum))";
-                    conn.createStatement().execute(sql);
+                    try (Statement stmt = conn.createStatement()) {
+                        stmt.execute(sql);
+                    }
 
 //                sql = "CREATE TABLE IF NOT EXISTS ecnumber ("
 //                        + "   number TEXT, "
@@ -158,12 +161,16 @@ public class KEGGMaster implements AutoCloseable {
                             //                       + "   FOREIGN KEY(ec_num) REFERENCES ecnumber(number),"
                             + "   UNIQUE(pw_num, ec_num, x, y) "
                             + ")";
-                    conn.createStatement().execute(sql);
+                    try (Statement stmt = conn.createStatement()) {
+                        stmt.execute(sql);
+                    }
 
                     sql = "CREATE TABLE IF NOT EXISTS timestamps ("
                             + "type VARCHAR(30), "
                             + "time DATETIME)";
-                    conn.createStatement().execute(sql);
+                    try (Statement stmt = conn.createStatement()) {
+                        stmt.execute(sql);
+                    }
                 }
             }
         } catch (SQLException ex) {
