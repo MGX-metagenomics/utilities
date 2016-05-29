@@ -23,7 +23,9 @@ public class ECNumberFactory {
             }
             synchronized (cache) {
                 if (!cache.containsKey(s)) {
-                    return cache.put(s, new ECNumber(s));
+                    ECNumberI ecNum = new ECNumber(s);
+                    cache.put(s, ecNum);
+                    return ecNum;
                 }
             }
         }

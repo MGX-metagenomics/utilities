@@ -22,6 +22,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -213,7 +214,7 @@ public class PathwayAccess extends AccessBase {
 //        }
 //        return ec_id;
 //    }
-    public Map<ECNumberI, Set<Rectangle>> getCoords(final PathwayI pw) throws KEGGException {
+    public Map<ECNumberI, Collection<Rectangle>> getCoords(final PathwayI pw) throws KEGGException {
 
         if (!isValid(PATHWAYS)) {
             fetchall();
@@ -225,7 +226,7 @@ public class PathwayAccess extends AccessBase {
         assert isValid(pw);
 
         // fetch from db
-        final Map<ECNumberI, Set<Rectangle>> ret = new HashMap<>();
+        final Map<ECNumberI, Collection<Rectangle>> ret = new HashMap<>();
         try (Connection conn = getMaster().getConnection()) {
             try (PreparedStatement stmt = conn.prepareStatement("SELECT ec_num, x, y, width, height FROM coords WHERE pw_num=?")) {
                 stmt.setString(1, pw.getMapNumber());
@@ -236,7 +237,7 @@ public class PathwayAccess extends AccessBase {
                         if (ret.containsKey(ec)) {
                             ret.get(ec).add(rect);
                         } else {
-                            Set<Rectangle> tmp = new HashSet<>();
+                            Collection<Rectangle> tmp = new HashSet<>();
                             tmp.add(rect);
                             ret.put(ec, tmp);
                         }
@@ -347,7 +348,7 @@ public class PathwayAccess extends AccessBase {
         }
     }
 
-    public Set<PathwayI> getMatchingPathways(final ECNumberI ec) throws KEGGException {
+    public Collection<PathwayI> getMatchingPathways(final ECNumberI ec) throws KEGGException {
 
         Set<PathwayI> allPW = fetchall();
         final CountDownLatch done = new CountDownLatch(allPW.size());
@@ -393,7 +394,7 @@ public class PathwayAccess extends AccessBase {
         return ret;
     }
 
-    public Set<PathwayI> getMatchingPathways(final Set<ECNumberI> ecs) throws KEGGException {
+    public Collection<PathwayI> getMatchingPathways(final Set<ECNumberI> ecs) throws KEGGException {
 
         Set<PathwayI> allPW = fetchall();
         final CountDownLatch done = new CountDownLatch(allPW.size());

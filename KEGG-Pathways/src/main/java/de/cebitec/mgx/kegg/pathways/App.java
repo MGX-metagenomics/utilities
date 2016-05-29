@@ -4,6 +4,7 @@ import de.cebitec.mgx.kegg.pathways.api.ECNumberI;
 import de.cebitec.mgx.kegg.pathways.api.PathwayI;
 import de.cebitec.mgx.kegg.pathways.paint.KEGGPanel;
 import java.awt.Rectangle;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
@@ -34,7 +35,7 @@ public class App {
         
         for (final PathwayI p : all) {
             System.err.println(p.getName());
-            Map<ECNumberI, Set<Rectangle>> coords = m.Pathways().getCoords(p);
+            Map<ECNumberI, Collection<Rectangle>> coords = m.Pathways().getCoords(p);
             Thread t = new Thread(new Runnable() {
 
                 @Override
