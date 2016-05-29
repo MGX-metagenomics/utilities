@@ -72,7 +72,7 @@ public class AccessBase {
     }
 
     protected boolean isValid(PathwayI pw) {
-        boolean ret = getMaster().isValid(COORDS + "_" + pw.getMapNum());
+        boolean ret = getMaster().isValid(COORDS + "_" + pw.getMapNumber());
         return ret;
     }
 

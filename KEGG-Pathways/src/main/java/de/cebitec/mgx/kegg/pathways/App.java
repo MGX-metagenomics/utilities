@@ -48,7 +48,7 @@ public class App {
                     }
                 }
             });
-            t.setName(p.getMapNum());
+            t.setName(p.getMapNumber());
             t.start();
 
             //if (p.getMapNum().equals("map00360")) {

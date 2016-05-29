@@ -32,11 +32,11 @@ import javax.swing.ToolTipManager;
  */
 public class KEGGPanel extends JPanel {
 
-    private BufferedImage image = null;
-    private final KEGGMaster master;
+    private transient BufferedImage image = null;
+    private final transient KEGGMaster master;
     private final Map<Rectangle, String> toolTips;
     private int numDatasets = -1;
-    private Map<ECNumberI, Set<Rectangle>> coords = null;
+    private transient Map<ECNumberI, Set<Rectangle>> coords = null;
 
     public KEGGPanel(KEGGMaster master) {
         super();
