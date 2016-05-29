@@ -6,6 +6,9 @@ package de.cebitec.mgx.seqstorage.encoding;
  */
 public class IUPACCodes {
 
+    private IUPACCodes() {
+    }
+    
     public static final byte A = 0x01;
     public static final byte T = 0x02;
 //public final byte U 0x02
