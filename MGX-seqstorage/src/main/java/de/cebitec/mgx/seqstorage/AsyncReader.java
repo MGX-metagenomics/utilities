@@ -91,7 +91,7 @@ public class AsyncReader<T extends DNASequenceI> implements SeqReaderI<T>, Runna
     }
 
     @Override
-    public void close() throws Exception {
+    public void close() throws SeqStoreException {
         mayExit = true;
         source.close();
     }

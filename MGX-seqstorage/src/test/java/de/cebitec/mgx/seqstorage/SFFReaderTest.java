@@ -57,7 +57,7 @@ public class SFFReaderTest {
                 }
                 assertArrayEquals(quality, entry.getQuality());
             }
-        } catch (SeqStoreException | IOException ex) {
+        } catch (SeqStoreException ex) {
             fail(ex.getMessage());
         }
         f.delete();
@@ -73,7 +73,7 @@ public class SFFReaderTest {
                 sr.nextElement();
                 seqCnt++;
             }
-        } catch (SeqStoreException | IOException ex) {
+        } catch (SeqStoreException ex) {
             fail(ex.getMessage());
         }
 
