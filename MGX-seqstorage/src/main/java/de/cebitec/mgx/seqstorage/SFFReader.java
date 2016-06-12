@@ -13,6 +13,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -94,8 +96,12 @@ public class SFFReader implements SeqReaderI<DNAQualitySequenceI> {
     }
 
     @Override
-    public final void close() throws IOException {
-        reader.close();
+    public final void close() throws SeqStoreException {
+        try {
+            reader.close();
+        } catch (IOException ex) {
+            throw new SeqStoreException(ex.getMessage());
+        }
     }
 
     @Override
