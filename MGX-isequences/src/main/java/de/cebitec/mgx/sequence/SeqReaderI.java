@@ -17,4 +17,8 @@ public interface SeqReaderI<T extends DNASequenceI> extends AutoCloseable {
     T nextElement();
     
     public boolean hasMoreElements() throws SeqStoreException;
+
+    @Override
+    public void close() throws SeqStoreException;
+    
 }
