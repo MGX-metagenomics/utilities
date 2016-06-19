@@ -10,6 +10,7 @@ package de.cebitec.mgx.sffreader.datatypes;
  * @author Patrick Blumenkamp
  */
 public class SFFRead {
+
     private final String name, bases;
     private final byte[] quality;
 
@@ -30,10 +31,5 @@ public class SFFRead {
     public byte[] getQuality() {
         return quality.clone();
     }
-    
-    
-    
-    
-    
-    
+
 }
