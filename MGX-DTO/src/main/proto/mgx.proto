@@ -126,10 +126,11 @@ message ObservationDTOList {
 // bulk observation import for eval module
 
 message BulkObservationDTO {
-    required uint64 seq_id = 1;
-    required uint64 attribute_id = 2;
-    required int32 start = 3;
-    required int32 stop = 4;
+    required uint64 seqrun_id = 1;
+    required string seq_name = 2;
+    required uint64 attribute_id = 3;
+    required int32 start = 4;
+    required int32 stop = 5;
 }
 
 message BulkObservationDTOList {
