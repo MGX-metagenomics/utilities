@@ -47,43 +47,6 @@ message ChoicesDTO {
     repeated KVPair entry = 1;
 }
 
-// GPMS
-
-//message RoleDTO {
-//  required string name = 1;
-//}
-
-//message RoleDTOList {
-//  repeated RoleDTO role = 1;
-//}
-
-//message ProjectClassDTO {
-//  required string name = 1;
-//  required RoleDTOList roles = 2;
-//}
-
-//message ProjectClassDTOList {
-//  repeated ProjectClassDTO projectclass = 1;
-//}
-
-//message ProjectDTO {
-//  required string name = 1;
-//  required ProjectClassDTO project_class = 2;
-//}
-
-//message ProjectDTOList {
-//  repeated ProjectDTO project = 1;
-//}
-
-//message MembershipDTO {
-//  required ProjectDTO project = 1;
-//  required RoleDTO role = 2;
-//}
-
-//message MembershipDTOList {
-//  repeated MembershipDTO membership = 1;
-//}
-
 // ontology repository
 
 message TermDTO {
