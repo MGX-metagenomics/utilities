@@ -160,6 +160,20 @@ message ObservationDTOList {
     repeated ObservationDTO observation = 1;
 }
 
+// bulk observation import for eval module
+
+message BulkObservationDTO {
+    required uint64 seq_id = 1;
+    required uint64 attribute_id = 2;
+    required int32 start = 3;
+    required int32 stop = 4;
+}
+
+message BulkObservationDTOList {
+    repeated BulkObservationDTO bulk_observation = 1;
+}
+//
+
 // Habitat
 message HabitatDTO {
     optional uint64 id = 1;
