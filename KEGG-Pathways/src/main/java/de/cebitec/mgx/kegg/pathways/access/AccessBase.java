@@ -37,8 +37,12 @@ public class AccessBase {
         return pool;
     }
 
-    protected final InputStream get(final WebResource resource, final String path) throws KEGGException {
-        ClientResponse res = resource.path(path).get(ClientResponse.class);
+    protected final InputStream get(final WebResource resource, final String... path) throws KEGGException {
+        WebResource wr = resource;
+        for (String elem : path) {
+            wr = wr.path(elem);
+        }
+        ClientResponse res = wr.get(ClientResponse.class);
         catchException(res);
         return res.getEntityInputStream();
     }

@@ -78,7 +78,7 @@ public class PathwayAccess extends AccessBase {
     }
 
     private void fetchAllFromServer() throws KEGGException {
-        try (InputStream in = get(getRESTResource(), "list/pathway")) {
+        try (InputStream in = get(getRESTResource(), "list", "pathway")) {
             try (BufferedReader bin = new BufferedReader(new InputStreamReader(in))) {
                 Connection conn = getMaster().getConnection();
                 try (PreparedStatement stmt = conn.prepareStatement("DELETE FROM coords")) {
@@ -127,7 +127,7 @@ public class PathwayAccess extends AccessBase {
             return; // no need to refetch
         }
         // http://www.genome.jp/kegg/pathway/map/map00620.png
-        try (InputStream in = get(getKEGGResource(), "kegg/pathway/map/" + p.getMapNumber() + ".png")) {
+        try (InputStream in = get(getKEGGResource(), "kegg", "pathway", "map", p.getMapNumber() + ".png")) {
             File tmpFile = File.createTempFile(p.getMapNumber(), "tmp");
             try (OutputStream bw = new FileOutputStream(tmpFile)) {
                 int read;
@@ -255,10 +255,10 @@ public class PathwayAccess extends AccessBase {
         assert !isValid(pw);
 
         final WebResource wr = getKEGGResource()
-                .path("/kegg-bin/show_pathway")
+                .path("kegg-bin").path("show_pathway")
                 .queryParam("org_name", "map")
                 .queryParam("mapno", pw.getMapNumber().substring(3));
-        //System.err.println("GET: "+wr.getURI().toASCIIString());
+//        System.err.println("GET: "+wr.getURI().toASCIIString());
 
         ClientResponse cr = wr.header("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.1").get(ClientResponse.class);
         catchException(cr);
