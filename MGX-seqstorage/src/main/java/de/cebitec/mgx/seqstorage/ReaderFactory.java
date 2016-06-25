@@ -17,8 +17,6 @@ import java.util.zip.GZIPInputStream;
  */
 public class ReaderFactory implements FactoryI<DNASequenceI> {
 
-    private final static byte[] GZIP_MAGIC = new byte[]{31, -117}; // 0x8b 0x1f
-
     public ReaderFactory() {
     }
 
@@ -37,51 +35,49 @@ public class ReaderFactory implements FactoryI<DNASequenceI> {
             throw new SeqStoreException(uri + " is empty.");
         }
 
-        byte[] buf = new byte[4];
-        try (InputStream in = new FileInputStream(uri)) {
-            in.read(buf);
-        } catch (FileNotFoundException ex) {
-            throw new SeqStoreException("Sequence file " + uri + " missing");
+        // check for gzip compression
+        boolean is_compressed;
+        try {
+            is_compressed = GZIP.isGzip(file);
         } catch (IOException ex) {
-            throw new SeqStoreException("Could not read sequence file");
+            throw new SeqStoreException(ex.getMessage());
         }
 
-        boolean is_compressed = false;
-
-        // check for gzip magic
-        if ((buf[0] == GZIP_MAGIC[0]) && (buf[1] == GZIP_MAGIC[1])) {
+        byte[] buf = new byte[4];
+        if (!is_compressed) {
+            try (InputStream in = new FileInputStream(uri)) {
+                in.read(buf);
+            } catch (FileNotFoundException ex) {
+                throw new SeqStoreException("Sequence file " + uri + " missing");
+            } catch (IOException ex) {
+                throw new SeqStoreException("Could not read sequence file");
+            }
+        } else {
             try (GZIPInputStream gzis = new GZIPInputStream(new FileInputStream(file))) {
                 gzis.read(buf);
             } catch (IOException ex) {
                 throw new SeqStoreException("Could not read sequence file: " + ex.getMessage());
             }
-            is_compressed = true;
         }
 
-        SeqReaderI<? extends DNASequenceI> ret = null;
         switch (buf[0]) {
             case '>':
-                ret = new FastaReader(uri, is_compressed);
-                break;
+                return new FastaReader(uri, is_compressed);
             case '@':
-                ret = new FASTQReader(uri, is_compressed);
-                break;
+                return new FASTQReader(uri, is_compressed);
             case 'N':
                 if (new File(uri + ".csf").exists()) {
-                    ret = new CSFReader(uri, is_compressed);
+                    return new CSFReader(uri, is_compressed);
                 } else if (new File(uri + ".csq").exists()) {
-                    ret = new CSQFReader(uri, is_compressed);
+                    return new CSQFReader(uri, is_compressed);
                 }
                 break;
             case '.':
                 if (buf[1] == 's' && buf[2] == 'f' && buf[3] == 'f') {
-                    ret = new SFFReader(uri, is_compressed);
+                    return new SFFReader(uri, is_compressed);
                 }
-                break;
-            default:
-                throw new SeqStoreException("Unsupported file type (" + new String(buf) + ")");
         }
-
-        return ret;
+        
+        throw new SeqStoreException("Unsupported file type (" + new String(buf) + ")");
     }
 }
