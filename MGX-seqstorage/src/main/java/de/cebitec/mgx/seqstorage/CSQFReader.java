@@ -22,6 +22,10 @@ public class CSQFReader implements SeqReaderI<DNAQualitySequenceI> {
     private BufferedRandomAccessFile raf = null;
     private byte[] record = new byte[16];
 
+    public CSQFReader(String filename) throws SeqStoreException {
+        this(filename, false);
+    }
+
     public CSQFReader(String filename, boolean gzipCompressed) throws SeqStoreException {
         if (filename == null) {
             throw new SeqStoreException("No filename.");

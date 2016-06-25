@@ -18,6 +18,10 @@ public class FASTQReader implements SeqReaderI<DNAQualitySequenceI> {
     private final ByteStreamTokenizer stream;
     private final String fastqfile;
     public static final byte LINEBREAK = '\n';
+    
+    public FASTQReader(String filename) throws SeqStoreException {
+        this(filename, false);
+    }
 
     public FASTQReader(String filename, boolean gzipCompressed) throws SeqStoreException {
         fastqfile = filename;
