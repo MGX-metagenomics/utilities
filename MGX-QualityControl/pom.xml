@@ -29,7 +29,6 @@
             <groupId>de.cebitec.mgx</groupId>
             <artifactId>MGX-isequences</artifactId>
             <version>1.0</version>
-            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -53,7 +52,10 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Export-Package />
+                        <Export-Package>
+                            de.cebitec.mgx.qc,
+                            de.cebitec.mgx.qc.io
+                        </Export-Package>
                     </instructions>
                 </configuration>
             </plugin>
