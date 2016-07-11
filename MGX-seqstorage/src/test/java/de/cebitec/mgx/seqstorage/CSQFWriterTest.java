@@ -22,7 +22,7 @@ import org.ops4j.pax.exam.junit.PaxExam;
  *
  * @author sj
  */
-@RunWith(PaxExam.class)
+//@RunWith(PaxExam.class)
 public class CSQFWriterTest {
 
     @Configuration
@@ -44,7 +44,7 @@ public class CSQFWriterTest {
     @Test
     public void testCSQFWriter() throws Exception {
         System.out.println("testCSQFWriter");
-        File f = TestInput.copyTestResource(getClass(), "/de/cebitec/mgx/seqstorage/sample_1.fq");
+        File f = TestInput.copyTestResource(getClass(), "de/cebitec/mgx/seqstorage/sample_1.fq");
         File target = File.createTempFile("testCSQFWriter", "xx");
         target.delete();
         try (FASTQReader fr = new FASTQReader(f.getAbsolutePath(), false)) {
@@ -71,7 +71,7 @@ public class CSQFWriterTest {
     @Test
     public void testCSQFReader() throws Exception {
         System.out.println("testCSQFReader");
-        File f = TestInput.copyTestResource(getClass(), "/de/cebitec/mgx/seqstorage/sample_1.fq");
+        File f = TestInput.copyTestResource(getClass(), "de/cebitec/mgx/seqstorage/sample_1.fq");
         File target = File.createTempFile("testCSQFReader", "");
         target.delete();
         List<DNAQualitySequenceI> writer = new ArrayList<>();
