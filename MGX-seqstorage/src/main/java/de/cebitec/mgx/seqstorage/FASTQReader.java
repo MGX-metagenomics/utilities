@@ -14,11 +14,17 @@ import java.util.Set;
  */
 public class FASTQReader implements SeqReaderI<DNAQualitySequenceI> {
 
+    enum QualityEncoding {
+        Sanger, Illumina5, Illumina3, Solexa, Unknown   //Illumina5 == Illumina 1.5; Illumina3 == Illumina 1.3
+    }
+
     private QualityDNASequence seq = null;
     private final ByteStreamTokenizer stream;
     private final String fastqfile;
+    private QualityEncoding qualityEncoding = null;
+    private int qualityOffset = 0;
     public static final byte LINEBREAK = '\n';
-    
+
     public FASTQReader(String filename) throws SeqStoreException {
         this(filename, false);
     }
@@ -88,6 +94,12 @@ public class FASTQReader implements SeqReaderI<DNAQualitySequenceI> {
         int qLen = l4.length > 0 && l4[l4.length - 1] == '\r' ? l4.length - 1 : l4.length;
         byte[] qseq = new byte[qLen];
         System.arraycopy(l4, 0, qseq, 0, qLen);
+        if (qualityEncoding == null) {
+            setQualityOffset(qseq);
+        }
+        if (qualityEncoding == QualityEncoding.Unknown) {
+            throw new SeqStoreException("Error in FASTQ file: unknwon quality encoding");
+        }
         seq.setQuality(convertQuality(qseq));     //quality as phred scores
 
         return true;
@@ -137,13 +149,14 @@ public class FASTQReader implements SeqReaderI<DNAQualitySequenceI> {
         return res;
     }
 
-    private static byte[] convertQuality(byte[] in) throws SeqStoreException {
+    private byte[] convertQuality(byte[] in) throws SeqStoreException {
         if (in == null) {
             throw new SeqStoreException("Cannot convert null quality string.");
         }
+
         byte[] out = new byte[in.length];
         for (int i = 0; i < in.length; i++) {
-            out[i] = (byte) (in[i] - 33);
+            out[i] = (byte) (in[i] - qualityOffset);
         }
 
         return out;
@@ -152,5 +165,35 @@ public class FASTQReader implements SeqReaderI<DNAQualitySequenceI> {
     @Override
     public final boolean hasQuality() {
         return true;
+    }
+
+    private void setQualityOffset(byte[] in) {
+        byte min = 100;
+        byte max = 0;
+
+        for (byte b : in) {
+            if (b > max) {
+                max = b;
+            }
+            if (b < min) {
+                min = b;
+            }
+        }
+
+        if (min >= 33 && max <= 88) {
+            qualityEncoding = QualityEncoding.Sanger;
+            qualityOffset = 33;
+        } else if (min >= 67 && max <= 104) {
+            qualityEncoding = QualityEncoding.Illumina5;
+            qualityOffset = 64;
+        } else if (min >= 54 && max <= 104) {
+            qualityEncoding = QualityEncoding.Illumina3;
+            qualityOffset = 64;
+        } else if (min >= 59 && max <= 104) {
+            qualityEncoding = QualityEncoding.Solexa;
+            qualityOffset = 64;
+        } else {
+            qualityEncoding = QualityEncoding.Unknown;
+        }
     }
 }

@@ -12,6 +12,8 @@ public class QualityDistribution implements Analyzer<DNAQualitySequenceI>{
 
     private static final int STARTLENGTH = 2_000;
     
+    public static final String NAME = "Sequence quality";
+    
     private long[] count = new long[STARTLENGTH];
     private double[] mean = new double[STARTLENGTH];
     private double[] mk = new double[STARTLENGTH];
@@ -33,7 +35,7 @@ public class QualityDistribution implements Analyzer<DNAQualitySequenceI>{
     
     @Override
     public String getName() {
-        return "Sequence quality";
+        return NAME;
     }
 
     @Override

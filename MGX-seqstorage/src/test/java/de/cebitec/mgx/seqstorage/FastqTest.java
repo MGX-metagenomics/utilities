@@ -94,7 +94,7 @@ public class FastqTest {
             Assert.assertArrayEquals("GTCAGGACAAGAAAGACAANTCCAATTNACATTATG".getBytes(), entry.getSequence());
             byte[] quality = "aaabaa`]baaaaa_aab]D^^`b`aYDW]abaa`^".getBytes();
             for (int i = 0; i < quality.length; i++) {
-                quality[i] -= 33;
+                quality[i] -= 64;
             }
             assertArrayEquals(quality, entry.getQuality());
         } catch (SeqStoreException ex) {
