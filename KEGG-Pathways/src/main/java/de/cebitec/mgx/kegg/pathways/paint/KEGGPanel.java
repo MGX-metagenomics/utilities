@@ -18,7 +18,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -98,6 +97,7 @@ public class KEGGPanel extends JPanel {
                 }
             }
 
+            toolTips.remove(r);
             toolTips.put(cr, text);
         }
 
