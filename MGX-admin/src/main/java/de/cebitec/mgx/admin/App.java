@@ -1,33 +1,23 @@
 package de.cebitec.mgx.admin;
 
-import com.jolbox.bonecp.BoneCPConfig;
-import com.jolbox.bonecp.BoneCPDataSource;
-import de.cebitec.mgx.admin.misc.Pair;
-import de.cebitec.mgx.admin.misc.Reference;
-import de.cebitec.mgx.admin.misc.Region;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+import de.cebitec.mgx.model.db.Reference;
+import de.cebitec.mgx.model.db.Region;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.Console;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import javax.sql.DataSource;
 import org.biojava.bio.Annotation;
-import org.biojava.bio.BioException;
 import org.biojava.bio.seq.Feature;
 import org.biojavax.Namespace;
 import org.biojavax.RichObjectFactory;
@@ -44,10 +34,10 @@ public class App {
     public static final String GLOBAL_DIR = "/vol/mgx-data/GLOBAL/references/";
 
     public static void main(String[] args) throws Exception {
-//        Console con = System.console();
-//        char[] password = con.readPassword("Admin password: ");
-//        DataSource ds = createDataSource(new String(password));
-//        Connection conn = ds.getConnection();
+        Console con = System.console();
+        char[] password = con.readPassword("Admin password: ");
+        DataSource ds = createDataSource("gpmsroot", new String(password));
+        Connection conn = ds.getConnection();
 //        List<String> globalRefs = listReferences(conn);
 
         List<String> fnames = new ArrayList<>();
@@ -58,17 +48,9 @@ public class App {
             }
         }
 
-        ExecutorService pool = Executors.newFixedThreadPool(8);
-        final CountDownLatch allDone = new CountDownLatch(fnames.size());
 
         for (final String fn : fnames) {
-            pool.submit(new Runnable() {
-                @Override
-                public void run() {
-                    readReference(fn);
-                    allDone.countDown();
-                }
-            });
+            readReference(fn, conn);
 //            for (Map.Entry<Pair<String, Reference>, String> me : refs.entrySet()) {
 //                Pair<String, Reference> p = me.getKey();
 //                if (!globalRefs.contains(p.getSecond().getName())) {
@@ -80,11 +62,10 @@ public class App {
 //                }
 //            }
         }
-        allDone.await();
     }
 
-    private static void readReference(String fname) {
-        Map<Pair<String, Reference>, String> ret = null; //new HashMap<>();
+    private static void readReference(String fname, Connection conn) {
+//        Map<Pair<String, Reference>, String> ret = new HashMap<>();
         String seqname = "";
 
         try {
@@ -132,11 +113,11 @@ public class App {
                 }
 
                 seqname = seqname.trim();
-                //System.err.println("Name: " + seqname + "      (" + fname + ")");
+                System.err.println("Name: " + seqname + "      (" + fname + ")");
 
                 Reference ref = new Reference();
                 ref.setName(seqname);
-                ref.setRegions(new LinkedList<Region>());
+                List<Region> regions = new ArrayList<>();
 
                 Iterator<Feature> iter = rs.features();
                 while (iter.hasNext()) {
@@ -146,31 +127,31 @@ public class App {
                         if (genomeSeq == null) {
                             genomeSeq = elem.getSequence().seqString();
                         }
-//
-//                        Region region = new Region();
-//                        region.setReference(ref);
-//                        Annotation annot = elem.getAnnotation();
-//                        region.setName((String) annot.getProperty("locus_tag"));
-//                        if (annot.containsProperty("product")) {
-//                            region.setDescription((String) annot.getProperty("product"));
-//                        } else if (annot.containsProperty("function")) {
-//                            region.setDescription((String) annot.getProperty("function"));
-//                        } else {
-//                            region.setDescription("");
-//                        }
-//
-//                        int abs_start, abs_stop;
-//                        if (elem.getStrand().getValue() == 1) {
-//                            abs_start = elem.getLocation().getMin() - 1;
-//                            abs_stop = elem.getLocation().getMax() - 1;
-//                        } else {
-//                            abs_stop = elem.getLocation().getMin() - 1;
-//                            abs_start = elem.getLocation().getMax() - 1;
-//                        }
-//                        region.setStart(abs_start);
-//                        region.setStop(abs_stop);
-//
-//                        ref.getRegions().add(region);
+
+                        Region region = new Region();
+                        region.setType(elem.getType());
+                        Annotation annot = elem.getAnnotation();
+                        region.setName((String) annot.getProperty("locus_tag"));
+                        if (annot.containsProperty("product")) {
+                            region.setDescription((String) annot.getProperty("product"));
+                        } else if (annot.containsProperty("function")) {
+                            region.setDescription((String) annot.getProperty("function"));
+                        } else {
+                            region.setDescription("");
+                        }
+
+                        int abs_start, abs_stop;
+                        if (elem.getStrand().getValue() == 1) {
+                            abs_start = elem.getLocation().getMin() - 1;
+                            abs_stop = elem.getLocation().getMax() - 1;
+                        } else {
+                            abs_stop = elem.getLocation().getMin() - 1;
+                            abs_start = elem.getLocation().getMax() - 1;
+                        }
+                        region.setStart(abs_start);
+                        region.setStop(abs_stop);
+
+                        regions.add(region);
                     }
                 }
 
@@ -179,27 +160,25 @@ public class App {
                 } else {
                     ref.setLength(genomeSeq.length());
                 }
-
-                //System.out.println(ref.getName() + " has " + String.valueOf(ref.getLength()) + "bp");
-                //ret.put(new Pair<>(rs.getName(), ref), genomeSeq);
-                //saveReference(rs.getName(), ref, genomeSeq, conn);
+//
+                saveReference(rs.getName(), ref, regions, genomeSeq, conn);
             }
 
             br.close();
-        } catch (IOException | NoSuchElementException | BioException ex) {
+        } catch (Exception ex) {
             System.err.println(fname + ": " + ex.getMessage() + "   (" + seqname + ")");
         }
         //return ret;
     }
 
-    private static void saveReference(String accession, Reference ref, String dnaSeq, Connection conn) throws Exception {
-        BufferedWriter bw = new BufferedWriter(new FileWriter(GLOBAL_DIR + accession + ".fas"));
-        bw.append(">");
-        bw.append(accession);
-        bw.newLine();
-        bw.append(dnaSeq);
-        bw.newLine();
-        bw.close();
+    private static void saveReference(String accession, Reference ref, List<Region> regions, String dnaSeq, Connection conn) throws Exception {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(GLOBAL_DIR + accession + ".fas"))) {
+            bw.append(">");
+            bw.append(accession);
+            bw.newLine();
+            bw.append(dnaSeq.toUpperCase());
+            bw.newLine();
+        }
         ref.setFile(GLOBAL_DIR + accession + ".fas");
         try (PreparedStatement stmt = conn.prepareStatement(ADD_REF)) {
             stmt.setString(1, ref.getName());
@@ -209,17 +188,17 @@ public class App {
                 if (!rs.next()) {
                     throw new Exception("error");
                 }
-                Long id = rs.getLong(1);
-                ref.setId(id);
+                ref.setId(rs.getLong(1));
             }
         }
         try (PreparedStatement stmt = conn.prepareStatement(ADD_REGION)) {
-            for (Region r : ref.getRegions()) {
+            for (Region r : regions) {
                 stmt.setString(1, r.getName());
-                stmt.setString(2, r.getDescription());
-                stmt.setInt(3, r.getStart());
-                stmt.setInt(4, r.getStop());
-                stmt.setLong(5, ref.getId());
+                stmt.setString(2, r.getType());
+                stmt.setString(3, r.getDescription());
+                stmt.setInt(4, r.getStart());
+                stmt.setInt(5, r.getStop());
+                stmt.setLong(6, ref.getId());
                 stmt.addBatch();
             }
             stmt.executeBatch();
@@ -248,24 +227,28 @@ public class App {
     }
     private static final String GET_REFS = "SELECT id, name, ref_length, ref_filepath FROM reference";
     private static final String ADD_REF = "INSERT INTO reference (name, ref_length, ref_filepath) VALUES (?,?,?) RETURNING id";
-    private static final String ADD_REGION = "INSERT INTO region (name, description, reg_start, reg_stop, ref_id) VALUES (?,?,?, ?, ?)";
+    private static final String ADD_REGION = "INSERT INTO region (name, type, description, reg_start, reg_stop, ref_id) VALUES (?,?,?,?,?,?)";
 
-    public static DataSource createDataSource(String pw) throws ClassNotFoundException {
+    public static DataSource createDataSource(String userName, String pw) throws ClassNotFoundException {
         Class.forName("org.postgresql.Driver");
-        String jdbc = "jdbc:postgresql://mgx.postgresql:5432/MGX_global";
+        String jdbc = "jdbc:postgresql://postgresql.internal.computational.bio.uni-giessen.de:5432/MGX_global";
 
-        BoneCPConfig cfg = new BoneCPConfig();
-        cfg.setLazyInit(true);
-        cfg.setMaxConnectionsPerPartition(5);
-        cfg.setMinConnectionsPerPartition(2);
-        cfg.setPartitionCount(1);
-        cfg.setJdbcUrl(jdbc);
-        cfg.setUsername("mgxadm");
-        cfg.setPassword(pw);
-        cfg.setCloseConnectionWatch(false);
-        cfg.setMaxConnectionAgeInSeconds(600);
-        cfg.setAcquireRetryAttempts(0);
+        HikariConfig cfg = new HikariConfig();
+        cfg.setPoolName("globalPool");
+        //cfg.setMinimumPoolSize(5);
+        cfg.setMaximumPoolSize(20);
+        cfg.setMinimumIdle(2);
+        cfg.setDataSourceClassName("org.postgresql.ds.PGSimpleDataSource");
+        cfg.addDataSourceProperty("user", userName);
+        cfg.addDataSourceProperty("password", pw);
+        cfg.addDataSourceProperty("serverName", "postgresql.internal.computational.bio.uni-giessen.de");
+        cfg.addDataSourceProperty("portNumber", 5432);
+        cfg.addDataSourceProperty("databaseName", "MGX_global");
+        cfg.setConnectionTimeout(1500); // ms
+        cfg.setMaxLifetime(1000 * 60 * 2);  // 2 mins
+        cfg.setIdleTimeout(1000 * 60);
+        cfg.setLeakDetectionThreshold(20000); // 20 sec before in-use connection is considered leaked
 
-        return new BoneCPDataSource(cfg);
+        return new HikariDataSource(cfg);
     }
 }
