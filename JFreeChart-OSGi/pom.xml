@@ -4,11 +4,12 @@
     <parent>
         <groupId>de.cebitec.mgx</groupId>
         <artifactId>Utilities</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0</version>
     </parent>
     
     <artifactId>JFreeChart-OSGi</artifactId>
     <packaging>bundle</packaging>
+    <version>1.0</version>
 
     <name>JFreeChart-OSGi</name>
     
