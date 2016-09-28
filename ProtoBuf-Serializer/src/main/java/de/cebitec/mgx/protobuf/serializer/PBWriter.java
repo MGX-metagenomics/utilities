@@ -21,8 +21,7 @@ import javax.ws.rs.ext.Provider;
 @Produces("application/x-protobuf")
 public class PBWriter implements MessageBodyWriter<Message> {
 
-    private final Map<Message, byte[]> buffer = new ConcurrentHashMap<>();
-
+//    private final Map<Message, byte[]> buffer = new ConcurrentHashMap<>();
     @Override
     public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
         return Message.class.isAssignableFrom(type);
@@ -30,39 +29,40 @@ public class PBWriter implements MessageBodyWriter<Message> {
 
     @Override
     public long getSize(Message m, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try {
-            m.writeTo(baos);
-        } catch (IOException e) {
-            Logger.getLogger(PBWriter.class.getName()).log(Level.SEVERE, null, e);
-            return -1;
-        }
-        byte[] bytes = baos.toByteArray();
-        buffer.put(m, bytes);
-
-        int serSize = m.getSerializedSize();
-        int baoSize = baos.size();
-        if (serSize != baoSize || bytes.length != baoSize || serSize != bytes.length) {
-            Logger.getLogger(PBWriter.class.getName()).log(Level.INFO, "serialized size difference encountered: {0} vs {1} vs {2}", new Object[]{serSize, baoSize, bytes.length});
-        }
-
-        return bytes.length;
+        return m.getSerializedSize();
+//        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//        try {
+//            m.writeTo(baos);
+//        } catch (IOException e) {
+//            Logger.getLogger(PBWriter.class.getName()).log(Level.SEVERE, null, e);
+//            return -1;
+//        }
+//        byte[] bytes = baos.toByteArray();
+//        buffer.put(m, bytes);
+//
+//        int serSize = m.getSerializedSize();
+//        int baoSize = baos.size();
+//        if (serSize != baoSize || bytes.length != baoSize || serSize != bytes.length) {
+//            Logger.getLogger(PBWriter.class.getName()).log(Level.INFO, "serialized size difference encountered: {0} vs {1} vs {2}", new Object[]{serSize, baoSize, bytes.length});
+//        }
+//
+//        return bytes.length;
     }
 
     @Override
     public void writeTo(Message m, Class type, Type genericType, Annotation[] annotations,
             MediaType mediaType, MultivaluedMap httpHeaders,
             OutputStream entityStream) throws IOException, WebApplicationException {
-        byte[] data = buffer.remove(m);
-        if (data == null) {
-            try {
-                m.writeTo(entityStream);
-            } catch (IOException e) {
-                Logger.getLogger(PBWriter.class.getName()).log(Level.SEVERE, null, e);
-            }
-        } else {
-            entityStream.write(data);
+//        byte[] data = buffer.remove(m);
+//        if (data == null) {
+        try {
+            m.writeTo(entityStream);
+        } catch (IOException e) {
+            Logger.getLogger(PBWriter.class.getName()).log(Level.SEVERE, null, e);
         }
+//        } else {
+//            entityStream.write(data);
+//        }
     }
 
     /*
