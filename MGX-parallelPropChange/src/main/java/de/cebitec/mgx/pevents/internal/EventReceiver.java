@@ -57,7 +57,7 @@ public class EventReceiver implements Runnable {
                     distributor.releaseBusyLock();
                     start = System.currentTimeMillis() - start;
                     if (start >= 100) {
-                        Logger.getLogger(getClass().getName()).log(Level.INFO, "Slow processing of propertyChange {0} ({1} ms) for target {2} on thread {3}", new Object[]{event.getPropertyName(), start, target.getClass().getSimpleName(), Thread.currentThread().getName()});
+                        Logger.getLogger(getClass().getName()).log(Level.INFO, "Slow processing of propertyChange {0} ({1} ms) for target {2} on thread {3}", new Object[]{event.getPropertyName(), start, target.toString(), Thread.currentThread().getName()});
                     }
                 }
                 dEvent.delivered();

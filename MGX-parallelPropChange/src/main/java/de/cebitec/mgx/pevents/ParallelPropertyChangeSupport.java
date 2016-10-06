@@ -64,8 +64,8 @@ public class ParallelPropertyChangeSupport extends PropertyChangeSupport impleme
                 PropertyChangeListenerProxy proxy = (PropertyChangeListenerProxy) listener;
                 addPropertyChangeListener(proxy.getPropertyName(), proxy.getListener());
             } else {
-                //super.addPropertyChangeListener(listener);
-                super.addPropertyChangeListener(new PCLProxy(listener));
+                super.addPropertyChangeListener(listener);
+                //super.addPropertyChangeListener(new PCLProxy(listener));
             }
         }
         if (distributor == null) {
@@ -90,9 +90,9 @@ public class ParallelPropertyChangeSupport extends PropertyChangeSupport impleme
                         found = true;
                         break;
                     }
-                    if (!found && propertyChangeListener instanceof PCLProxy) {
-                        found = ((PCLProxy) propertyChangeListener).getTarget().equals(listener);
-                    }
+//                    if (!found && propertyChangeListener instanceof PCLProxy) {
+//                        found = ((PCLProxy) propertyChangeListener).getTarget().equals(listener);
+//                    }
                 }
                 if (!found) {
                     LOG.log(Level.INFO, "PropertyChangeListener {0} cannot be removed from source {1} because it is not a registered listener.", new Object[]{listener, source});
@@ -186,11 +186,11 @@ public class ParallelPropertyChangeSupport extends PropertyChangeSupport impleme
                 if (propertyChangeListeners != null && propertyChangeListeners.length > 0) {
                     LOG.log(Level.INFO, "Removing PropertyChangeSupport for source {0} with remaining listeners:", source);
                     for (PropertyChangeListener pcl : propertyChangeListeners) {
-                        if (pcl instanceof PCLProxy) {
-                            LOG.log(Level.INFO, "  {0}", ((PCLProxy)pcl).getTarget().getClass().getSimpleName());
-                        } else {
-                            LOG.log(Level.INFO, "  {0}", pcl.getClass().getSimpleName());
-                        }
+//                        if (pcl instanceof PCLProxy) {
+//                            LOG.log(Level.INFO, "  {0}", ((PCLProxy)pcl).getTarget().getClass().getSimpleName());
+//                        } else {
+                        LOG.log(Level.INFO, "  {0}", pcl.getClass().getSimpleName());
+//                        }
                     }
                 }
             }
