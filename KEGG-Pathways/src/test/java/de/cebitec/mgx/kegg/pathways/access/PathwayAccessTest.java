@@ -88,7 +88,7 @@ public class PathwayAccessTest {
         Map<ECNumberI, Collection<Rectangle>> coords = getMaster().Pathways().getCoords(pw);
         assertNotNull(coords);
         assertTrue(coords.size() > 45);
-        assertTrue(coords.containsKey(ECNumberFactory.fromString("2.7.1.41")));
+        assertTrue(coords.containsKey(ECNumberFactory.fromString("5.4.2.2")));
     }
 
     @Test
