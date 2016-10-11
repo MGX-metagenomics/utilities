@@ -66,8 +66,7 @@ public class GCDistributionTest {
     @Test
     public void testAdd() throws SeqStoreException {
         System.out.println("add");
-        Assume.assumeTrue(new File("/homes/sjaenick/testdata.fas").exists());
-        FastaReader r = new FastaReader("/homes/sjaenick/testdata.fas", false);
+        FastaReader r = new FastaReader("src/test/resources/de/cebitec/mgx/qc/testdata.fas", false);
         GCDistribution gc = new GCDistribution();
         while (r.hasMoreElements()) {
             gc.add(r.nextElement());
