@@ -176,6 +176,19 @@ public class App {
                     return;
                 } else {
                     ref.setLength(genomeSeq.length());
+
+                    boolean error = false;
+                    for (Region r : regions) {
+                        if (r.getStart() > ref.getLength() || r.getStop() > ref.getLength()) {
+                            System.out.println("Region outside of sequence " + seqname + " found in " + fname);
+                            System.out.println(" " + r.getStart() + "-" + r.getStop() + "  " + r.getName() + ", ref_length is " + ref.getLength());
+                            error = true;
+                        }
+                    }
+                    if (error) {
+                        return;
+                    }
+
                     saveReference(rs.getName(), ref, regions, genomeSeq, ds);
                     System.out.println("OK: " + seqname + "      (" + fname + ")");
                     globalRefs.add(ref.getName());
