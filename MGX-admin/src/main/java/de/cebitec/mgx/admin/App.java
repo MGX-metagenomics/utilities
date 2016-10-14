@@ -7,8 +7,14 @@ import de.cebitec.mgx.model.db.Region;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.Console;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,6 +22,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.zip.GZIPInputStream;
 import javax.sql.DataSource;
 import org.biojava.bio.Annotation;
 import org.biojava.bio.seq.Feature;
@@ -33,43 +42,57 @@ public class App {
 
     public static final String GLOBAL_DIR = "/vol/mgx-data/GLOBAL/references/";
 
+    private final static String FTP_PREFIX = "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/";
+    private final static String LOCAL_DIR = "/vol/biodb/ncbi_genomes/all/";
+
     public static void main(String[] args) throws Exception {
         Console con = System.console();
         char[] password = con.readPassword("Admin password: ");
         DataSource ds = createDataSource("gpmsroot", new String(password));
-        Connection conn = ds.getConnection();
-//        List<String> globalRefs = listReferences(conn);
+        List<String> globalRefs = listReferences(ds);
+        for (String s : globalRefs) {
+            System.out.println(s);
+        }
 
-        List<String> fnames = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader("/home/sj/genomes.txt"))) {
+        List<File> files = new ArrayList<>();
+
+        File summary = new File("/vol/biodb/ncbi_genomes/refseq/bacteria/assembly_summary.txt");
+        try (BufferedReader br = new BufferedReader(new FileReader(summary))) {
             String line;
-            while ((line = br.readLine()) != null) {
-                fnames.add("/home/sj/" + line);
+            while (null != (line = br.readLine())) {
+                if (!line.startsWith("#")) {
+                    String[] parts = line.split("\t");
+                    if ("latest".equals(parts[10]) && "Complete Genome".equals(parts[11])) {
+                        if ("representative genome".equals(parts[4])) {
+                            String localDir = parts[19].substring(FTP_PREFIX.length());
+                            String gbff = LOCAL_DIR + localDir + File.separatorChar + localDir + "_genomic.gbff.gz";
+                            System.out.println(gbff);
+                            File f = new File(gbff);
+                            if (f.exists()) {
+                                files.add(f);
+                                readReference(globalRefs, gbff, ds);
+                            }
+                        }
+                    }
+                }
             }
         }
-
-
-        for (final String fn : fnames) {
-            readReference(fn, conn);
-//            for (Map.Entry<Pair<String, Reference>, String> me : refs.entrySet()) {
-//                Pair<String, Reference> p = me.getKey();
-//                if (!globalRefs.contains(p.getSecond().getName())) {
-//                    globalRefs.add(p.getSecond().getName());
-//                    System.err.println("importing " + p.getSecond().getName());
-//                    //saveReference(p.getFirst(), p.getSecond(), me.getValue(), conn);
-//                } else {
-//                    System.err.println("skipping " + p.getSecond().getName() + ", already present");
-//                }
-//            }
-        }
+        System.out.println(files.size() + " files");
     }
 
-    private static void readReference(String fname, Connection conn) {
-//        Map<Pair<String, Reference>, String> ret = new HashMap<>();
+    private static void readReference(List<String> globalRefs, String fname, DataSource ds) {
         String seqname = "";
 
+        BufferedReader br = null;
         try {
-            BufferedReader br = new BufferedReader(new FileReader(fname));
+            InputStream gzipStream = new GZIPInputStream(new FileInputStream(fname));
+            br = new BufferedReader(new InputStreamReader(gzipStream));
+        } catch (IOException ex) {
+            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+            return;
+        }
+
+        try {
             Namespace ns = RichObjectFactory.getDefaultNamespace();
             br.mark(10);
             Character first = (char) br.read();
@@ -87,33 +110,20 @@ public class App {
             while (seqs.hasNext()) {
                 RichSequence rs = seqs.nextRichSequence();
 
-                seqname = rs.getDescription().replaceAll("\n", " ").trim();
-                if (seqname.endsWith(", complete sequence.")) {
-                    int trimPos = seqname.lastIndexOf(", complete sequence.");
-                    seqname = seqname.substring(0, trimPos);
-                }
-                if (seqname.endsWith(", complete genome.")) {
-                    int trimPos = seqname.lastIndexOf(", complete genome.");
-                    seqname = seqname.substring(0, trimPos);
-                }
-                if (seqname.endsWith("complete genome")) {
-                    int trimPos = seqname.lastIndexOf("complete genome");
-                    seqname = seqname.substring(0, trimPos);
-                }
-                if (seqname.endsWith(".")) {
-                    int trimPos = seqname.lastIndexOf(".");
-                    seqname = seqname.substring(0, trimPos);
-                }
+                seqname = cleanupSeqName(rs.getDescription());
 
                 if (seqname.contains("PROGRESS") || seqname.contains("draft") || seqname.contains("fragment") || seqname.contains("incision element")) {  //avoid incomplete sequences
                     continue;
                 }
-                if (seqname.contains("whole genome shotgun")) {  //avoid incomplete sequences
+                if (seqname.contains("whole genome shotgun") || seqname.contains("plasmid")) {  //avoid incomplete sequences/plasmids
                     continue;
                 }
-
                 seqname = seqname.trim();
-                System.err.println("Name: " + seqname + "      (" + fname + ")");
+
+                if (globalRefs.contains(seqname)) {
+                    System.out.println(seqname + " already present, skipping..");
+                    return;
+                }
 
                 Reference ref = new Reference();
                 ref.setName(seqname);
@@ -125,13 +135,19 @@ public class App {
 
                     if (elem.getType().equals("CDS") || elem.getType().equals("rRNA") || elem.getType().equals("tRNA")) {
                         if (genomeSeq == null) {
-                            genomeSeq = elem.getSequence().seqString();
+                            genomeSeq = elem.getSequence().seqString().toUpperCase();
                         }
 
                         Region region = new Region();
                         region.setType(elem.getType());
                         Annotation annot = elem.getAnnotation();
-                        region.setName((String) annot.getProperty("locus_tag"));
+                        if (annot.containsProperty("locus_tag")) {
+                            region.setName((String) annot.getProperty("locus_tag"));
+                        } else {
+                            System.out.println("ERROR no locus tag");
+                            System.out.println(elem);
+                            continue;
+                        }
                         if (annot.containsProperty("product")) {
                             region.setDescription((String) annot.getProperty("product"));
                         } else if (annot.containsProperty("function")) {
@@ -156,22 +172,29 @@ public class App {
                 }
 
                 if (genomeSeq == null || genomeSeq.isEmpty()) {
-                    System.err.println(fname + " NO SEQ!!!");
+                    System.out.println("No DNA sequence for " + seqname + " found in " + fname);
+                    return;
                 } else {
                     ref.setLength(genomeSeq.length());
+                    saveReference(rs.getName(), ref, regions, genomeSeq, ds);
+                    System.out.println("OK: " + seqname + "      (" + fname + ")");
+                    globalRefs.add(ref.getName());
                 }
-//
-                saveReference(rs.getName(), ref, regions, genomeSeq, conn);
             }
 
-            br.close();
         } catch (Exception ex) {
-            System.err.println(fname + ": " + ex.getMessage() + "   (" + seqname + ")");
+            System.out.println(fname + ": " + ex.getMessage() + "   (" + seqname + ")");
+        } finally {
+            try {
+                br.close();
+            } catch (IOException ex) {
+            }
         }
+
         //return ret;
     }
 
-    private static void saveReference(String accession, Reference ref, List<Region> regions, String dnaSeq, Connection conn) throws Exception {
+    private static void saveReference(String accession, Reference ref, List<Region> regions, String dnaSeq, DataSource ds) throws Exception {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(GLOBAL_DIR + accession + ".fas"))) {
             bw.append(">");
             bw.append(accession);
@@ -180,42 +203,48 @@ public class App {
             bw.newLine();
         }
         ref.setFile(GLOBAL_DIR + accession + ".fas");
-        try (PreparedStatement stmt = conn.prepareStatement(ADD_REF)) {
-            stmt.setString(1, ref.getName());
-            stmt.setInt(2, ref.getLength());
-            stmt.setString(3, ref.getFile());
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (!rs.next()) {
-                    throw new Exception("error");
+        try (Connection conn = ds.getConnection()) {
+            try (PreparedStatement stmt = conn.prepareStatement(ADD_REF)) {
+                stmt.setString(1, ref.getName());
+                stmt.setInt(2, ref.getLength());
+                stmt.setString(3, ref.getFile());
+                try (ResultSet rs = stmt.executeQuery()) {
+                    if (!rs.next()) {
+                        throw new Exception("error");
+                    }
+                    ref.setId(rs.getLong(1));
                 }
-                ref.setId(rs.getLong(1));
             }
         }
-        try (PreparedStatement stmt = conn.prepareStatement(ADD_REGION)) {
-            for (Region r : regions) {
-                stmt.setString(1, r.getName());
-                stmt.setString(2, r.getType());
-                stmt.setString(3, r.getDescription());
-                stmt.setInt(4, r.getStart());
-                stmt.setInt(5, r.getStop());
-                stmt.setLong(6, ref.getId());
-                stmt.addBatch();
+        try (Connection conn = ds.getConnection()) {
+            try (PreparedStatement stmt = conn.prepareStatement(ADD_REGION)) {
+                for (Region r : regions) {
+                    stmt.setString(1, r.getName());
+                    stmt.setString(2, r.getType());
+                    stmt.setString(3, r.getDescription());
+                    stmt.setInt(4, r.getStart());
+                    stmt.setInt(5, r.getStop());
+                    stmt.setLong(6, ref.getId());
+                    stmt.addBatch();
+                }
+                stmt.executeBatch();
             }
-            stmt.executeBatch();
         }
     }
 
-    private static List<String> listReferences(Connection conn) {
+    private static List<String> listReferences(DataSource ds) {
         List<String> ret = new ArrayList<>();
-        try (PreparedStatement stmt = conn.prepareStatement(GET_REFS)) {
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    Long id = rs.getLong(1);
-                    String name = rs.getString(2);
-                    int length = rs.getInt(3);
-                    String path = rs.getString(4);
-                    //System.out.println("id: " + String.valueOf(id) + " " + name);
-                    ret.add(name);
+        try (Connection conn = ds.getConnection()) {
+            try (PreparedStatement stmt = conn.prepareStatement(GET_REFS)) {
+                try (ResultSet rs = stmt.executeQuery()) {
+                    while (rs.next()) {
+                        Long id = rs.getLong(1);
+                        String name = rs.getString(2);
+                        int length = rs.getInt(3);
+                        String path = rs.getString(4);
+                        //System.out.println("id: " + String.valueOf(id) + " " + name);
+                        ret.add(name);
+                    }
                 }
             }
         } catch (SQLException ex) {
@@ -250,5 +279,39 @@ public class App {
         cfg.setLeakDetectionThreshold(20000); // 20 sec before in-use connection is considered leaked
 
         return new HikariDataSource(cfg);
+    }
+
+    private static String cleanupSeqName(String seqname) {
+        seqname = seqname.replaceAll("\n", " ").trim();
+        if (seqname.endsWith(", complete sequence.")) {
+            int trimPos = seqname.lastIndexOf(", complete sequence.");
+            seqname = seqname.substring(0, trimPos);
+        }
+        if (seqname.endsWith(", complete genome.")) {
+            int trimPos = seqname.lastIndexOf(", complete genome.");
+            seqname = seqname.substring(0, trimPos);
+        }
+        if (seqname.endsWith("complete genome")) {
+            int trimPos = seqname.lastIndexOf("complete genome");
+            seqname = seqname.substring(0, trimPos);
+        }
+        if (seqname.endsWith(".")) {
+            int trimPos = seqname.lastIndexOf(".");
+            seqname = seqname.substring(0, trimPos);
+        }
+        if (seqname.startsWith("[") && seqname.contains("]")) {
+            seqname = seqname.substring(1); // [
+            seqname = seqname.replaceFirst("]", "");
+        }
+        seqname = seqname.replaceAll(" complete sequence", "");
+        seqname = seqname.replaceAll(", complete genome", "");
+        seqname = seqname.replaceAll(" complete genome", "");
+        seqname = seqname.replaceAll(" genome assembly", "");
+        seqname = seqname.replaceAll(" :", ":");
+        while (seqname.contains("  ")) {
+            seqname = seqname.replaceAll("  ", " ");
+        }
+
+        return seqname;
     }
 }
