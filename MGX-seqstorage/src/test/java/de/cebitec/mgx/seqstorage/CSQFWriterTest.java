@@ -42,6 +42,59 @@ public class CSQFWriterTest {
     }
 
     @Test
+    public void testCSQRegression() throws Exception {
+        System.out.println("testCSQRegression");
+        File f = TestInput.copyTestResource(getClass(), "de/cebitec/mgx/seqstorage/csq_regression.fq");
+        File target = File.createTempFile("testCSQRegression", "xx");
+        target.delete();
+        try (FASTQReader fr = new FASTQReader(f.getAbsolutePath(), false)) {
+            try (CSQFWriter csq = new CSQFWriter(target)) {
+                assertTrue(fr.hasMoreElements());
+                DNAQualitySequenceI holder = fr.nextElement();
+                assertNotNull(holder);
+                byte[] seq = holder.getSequence();
+                byte[] qual = holder.getQuality();
+
+                assertEquals("length of sequence and qualities must not differ", seq.length, qual.length);
+                assertEquals("GAGAGGGGAGGGAGAGGGAAAGAGAAGAGAAAGAAGGGGAGAGAGGGGGGGGGGGAAGAGGAAAGAGAAG"
+                        + "TGAAAGAGAAGGAGAGAAGGGAGAGGGGAGGGGGAGAGAGAGGAGGGAAAAGAGGAGAGGAGGACGAGAGGAGA"
+                        + "AGGCGAAGAACGAGAAAAAGGAGGAGAGGAGGAAGAGGTAAGATGGAGGCAGAGGGAAAAGAGAAGGAGAGGAG"
+                        + "GGAGAGTGAAGATGGCGTCAGACGTGAAAGAGTAAGATAGTACGGCCCGTTCATATGATCACCTACGTCCGACT"
+                        + "CTACGATTGTATGACCCGTTCATATGGTCAACTACCTCAAACACTCTGATATCACGGCCCCTTCATATGCCCTC"
+                        + "CTACATTCTACACTATGTTACTACTGCCCGTTCTTCTGCCCTCCTACATCCCACCATACGATTCTATTCCCCCT"
+                        + "TTCTTTTTCCTCCTCCCTCCCCCACTCCTATTCTCTCACCCCTTCTTTTTTCCCCCTTTCTCCCTCTCTCTCCT"
+                        + "TTTCCCCCCCCTTCCTATCCCCTCCCTCCTCCCCCTCTTTC", new String(seq));
+                csq.addSequence(holder);
+            }
+        } catch (SeqStoreException ex) {
+            fail(ex.getMessage());
+        }
+
+        // read from CSQ
+        try (CSQFReader reader = new CSQFReader(target.getAbsolutePath(), false)) {
+            assertTrue(reader.hasMoreElements());
+            DNAQualitySequenceI qseq = reader.nextElement();
+            assertNotNull(qseq);
+            assertEquals(qseq.getSequence().length, qseq.getQuality().length);
+            assertEquals("GAGAGGGGAGGGAGAGGGAAAGAGAAGAGAAAGAAGGGGAGAGAGGGGGGGGGGGAAGAGGAAAGAGAAG"
+                    + "TGAAAGAGAAGGAGAGAAGGGAGAGGGGAGGGGGAGAGAGAGGAGGGAAAAGAGGAGAGGAGGACGAGAGGAGA"
+                    + "AGGCGAAGAACGAGAAAAAGGAGGAGAGGAGGAAGAGGTAAGATGGAGGCAGAGGGAAAAGAGAAGGAGAGGAG"
+                    + "GGAGAGTGAAGATGGCGTCAGACGTGAAAGAGTAAGATAGTACGGCCCGTTCATATGATCACCTACGTCCGACT"
+                    + "CTACGATTGTATGACCCGTTCATATGGTCAACTACCTCAAACACTCTGATATCACGGCCCCTTCATATGCCCTC"
+                    + "CTACATTCTACACTATGTTACTACTGCCCGTTCTTCTGCCCTCCTACATCCCACCATACGATTCTATTCCCCCT"
+                    + "TTCTTTTTCCTCCTCCCTCCCCCACTCCTATTCTCTCACCCCTTCTTTTTTCCCCCTTTCTCCCTCTCTCTCCT"
+                    + "TTTCCCCCCCCTTCCTATCCCCTCCCTCCTCCCCCTCTTTC", new String(qseq.getSequence()));
+            assertFalse(reader.hasMoreElements());
+        }
+
+        f.delete();
+        try {
+            new CSQFReader(target.getAbsolutePath(), false).delete();
+        } catch (SeqStoreException ex) {
+        }
+    }
+
+    @Test
     public void testCSQFWriter() throws Exception {
         System.out.println("testCSQFWriter");
         File f = TestInput.copyTestResource(getClass(), "de/cebitec/mgx/seqstorage/sample_1.fq");
