@@ -24,6 +24,15 @@ public class ByteUtils {
         return bytesToLong(b, 0);
     }
 
+    public static int indexOf(byte[] in, byte separator) {
+        for (int i = 0; i <= in.length - 1; i++) {
+            if (in[i] == separator) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     public static long bytesToLong(byte[] b, int startIdx) {
         long offset = 0;
         for (int i = startIdx; i < 8 + startIdx; i++) {
