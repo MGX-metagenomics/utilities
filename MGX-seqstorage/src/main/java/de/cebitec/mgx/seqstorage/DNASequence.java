@@ -10,7 +10,7 @@ import de.cebitec.mgx.sequence.SeqStoreException;
 public class DNASequence implements DNASequenceI {
 
     private byte[] name = null;
-    private byte[] sequence = null;
+    private byte[] dnasequence = null;
     private long id;
 
     public DNASequence() {
@@ -43,12 +43,14 @@ public class DNASequence implements DNASequenceI {
 
     @Override
     public final byte[] getSequence() {
-        return sequence;
+        return dnasequence;
     }
 
     @Override
-    public void setSequence(byte[] dnasequence) throws SeqStoreException {
-        
+    public void setSequence(byte[] sequence) throws SeqStoreException {
+        dnasequence = new byte[sequence.length];
+        System.arraycopy(sequence, 0, dnasequence, 0, sequence.length);
+
         // validate nucleotide sequence, convert to uppercase if necessary
         for (int i = 0; i < dnasequence.length; i++) {
             switch (dnasequence[i]) {
@@ -117,7 +119,5 @@ public class DNASequence implements DNASequenceI {
                     throw new SeqStoreException("Illegal nucleotide " + dnasequence[i] + " at position " + i + " of sequence " + new String(getName()));
             }
         }
-        sequence = new byte[dnasequence.length];
-        System.arraycopy(dnasequence, 0, sequence, 0, dnasequence.length);
     }
 }
