@@ -87,7 +87,7 @@ public class FourBitEncoder {
 
         return encoded;
     }
-    
+
     public static byte[] decode(byte[] enc) {
 
         int dec_len = enc.length * 2;
@@ -110,5 +110,18 @@ public class FourBitEncoder {
         }
 
         return decoded;
+    }
+
+    public static long decodeLength(byte[] enc) {
+        if (enc == null || enc.length == 0) {
+            return 0;
+        }
+
+        long dec_len = enc.length * 2;
+        // decoded sequence length is odd
+        if ((enc[enc.length - 1] & 0x0F) == 0x0) {
+            dec_len--;
+        }
+        return dec_len;
     }
 }
