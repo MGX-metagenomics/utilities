@@ -165,13 +165,13 @@ public class CSFReader implements SeqReaderI<DNASequenceI> {
                 }
                 raf.seek(offset);
                 bytesRead = raf.read(buf);
-                while (-1 == getSeparatorPos(buf, FourBitEncoder.RECORD_SEPARATOR) && bytesRead != -1) {
+                while (-1 == ByteUtils.indexOf(buf, FourBitEncoder.RECORD_SEPARATOR) && bytesRead != -1) {
                     byte newbuf[] = new byte[buf.length * 2];
                     System.arraycopy(buf, 0, newbuf, 0, buf.length);
                     bytesRead = raf.read(newbuf, buf.length, buf.length);
                     buf = newbuf;
                 }
-                int sepPos = getSeparatorPos(buf, FourBitEncoder.RECORD_SEPARATOR);
+                int sepPos = ByteUtils.indexOf(buf, FourBitEncoder.RECORD_SEPARATOR);
                 byte[] encoded = ByteUtils.substring(buf, 0, sepPos - 1);
 
                 DNASequenceI seq = new DNASequence(id);
@@ -186,15 +186,6 @@ public class CSFReader implements SeqReaderI<DNASequenceI> {
             throw new SeqStoreException("Could not retrieve all sequences.");
         }
         return result;
-    }
-
-    private int getSeparatorPos(byte[] in, byte separator) {
-        for (int i = 0; i <= in.length - 1; i++) {
-            if (in[i] == separator) {
-                return i;
-            }
-        }
-        return -1;
     }
 
     @Override

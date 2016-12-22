@@ -167,32 +167,40 @@ public class CSQFReader implements SeqReaderI<DNAQualitySequenceI> {
         }
     }
 
-    private int getSeparatorPos(byte[] in, byte separator) {
-        for (int i = 0; i <= in.length - 1; i++) {
-            if (in[i] == separator) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
     private DNAQualitySequenceI getEntry(long id, long offset) throws IOException, SeqStoreException {
         raf.seek(offset);
         byte[] buf = new byte[600];
         int bytesRead = raf.read(buf);
         int sepPos;
-        while ((sepPos = getSeparatorPos(buf, FourBitEncoder.RECORD_SEPARATOR)) == -1 && bytesRead != -1 && buf.length < sepPos * 3 + 1) {
-            byte newbuf[] = new byte[buf.length * 2];
+        
+        // double buffer size until we 
+        //   * encounter the record separator,
+        //   * reach EOF,
+        //   * 
+        while ((sepPos = ByteUtils.indexOf(buf, FourBitEncoder.RECORD_SEPARATOR)) == -1 && bytesRead != -1 && buf.length < sepPos * 3 + 1) {
+            byte[] newbuf = new byte[buf.length * 2];
             System.arraycopy(buf, 0, newbuf, 0, buf.length);
             bytesRead = raf.read(newbuf, buf.length, buf.length);
             buf = newbuf;
         }
-        byte[] encoded = ByteUtils.substring(buf, 0, sepPos - 1);
-        byte[] decoded = FourBitEncoder.decode(encoded);
-        byte[] quality = ByteUtils.substring(buf, sepPos + 1, (int) (decoded.length * buf[sepPos + 1] / 8.0 + 2.9) + sepPos);
+
+        byte[] encodedSeq = ByteUtils.substring(buf, 0, sepPos - 1);
+        byte[] decodedSeq = FourBitEncoder.decode(encodedSeq);
+        long decodedSeqLen = FourBitEncoder.decodeLength(encodedSeq);
+        
+        int encodedQualLen = (int) Math.ceil(decodedSeqLen * buf[sepPos + 1] / 8.0 + 2);
+        
+        // encoded quality exceeds buffer, need to read more..
+        if (sepPos + encodedQualLen + 1 > buf.length) {
+            byte[] newbuf = new byte[sepPos + encodedQualLen + 1];
+            System.arraycopy(buf, 0, newbuf, 0, buf.length);
+            raf.read(newbuf, buf.length, sepPos + encodedQualLen - buf.length + 2);
+            buf = newbuf;
+        }
+        byte[] quality = ByteUtils.substring(buf, sepPos + 1, sepPos + encodedQualLen);
 
         QualityDNASequence seq = new QualityDNASequence(id);
-        seq.setSequence(decoded);
+        seq.setSequence(decodedSeq);
         seq.setQuality(QualityEncoder.decode(quality));
         return seq;
     }
