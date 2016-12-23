@@ -134,7 +134,7 @@ public class ByteStreamTokenizer implements Iterator<byte[]> {
     }
 
     private int getSeparatorPos(int start, int end) {
-        for (int i = start; i <= end - 1; i++) {
+        for (int i = start; i < end; i++) {
             if (buffer[i] == separator) {
                 return i;
             }
