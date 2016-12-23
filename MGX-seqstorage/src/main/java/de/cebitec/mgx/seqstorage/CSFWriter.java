@@ -21,6 +21,7 @@ public class CSFWriter implements SeqWriterI<DNASequenceI> {
     private final OutputStream nameout;
     private long seqout_offset;
     private final String fname;
+    private final byte[] nmsRecord = new byte[16];
 
     public CSFWriter(File file) throws IOException, SeqStoreException {
         this(file.getCanonicalPath());
@@ -64,10 +65,8 @@ public class CSFWriter implements SeqWriterI<DNASequenceI> {
         }
         try {
             // save sequence id and offset
-            byte[] id = ByteUtils.longToBytes(seq.getId());
-            byte[] encoded_offset = ByteUtils.longToBytes(seqout_offset);
-            nameout.write(id);
-            nameout.write(encoded_offset);
+            ByteUtils.longsToBytes(seq.getId(), seqout_offset, nmsRecord);
+            nameout.write(nmsRecord);
 
             // encode sequence and write to seqout
             byte[] encoded = FourBitEncoder.encode(seq.getSequence());

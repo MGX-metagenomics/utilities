@@ -37,7 +37,7 @@ public class NMSReader {
 
     private void readRequired(long id) throws IOException {
         while (16 == nmsStream.read(buf)) {
-            long curId = ByteUtils.bytesToLong(buf, 0);
+            long curId = ByteUtils.bytesToLong(buf);
             long offset = ByteUtils.bytesToLong(buf, 8);
             idx.put(curId, offset);
 
