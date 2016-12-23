@@ -129,7 +129,7 @@ public class CSQFReader implements SeqReaderI<DNAQualitySequenceI> {
             }
 
             // extract sequence id and convert
-            long sequence_id = ByteUtils.bytesToLong(record, 0);
+            long sequence_id = ByteUtils.bytesToLong(record);
             holder = getEntry(sequence_id, ByteUtils.bytesToLong(record, 8));
             return true;
         } catch (IOException ex) {
