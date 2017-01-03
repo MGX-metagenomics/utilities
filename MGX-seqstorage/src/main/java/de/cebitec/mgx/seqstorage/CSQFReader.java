@@ -129,7 +129,7 @@ public class CSQFReader implements SeqReaderI<DNAQualitySequenceI> {
             }
 
             // extract sequence id and convert
-            long sequence_id = ByteUtils.bytesToLong(record, 0);
+            long sequence_id = ByteUtils.bytesToLong(record);
             holder = getEntry(sequence_id, ByteUtils.bytesToLong(record, 8));
             return true;
         } catch (IOException ex) {
@@ -167,23 +167,17 @@ public class CSQFReader implements SeqReaderI<DNAQualitySequenceI> {
         }
     }
 
-    private int getSeparatorPos(byte[] in, byte separator) {
-        for (int i = 0; i <= in.length - 1; i++) {
-            if (in[i] == separator) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
     private DNAQualitySequenceI getEntry(long id, long offset) throws IOException, SeqStoreException {
         raf.seek(offset);
         byte[] buf = new byte[600];
         int bytesRead = raf.read(buf);
         int sepPos;
-        //sepPos + 1: position next to sepPos must be accessible
-        while ((sepPos = getSeparatorPos(buf, FourBitEncoder.RECORD_SEPARATOR)) == -1 && bytesRead != -1 && buf.length < sepPos + 1) {
-            byte newbuf[] = new byte[buf.length * 2];
+        // double buffer size until we 
+        //   * encounter the record separator,
+        //   * reach EOF,
+        //   * 
+        while ((sepPos = ByteUtils.indexOf(buf, FourBitEncoder.RECORD_SEPARATOR)) == -1 && bytesRead != -1 && buf.length < sepPos + 1) {
+            byte[] newbuf = new byte[buf.length * 2];
             System.arraycopy(buf, 0, newbuf, 0, buf.length);
             bytesRead = raf.read(newbuf, buf.length, buf.length);
             buf = newbuf;
