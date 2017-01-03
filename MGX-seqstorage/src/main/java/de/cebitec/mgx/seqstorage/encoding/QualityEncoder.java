@@ -1,7 +1,6 @@
 package de.cebitec.mgx.seqstorage.encoding;
 
 import de.cebitec.mgx.sequence.SeqStoreException;
-import java.util.Arrays;
 import org.apache.commons.math3.util.FastMath;
 
 /**
@@ -9,99 +8,127 @@ import org.apache.commons.math3.util.FastMath;
  * @author Patrick Blumenkamp
  */
 public class QualityEncoder {
+
+    /**
+     * Decodes encoded qualities into quality array.
+     *
+     * @param encodedQualities Encoded Sanger qualities
+     * @param decodedQualityLength Length of decoded qualities (should be equal
+     * to sequence length)
+     * @return Qualities in Sanger format
+     */
+    public static byte[] decode(byte[] encodedQualities, int decodedQualityLength) {
+        if (encodedQualities.length == 2) {
+            return new byte[0];
+        }
+        byte encodedSize = encodedQualities[0]; //bit size per quality
+        byte minValue = encodedQualities[1];    //offset of each value
+        byte[] decoded = new byte[decodedQualityLength];
+        int decodedPos = 0;
+        RingBuffer bitBuffer = new RingBuffer(15);
         
-    public static byte[] decode(byte[] encoded) {
-        byte encodedSize = encoded[0];
-        byte minValue = encoded[1];
-        byte[] decoded = new byte[(encoded.length-2)*8/encodedSize];
-        byte decodedPos = 0;
-        byte bytePos = 0;
-        byte[] bitBuffer = new byte[14];
-        
-        for (int i=2; i < encoded.length; i++) {            
-            byte currentByte = encoded[i];            
-            for (int j = bytePos+7; j >= bytePos; j--) {                    
-                bitBuffer[j] = (byte) (currentByte&1);
-                currentByte = (byte) (currentByte >> 1);
+        for (int i = 2; i < encodedQualities.length; i++) {
+            //write next byte into bit buffer
+            byte currentByte = encodedQualities[i];
+            for (int j = 0; j < 8; j++) {
+                bitBuffer.add((byte) (((currentByte & -128) == -128) ? 1 : 0)); // -128 == 10000000
+                currentByte = (byte) (currentByte << 1);
             }
-            
-            bytePos += 8;
-            
-            while(bytePos >= encodedSize){
-                byte k = bitBuffer[0];                
-                for(int j=1; j<encodedSize; j++){
+
+            //if bit buffer contains a whole quality entry, write quality value in array
+            while (bitBuffer.getUnreadLength() >= encodedSize) {
+                byte k = bitBuffer.next();
+                for (int j = 1; j < encodedSize; j++) {
                     k = (byte) (k << 1);
-                    k = (byte) (bitBuffer[j]|k);                    
+                    k = (byte) (bitBuffer.next() | k);
                 }
-                
-                //empty entry (padding)
-                if (k == 0){                    
-                    decoded = Arrays.copyOfRange(decoded, 0, decodedPos);
+
+                //if entry is empty (padding) all entries were read
+                if (k == 0) {
                     return decoded;
-                } //empty entry (padding)
-                
-                decoded[decodedPos++] = (byte) (k+minValue);
-                System.arraycopy(bitBuffer, encodedSize, bitBuffer, 0, 14-encodedSize);
-                bytePos -= encodedSize;
+                }
+
+                decoded[decodedPos++] = (byte) (k + minValue);
             }
         }
-        
+
         return decoded;
     }
 
+    /**
+     * Encodes qualities into compressed quality array. Algorithm calculates min
+     * and max value and calculates the range between both values. Each quality
+     * is saved in ceil(log_2(max-min+1)) bits. The first to bytes are reserved
+     * for bit-size of the qualities and the minimal quality-1.
+     *
+     * @param quality Qualities in Sanger format
+     * @return Encoded qualities
+     * @throws SeqStoreException Is thrown if qualities are not in Sanger format
+     * (Qualities bigger than 93 or smaller than 0)
+     */
     public static byte[] encode(byte[] quality) throws SeqStoreException {
+        if (quality.length == 0) {
+            return new byte[]{0, 0};
+        }
         int max = quality[0];
         int min = quality[0];
         for (int i = 1; i < quality.length; i++) {
-            max = (max < quality[i]) ? quality[i] : max;
-            min = (min > quality[i]) ? quality[i] : min;
+            if (max < quality[i]) {
+                max = quality[i];
+            } else if (min > quality[i]) {
+                min = quality[i];
+            }
         }
-        
-        if (max > 93 || min < 0) //biggest possible phred values in sanger format
-            throw new SeqStoreException("Qualities in no valid Sanger format");
-        
-        min--;              //value 0 is used for padding
-        max = max-min;
-        byte compressedSize = (byte) (FastMath.log(max)/FastMath.log(2)+1);
 
-        int encodedSize = (int) (quality.length*compressedSize/8.0+2.9);        
-        byte[] encoded = new byte[encodedSize];
+        if (max > 93 || min < 0) //biggest possible phred values in sanger format
+        {
+            throw new SeqStoreException("Qualities in no valid Sanger format");
+        }
+
+        min--;              //value 0 is used for padding
+        max = max - min;
+        byte compressedSize = (byte) Math.ceil(FastMath.log(max+1) / FastMath.log(2)); //needed bits for each quality (compressedSize must be 4 with max equals 8)
+
+        //size of the encoded quality array
+        //length * size per quality / bit per byte + 2 index bytes at the beginning
+        int encodedArraySize = (int) Math.ceil(quality.length * compressedSize / 8.0 + 2);
+        byte[] encoded = new byte[encodedArraySize];
         encoded[0] = compressedSize;
         encoded[1] = (byte) min;
-        byte[] bitBuffer = new byte[14];
+        RingBuffer bitBuffer = new RingBuffer(15);
         int resultPos = 2;
-        int bytePos = 0;
-        for (int i=0; i<quality.length; i++){
-            byte currentByte = (byte) (quality[i]-min);
-            for (int j=bytePos+compressedSize-1; j>=bytePos; j--){
-                bitBuffer[j] = (byte) (currentByte&1);
-                currentByte = (byte) (currentByte >> 1);
+        for (int i = 0; i < quality.length; i++) {
+            byte currentByte = (byte) (quality[i] - min);
+            currentByte = (byte) (currentByte << 8 - compressedSize);   //first 8 minus compressedSize bits must be zero
+            //fill bit buffer with next value
+            for (int j = 0; j < compressedSize; j++) {
+                bitBuffer.add((byte) (((currentByte & -128) == -128) ? 1 : 0)); // -128 == 10000000
+                currentByte = (byte) (currentByte << 1);
             }
-            bytePos += compressedSize;
-            
-            if(bytePos > 7){
-                byte k = bitBuffer[0];
-                for(int j=1; j<8; j++){
+
+            //if a whole byte is in bit buffer, write it in encoded quality array
+            if (bitBuffer.getUnreadLength() > 7) {
+                byte k = bitBuffer.next();
+                for (int j = 0; j < 7; j++) {
                     k = (byte) (k << 1);
-                    k = (byte) (bitBuffer[j]|k);                    
+                    k = (byte) (bitBuffer.next() | k);
                 }
                 encoded[resultPos++] = k;
-                System.arraycopy(bitBuffer, 8, bitBuffer, 0, 6);
-                bytePos -= 8;
             }
         }
-        if(bytePos != 0){
-            for (int j=bytePos; j<8;j++)
-                bitBuffer[j] = 0;
-            
-            byte k = bitBuffer[0];
-            for(int j=1; j<8; j++){
+        //flush bit buffer
+        if (!bitBuffer.empty()) {
+            byte k = bitBuffer.next();
+            int paddingCount = 7 - bitBuffer.getUnreadLength();
+            while (!bitBuffer.empty()) {
                 k = (byte) (k << 1);
-                k = (byte) (bitBuffer[j]|k);                    
+                k = (byte) (bitBuffer.next() | k);
             }
-            encoded[resultPos++] = k;            
+            k = (byte) (k << paddingCount);
+            encoded[resultPos++] = k;
         }
-        
+
         return encoded;
     }
+
 }
