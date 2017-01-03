@@ -181,19 +181,36 @@ public class CSQFReader implements SeqReaderI<DNAQualitySequenceI> {
         byte[] buf = new byte[600];
         int bytesRead = raf.read(buf);
         int sepPos;
-        while ((sepPos = getSeparatorPos(buf, FourBitEncoder.RECORD_SEPARATOR)) == -1 && bytesRead != -1 && buf.length < sepPos * 3 + 1) {
+        //sepPos + 1: position next to sepPos must be accessible
+        while ((sepPos = getSeparatorPos(buf, FourBitEncoder.RECORD_SEPARATOR)) == -1 && bytesRead != -1 && buf.length < sepPos + 1) {
             byte newbuf[] = new byte[buf.length * 2];
             System.arraycopy(buf, 0, newbuf, 0, buf.length);
             bytesRead = raf.read(newbuf, buf.length, buf.length);
             buf = newbuf;
         }
-        byte[] encoded = ByteUtils.substring(buf, 0, sepPos - 1);
-        byte[] decoded = FourBitEncoder.decode(encoded);
-        byte[] quality = ByteUtils.substring(buf, sepPos + 1, (int) (decoded.length * buf[sepPos + 1] / 8.0 + 2.9) + sepPos);
+        if (sepPos != 0) {
+            byte[] encoded = ByteUtils.substring(buf, 0, sepPos - 1);
+            byte[] decoded = FourBitEncoder.decode(encoded);
+            int encodedQualLen = (int) Math.ceil(decoded.length * buf[sepPos + 1] / 8.0 + 2);
+            if (sepPos + encodedQualLen + 1 > buf.length) {
+                byte newbuf[] = new byte[sepPos + encodedQualLen + 1];
+                System.arraycopy(buf, 0, newbuf, 0, buf.length);
+                raf.read(newbuf, buf.length, sepPos + encodedQualLen - buf.length + 2);
+                buf = newbuf;
+            }
+            byte[] quality = ByteUtils.substring(buf, sepPos + 1, sepPos + encodedQualLen);
 
-        QualityDNASequence seq = new QualityDNASequence(id);
-        seq.setSequence(decoded);
-        seq.setQuality(QualityEncoder.decode(quality));
-        return seq;
+            QualityDNASequence seq = new QualityDNASequence(id);
+            seq.setSequence(decoded);
+            seq.setQuality(QualityEncoder.decode(quality, decoded.length));
+            return seq;
+        } else {
+            byte[] sequence = new byte[0];
+            byte[] quality = new byte[0];
+            QualityDNASequence seq = new QualityDNASequence(id);
+            seq.setSequence(sequence);
+            seq.setQuality(quality);
+            return seq;
+        }
     }
 }

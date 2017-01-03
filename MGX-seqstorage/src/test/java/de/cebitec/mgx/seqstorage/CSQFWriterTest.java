@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.junit.*;
 import static org.junit.Assert.*;
-import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Configuration;
 import static org.ops4j.pax.exam.CoreOptions.bundle;
 import static org.ops4j.pax.exam.CoreOptions.junitBundles;
@@ -16,7 +15,6 @@ import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
 import static org.ops4j.pax.exam.CoreOptions.systemProperty;
 import org.ops4j.pax.exam.Option;
-import org.ops4j.pax.exam.junit.PaxExam;
 
 /**
  *
@@ -126,6 +124,48 @@ public class CSQFWriterTest {
         System.out.println("testCSQFReader");
         File f = TestInput.copyTestResource(getClass(), "de/cebitec/mgx/seqstorage/sample_1.fq");
         File target = File.createTempFile("testCSQFReader", "");
+        target.delete();
+        List<DNAQualitySequenceI> writer = new ArrayList<>();
+        try (FASTQReader fr = new FASTQReader(f.getAbsolutePath(), false)) {
+            try (CSQFWriter csq = new CSQFWriter(target)) {
+                while (fr.hasMoreElements()) {
+                    DNAQualitySequenceI holder = fr.nextElement();
+                    assertNotNull(holder);
+                    assertNotNull(holder.getSequence());
+                    csq.addSequence(holder);
+                    writer.add(holder);
+                }
+            }
+            List<DNAQualitySequenceI> reader = new ArrayList<>();
+            try (CSQFReader r = new CSQFReader(target.getAbsolutePath(), false)) {
+                int i = 0;
+                while (r.hasMoreElements()) {
+                    DNAQualitySequenceI s = r.nextElement();
+                    reader.add(s);
+                    assertNotNull(s);
+                    String seq = new String(s.getSequence());
+                    // all sequences have to be uppercase
+                    assertEquals(seq.toUpperCase(), seq);
+                }
+                r.delete();
+            }
+            for (int i = 0; i < writer.size(); i++) {
+                Assert.assertArrayEquals(writer.get(i).getSequence(), reader.get(i).getSequence());
+                Assert.assertArrayEquals(writer.get(i).getQuality(), reader.get(i).getQuality());
+            }
+
+        } catch (SeqStoreException ex) {
+            fail(ex.getMessage());
+        } finally {
+            target.delete();
+            f.delete();
+        }
+    }
+    
+    @Test
+    public void testWithEmptySequence() throws Exception {
+        File f = TestInput.copyTestResource(getClass(), "de/cebitec/mgx/seqstorage/sampleWithEmptyEntry.fq");
+        File target = File.createTempFile("testWithEmptySequence", "");
         target.delete();
         List<DNAQualitySequenceI> writer = new ArrayList<>();
         try (FASTQReader fr = new FASTQReader(f.getAbsolutePath(), false)) {
