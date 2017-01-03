@@ -26,7 +26,7 @@ public class QualityEncoder {
         byte[] decoded = new byte[decodedQualityLength];
         int decodedPos = 0;
         RingBuffer bitBuffer = new RingBuffer(15);
-        
+
         for (int i = 2; i < encodedQualities.length; i++) {
             //write next byte into bit buffer
             byte currentByte = encodedQualities[i];
@@ -87,7 +87,7 @@ public class QualityEncoder {
 
         min--;              //value 0 is used for padding
         max = max - min;
-        byte compressedSize = (byte) Math.ceil(FastMath.log(max+1) / FastMath.log(2)); //needed bits for each quality (compressedSize must be 4 with max equals 8)
+        byte compressedSize = (byte) Math.ceil(FastMath.log(max + 1) / FastMath.log(2)); //needed bits for each quality (compressedSize must be 4 with max equals 8)
 
         //size of the encoded quality array
         //length * size per quality / bit per byte + 2 index bytes at the beginning

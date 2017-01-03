@@ -66,7 +66,7 @@ public class RingBuffer<T> {
         return Arrays.copyOf(buf, buf.length);
     }
 
-    private final class RingIterator<T> implements Iterator<T> {
+    private final static class RingIterator<T> implements Iterator<T> {
 
         private int curPos = 0;
         private final T[] b;
