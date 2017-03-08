@@ -45,6 +45,7 @@
         <module>JOGL-OSGi</module>
         <module>Prefuse-OSGi</module>
         <module>jCharts-OSGi</module>
+        <module>MGX-StreamLogger</module>
     </modules>
     
     <build>
