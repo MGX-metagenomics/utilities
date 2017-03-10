@@ -21,12 +21,12 @@ import javax.ws.rs.ext.Provider;
 public class PBReader implements MessageBodyReader<Message> {
 
     @Override
-    public boolean isReadable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
+    public final boolean isReadable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
         return Message.class.isAssignableFrom(type);
     }
 
     @Override
-    public Message readFrom(Class<Message> type, Type genericType, Annotation[] annotations,
+    public final Message readFrom(Class<Message> type, Type genericType, Annotation[] annotations,
             MediaType mediaType, MultivaluedMap<String, String> httpHeaders,
             InputStream entityStream) throws IOException, WebApplicationException {
         try {
