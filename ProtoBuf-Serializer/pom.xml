@@ -23,7 +23,12 @@
                 <configuration>
                     <instructions>
                         <Export-Package>de.cebitec.mgx.protobuf.serializer</Export-Package>
-                        <Private-Package>de.cebitec.mgx.protobuf.serializer.*</Private-Package>
+                         <Import-Package>
+                            javax.ws.rs,
+                            javax.ws.rs.core,
+                            javax.ws.rs.ext,
+                            com.google.protobuf
+                        </Import-Package>
                     </instructions>
                 </configuration>
             </plugin>
