@@ -46,6 +46,7 @@
         <module>Prefuse-OSGi</module>
         <module>jCharts-OSGi</module>
         <module>MGX-StreamLogger</module>
+        <module>MGX-dispatcher-common</module>
     </modules>
     
     <build>
