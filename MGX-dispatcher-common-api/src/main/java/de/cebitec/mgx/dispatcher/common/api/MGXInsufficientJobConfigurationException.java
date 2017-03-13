@@ -1,4 +1,6 @@
-package de.cebitec.mgx.dispatcher.common;
+package de.cebitec.mgx.dispatcher.common.api;
+
+import de.cebitec.mgx.dispatcher.common.api.MGXDispatcherException;
 
 
 /**

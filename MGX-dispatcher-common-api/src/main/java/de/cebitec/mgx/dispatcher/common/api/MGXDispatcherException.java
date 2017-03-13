@@ -1,4 +1,4 @@
-package de.cebitec.mgx.dispatcher.common;
+package de.cebitec.mgx.dispatcher.common.api;
 
 /**
  *
