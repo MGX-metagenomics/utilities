@@ -2,8 +2,6 @@ package de.cebitec.mgx.admin;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import de.cebitec.mgx.model.db.Reference;
-import de.cebitec.mgx.model.db.Region;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.Console;
@@ -14,7 +12,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Reader;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

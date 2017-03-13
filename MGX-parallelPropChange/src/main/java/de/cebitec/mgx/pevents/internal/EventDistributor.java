@@ -41,19 +41,20 @@ public class EventDistributor implements Runnable, AutoCloseable {
 
     @Override
     public void run() {
-        try {
-            while (!exit) {
-                AccumulatedEvent aEvent = in.poll(500, TimeUnit.MILLISECONDS);
-                if (aEvent != null) {
-                    PropertyChangeListener[] listeners = aEvent.getListeners();
-                    for (PropertyChangeListener pcl : listeners) {
-                        DistributionEvent dEvent = new DistributionEvent(aEvent, pcl);
-                        out.add(dEvent);
-                    }
+        while (!(exit && in.isEmpty())) {
+            AccumulatedEvent aEvent = null;
+            try {
+                aEvent = in.poll(500, TimeUnit.MILLISECONDS);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(EventDistributor.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            if (aEvent != null) {
+                PropertyChangeListener[] listeners = aEvent.getListeners();
+                for (PropertyChangeListener pcl : listeners) {
+                    DistributionEvent dEvent = new DistributionEvent(aEvent, pcl);
+                    out.add(dEvent);
                 }
             }
-        } catch (InterruptedException ex) {
-            Logger.getLogger(EventDistributor.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

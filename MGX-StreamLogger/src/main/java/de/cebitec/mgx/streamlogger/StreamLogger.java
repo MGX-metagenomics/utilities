@@ -40,8 +40,12 @@ public class StreamLogger extends Thread {
             while ((line = br.readLine()) != null) {
                 if (!line.isEmpty()) 
                     logger.log(Level.INFO, line);
+                if (Thread.interrupted()) {
+                    return;
+                }
             }
         } catch (IOException ioe) {
+            System.err.println(ioe);
         }
     }
 }

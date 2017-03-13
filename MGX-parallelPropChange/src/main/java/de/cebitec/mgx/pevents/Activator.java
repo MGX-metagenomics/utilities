@@ -18,7 +18,7 @@ public class Activator implements BundleActivator {
 
     private static long numDirect = 0;
     private static long numThreaded = 0;
-    private final static boolean DUMP_STATS = false;
+    private final static boolean DUMP_STATS = true;
 
     @Override
     public void start(BundleContext context) throws Exception {

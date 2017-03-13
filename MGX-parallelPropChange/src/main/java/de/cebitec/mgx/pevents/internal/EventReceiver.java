@@ -30,7 +30,7 @@ public class EventReceiver implements Runnable {
 
     @Override
     public void run() {
-        while (!exit) {
+        while (!(exit && in.isEmpty())) {
             DistributionEvent dEvent = null;
             try {
                 dEvent = in.poll(500, TimeUnit.MILLISECONDS);
@@ -51,13 +51,13 @@ public class EventReceiver implements Runnable {
                     }
                 } else {
                     long start = System.currentTimeMillis();
-                    //Logger.getLogger(getClass().getName()).log(Level.INFO, "Delivering event {0} to target {1} on thread {2}", new Object[]{event, target.getClass().getSimpleName(), Thread.currentThread().getName()});
+//                    Logger.getLogger(getClass().getName()).log(Level.INFO, "Delivering event {0} to target {1} on thread {2}", new Object[]{event, target.getClass().getSimpleName(), Thread.currentThread().getName()});
                     distributor.acquireBusyLock();
                     target.propertyChange(event);
                     distributor.releaseBusyLock();
                     start = System.currentTimeMillis() - start;
                     if (start >= 100) {
-                        Logger.getLogger(getClass().getName()).log(Level.INFO, "Slow processing of propertyChange {0} ({1} ms) for target {2} on thread {3}", new Object[]{event.getPropertyName(), start, target.toString(), Thread.currentThread().getName()});
+                        Logger.getLogger(getClass().getName()).log(Level.INFO, "Slow processing of propertyChange {0} ({1} ms) from {2} to target {3} on thread {4}", new Object[]{event.getPropertyName(), start, event.getSource(), target.toString(), Thread.currentThread().getName()});
                     }
                 }
                 dEvent.delivered();
