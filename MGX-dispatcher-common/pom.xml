@@ -11,7 +11,7 @@
     <groupId>de.cebitec.mgx</groupId>
     <artifactId>MGX-dispatcher-common</artifactId>
     <version>1.0</version>
-    <packaging>jar</packaging>
+    <packaging>ejb</packaging>
 
     <name>MGX-dispatcher-common</name>
 
