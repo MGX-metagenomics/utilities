@@ -7,6 +7,8 @@ language: java
 
 dist: trusty
 
+sudo: false
+
 jdk: oraclejdk8
 
 branches:
@@ -16,6 +18,10 @@ branches:
 cache:
   directories:
   - $HOME/.m2
+
+before_install:
+  - sudo apt-get update -qq
+  - sudo apt-get install -qq protobuf-compiler
 
 script:
   - mvn clean install
