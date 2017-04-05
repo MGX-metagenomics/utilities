@@ -30,6 +30,9 @@
                 <configuration>
                     <instructions>
                         <Export-Package>de.cebitec.mgx.dto</Export-Package>
+                        <Import-Package>
+                            com.google.protobuf
+                        </Import-Package>
                         <Private-Package></Private-Package>
                     </instructions>
                 </configuration>
