@@ -24,4 +24,4 @@ before_install:
   - sudo apt-get install -qq protobuf-compiler
 
 script:
-  - mvn clean install
+  - mvn -X clean install
