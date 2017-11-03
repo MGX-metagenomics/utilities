@@ -167,7 +167,7 @@ public class CSQFReader implements SeqReaderI<DNAQualitySequenceI> {
         }
     }
 
-    private DNAQualitySequenceI getEntry(long id, long offset) throws IOException, SeqStoreException {
+    private synchronized DNAQualitySequenceI getEntry(long id, long offset) throws IOException, SeqStoreException {
         raf.seek(offset);
         byte[] buf = new byte[600];
         int bytesRead = raf.read(buf);
@@ -189,7 +189,7 @@ public class CSQFReader implements SeqReaderI<DNAQualitySequenceI> {
             if (sepPos + encodedQualLen + 1 > buf.length) {
                 byte newbuf[] = new byte[sepPos + encodedQualLen + 1];
                 System.arraycopy(buf, 0, newbuf, 0, buf.length);
-                raf.read(newbuf, buf.length, sepPos + encodedQualLen - buf.length + 2);
+                raf.read(newbuf, buf.length, sepPos + encodedQualLen - buf.length + 1);
                 buf = newbuf;
             }
             byte[] quality = ByteUtils.substring(buf, sepPos + 1, sepPos + encodedQualLen);
