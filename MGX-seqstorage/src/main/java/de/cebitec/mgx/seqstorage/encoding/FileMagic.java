@@ -2,6 +2,7 @@ package de.cebitec.mgx.seqstorage.encoding;
 
 import de.cebitec.mgx.sequence.SeqStoreException;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
 
@@ -31,6 +32,8 @@ public class FileMagic {
             if (!Arrays.equals(magic, tmp)) {
                 throw new SeqStoreException(filename + ": Invalid magic: " + new String(tmp));
             }
+        } catch (FileNotFoundException fnf) {
+            throw new SeqStoreException(fnf.getMessage());
         } catch (IOException e) {
             throw new SeqStoreException(filename + ": Invalid magic");
         } finally {
