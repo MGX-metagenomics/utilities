@@ -34,7 +34,7 @@ public class ParallelPropertyChangeSupport extends PropertyChangeSupport impleme
     private final transient Object ADD_REMOVE_LOCK = new Object();
 
     public ParallelPropertyChangeSupport(Object sourceBean) {
-        this(sourceBean, true, false);
+        this(sourceBean, false, false);
     }
 
     public ParallelPropertyChangeSupport(Object sourceBean, boolean traceErrors) {
