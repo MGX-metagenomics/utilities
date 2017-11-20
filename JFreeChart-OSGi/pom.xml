@@ -37,6 +37,7 @@
                             org.jfree.chart.annotations,
                             org.jfree.chart.axis,
                             org.jfree.chart.block,
+                            org.jfree.chart.date,
                             org.jfree.chart.entity,
                             org.jfree.chart.event,
                             org.jfree.chart.imagemap,
@@ -48,8 +49,10 @@
                             org.jfree.chart.renderer,
                             org.jfree.chart.renderer.category,
                             org.jfree.chart.renderer.xy,
+                            org.jfree.chart.text,
                             org.jfree.chart.urls,
                             org.jfree.chart.util,
+                            org.jfree.chart.ui,
                             org.jfree.date,
                             org.jfree.data,
                             org.jfree.data.category,
@@ -92,7 +95,7 @@
         <dependency>
             <groupId>org.jfree</groupId>
             <artifactId>jfreechart</artifactId>
-            <version>1.0.19</version>
+            <version>1.5.0</version>
         </dependency>
     </dependencies>
 </project>
