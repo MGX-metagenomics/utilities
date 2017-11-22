@@ -43,6 +43,7 @@ public class MGXOptions {
                 mavenBundle().groupId("com.sun.jersey").artifactId("jersey-client").version("1.18.2"),
                 mavenBundle().groupId("com.sun.jersey").artifactId("jersey-core").version("1.18.2"),
                 mavenBundle().groupId("com.google.protobuf").artifactId("protobuf-java").version("2.6.1"),
+                mavenBundle().groupId("com.google.guava").artifactId("guava").version("23.4-jre"),
                 mavenBundle().groupId("de.cebitec.gpms").artifactId("GPMS-DTO").version("1.1"),
                 mavenBundle().groupId("de.cebitec.gpms").artifactId("GPMS-core-api").version("1.1"),
                 mavenBundle().groupId("de.cebitec.gpms").artifactId("GPMS-rest-api").version("1.1"),
