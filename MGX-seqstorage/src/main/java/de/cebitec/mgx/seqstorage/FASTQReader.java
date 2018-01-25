@@ -14,10 +14,6 @@ import java.util.Set;
  */
 public class FASTQReader implements SeqReaderI<DNAQualitySequenceI> {
 
-    enum QualityEncoding {
-        Sanger, Illumina5, Illumina3, Solexa, Unknown   //Illumina5 == Illumina 1.5; Illumina3 == Illumina 1.3
-    }
-
     private QualityDNASequence seq = null;
     private final ByteStreamTokenizer stream;
     private final String fastqfile;
