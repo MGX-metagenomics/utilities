@@ -32,7 +32,6 @@ public class FastaTest {
 //                bundle("reference:file:target/classes")
 //        );
 //    }
-
     @Test
     public void testreadFasta() throws Exception {
         System.out.println("readFasta");
@@ -66,6 +65,20 @@ public class FastaTest {
     }
 
     @Test
+    public void testSeqName() throws Exception {
+        System.out.println("testSeqName");
+        File f = TestInput.copyTestResource(getClass(), "de/cebitec/mgx/seqstorage/lowercase.fas");
+        try (FastaReader fr = new FastaReader(f.getAbsolutePath(), false)) {
+            fr.hasMoreElements();
+            DNASequenceI entry = fr.nextElement();
+            assertEquals("MISEQ:99:000000000-A736Y:1:1101:16109:1484 1:N:0:", new String(entry.getName()));
+        } catch (SeqStoreException ex) {
+            fail(ex.getMessage());
+        }
+        f.delete();
+    }
+
+    @Test
     public void testFastaWithWindowsLinebreaks() throws Exception {
         System.out.println("testFastaWithWindowsLinebreaks");
         File f = TestInput.copyTestResource(getClass(), "de/cebitec/mgx/seqstorage/win32linebreaks.fas");
@@ -83,7 +96,7 @@ public class FastaTest {
             fail(ex.getMessage());
         }
         f.delete();
-        
+
         assertNotNull(seq1);
         assertNotNull(seq2);
 
