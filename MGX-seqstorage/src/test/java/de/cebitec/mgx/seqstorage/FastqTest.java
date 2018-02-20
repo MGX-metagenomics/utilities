@@ -1,6 +1,5 @@
 package de.cebitec.mgx.seqstorage;
 
-import de.cebitec.mgx.osgiutils.MGXOptions;
 import de.cebitec.mgx.sequence.DNAQualitySequenceI;
 import de.cebitec.mgx.sequence.SeqStoreException;
 import de.cebitec.mgx.testutils.TestInput;
@@ -10,15 +9,6 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
-import org.junit.runner.RunWith;
-import org.ops4j.pax.exam.Configuration;
-import static org.ops4j.pax.exam.CoreOptions.bundle;
-import static org.ops4j.pax.exam.CoreOptions.junitBundles;
-import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
-import static org.ops4j.pax.exam.CoreOptions.options;
-import static org.ops4j.pax.exam.CoreOptions.systemProperty;
-import org.ops4j.pax.exam.Option;
-import org.ops4j.pax.exam.junit.PaxExam;
 
 /**
  *
@@ -42,7 +32,6 @@ public class FastqTest {
 //                bundle("reference:file:target/classes")
 //        );
 //    }
-
     @Test
     public void testReadFastq() throws Exception {
         System.out.println("readFastq");
@@ -55,6 +44,30 @@ public class FastqTest {
             }
         } catch (SeqStoreException ex) {
             fail(ex.getMessage());
+        }
+        f.delete();
+
+        assertEquals(20, seqCnt);
+    }
+
+    @Test
+    public void testWriteFastq() throws Exception {
+        System.out.println("testWriteFastq");
+        File f = TestInput.copyTestResource(getClass(), "de/cebitec/mgx/seqstorage/sample_1.fq");
+        int seqCnt = 0;
+        File target = File.createTempFile("testFQWriter", "xx");
+        FASTQWriter fw = new FASTQWriter(target.getAbsolutePath(), QualityEncoding.Illumina5);
+        try (FASTQReader fr = new FASTQReader(f.getAbsolutePath(), false)) {
+            while (fr.hasMoreElements()) {
+                DNAQualitySequenceI qseq = fr.nextElement();
+                fw.addSequence(qseq);
+                seqCnt++;
+            }
+        } catch (SeqStoreException ex) {
+            fail(ex.getMessage());
+        } finally {
+            fw.close();
+            //target.delete();
         }
         f.delete();
 
@@ -79,7 +92,7 @@ public class FastqTest {
         f.delete();
 
         assertEquals(20, seqCnt);
-        
+
         assertNotNull(qseq);
     }
 
@@ -176,4 +189,22 @@ public class FastqTest {
 
         assertEquals(1, seqCnt);
     }
+
+//    @Test
+//    public void testFile() throws Exception {
+//        System.out.println("testFile");
+//        File f = new File("/home/sj/all.fq");
+//        int seqCnt = 0;
+//        DNAQualitySequenceI seq = null;
+//        try (FASTQReader fr = new FASTQReader(f.getAbsolutePath(), false)) {
+//            while (fr.hasMoreElements()) {
+//                seq = fr.nextElement();
+//                seqCnt++;
+//                        
+//            }
+//        } catch (SeqStoreException ex) {
+//            fail(ex.getMessage()+ " after sequence "+ new String(seq.getName()));
+//        }
+//        assertEquals(1, seqCnt);
+//    }
 }
