@@ -34,7 +34,7 @@ public class ParallelPropertyChangeSupport extends PropertyChangeSupport impleme
     private final transient Object ADD_REMOVE_LOCK = new Object();
 
     public ParallelPropertyChangeSupport(Object sourceBean) {
-        this(sourceBean, false, false);
+        this(sourceBean, true, false);
     }
 
     public ParallelPropertyChangeSupport(Object sourceBean, boolean traceErrors) {
@@ -55,7 +55,7 @@ public class ParallelPropertyChangeSupport extends PropertyChangeSupport impleme
             if (traceErrors) {
                 for (PropertyChangeListener pcl : getPropertyChangeListeners()) {
                     if (pcl == listener) {
-                        LOG.log(Level.INFO, "Duplicate PropertyChangeListener added: {0}", listener.getClass().getSimpleName());
+                        LOG.log(Level.INFO, "Duplicate PropertyChangeListener {0} added to source {1}", new Object[]{listener.getClass().getSimpleName(), source.getClass().getSimpleName()});
                     }
                 }
             }
