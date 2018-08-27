@@ -58,7 +58,7 @@ public class QualityEncoder {
     /**
      * Encodes qualities into compressed quality array. Algorithm calculates min
      * and max value and calculates the range between both values. Each quality
-     * is saved in ceil(log_2(max-min+1)) bits. The first to bytes are reserved
+     * is saved in ceil(log_2(max-min+1)) bits. The first two bytes are reserved
      * for bit-size of the qualities and the minimal quality-1.
      *
      * @param quality Qualities in Sanger format
