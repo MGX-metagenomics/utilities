@@ -30,7 +30,13 @@
                 </executions>
                 <configuration>
                     <instructions>
-                        <Import-Package>org.h2,javax.swing,javax.imageio,com.sun.jersey.api.client.config,com.sun.jersey.api.client</Import-Package>
+                        <Import-Package>
+                            org.h2,javax.swing,
+                            javax.imageio,
+                            com.sun.jersey.api.client.config,
+                            com.sun.jersey.api.client,
+                            org.jfree.graphics2d.svg
+                        </Import-Package>
                         <Export-Package>de.cebitec.mgx.kegg.pathways,de.cebitec.mgx.kegg.pathways.access,de.cebitec.mgx.kegg.pathways.api,de.cebitec.mgx.kegg.pathways.model,de.cebitec.mgx.kegg.pathways.paint</Export-Package>
                         <Private-Package>de.cebitec.mgx.kegg.pathways.*</Private-Package>
                     </instructions>
@@ -96,6 +102,11 @@
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <version>1.4.196</version>
+        </dependency>
+        <dependency>
+            <groupId>de.cebitec.mgx</groupId>
+            <artifactId>JFreeSVG-OSGi</artifactId>
+            <version>1.0</version>
         </dependency>
     </dependencies>
 </project>

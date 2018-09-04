@@ -12,7 +12,9 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
@@ -22,15 +24,16 @@ import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
-import javax.swing.JPanel;
+import javax.swing.JComponent;
 import javax.swing.SwingWorker;
 import javax.swing.ToolTipManager;
+import org.jfree.graphics2d.svg.SVGGraphics2D;
 
 /**
  *
  * @author sj
  */
-public class KEGGPanel extends JPanel {
+public class KEGGPanel extends JComponent {
 
     private transient BufferedImage image = null;
     private final transient KEGGMaster master;
@@ -133,8 +136,21 @@ public class KEGGPanel extends JPanel {
 //        }
 //        return im;
 //    }
-    public void save(File target) throws IOException {
+    public void savePNG(File target) throws IOException {
         ImageIO.write(image, "png", target);
+    }
+
+    public void saveJPEG(File target) throws IOException {
+        ImageIO.write(image, "jpg", target);
+    }
+
+    public void saveSVG(File target) throws IOException {
+        SVGGraphics2D g2 = new SVGGraphics2D(image.getWidth(), image.getHeight());
+        g2.drawImage(image, 0, 0, null);
+        String svgElement = g2.getSVGElement();
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(target))) {
+            bw.write(svgElement);
+        }
     }
 
     @Override
