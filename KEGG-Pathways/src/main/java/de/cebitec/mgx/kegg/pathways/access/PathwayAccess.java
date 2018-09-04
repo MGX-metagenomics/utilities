@@ -9,6 +9,8 @@ import de.cebitec.mgx.kegg.pathways.api.ECNumberI;
 import de.cebitec.mgx.kegg.pathways.api.PathwayI;
 import de.cebitec.mgx.kegg.pathways.model.ECNumberFactory;
 import de.cebitec.mgx.kegg.pathways.model.Pathway;
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
@@ -161,6 +163,14 @@ public class PathwayAccess extends AccessBase {
         } catch (IOException ex) {
             throw new KEGGException(ex);
         }
+
+        // check for black 1px border
+        if (img.getRGB(0, 0) == -16777216 && img.getRGB(1, 1) == -1) {
+            Graphics2D g2 = img.createGraphics();
+            g2.setColor(new Color(-1));
+            g2.drawRect(0, 0, img.getWidth() - 1, img.getHeight() - 1);
+        }
+
         return img;
     }
 
