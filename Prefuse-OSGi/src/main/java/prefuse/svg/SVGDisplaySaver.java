@@ -21,6 +21,9 @@ import prefuse.Display;
  */
 public class SVGDisplaySaver {
 
+    private SVGDisplaySaver() {
+    }
+
     public static boolean saveSVG(Display dis, OutputStream out, double scale) {
         try {
 
