@@ -10,7 +10,6 @@ import de.cebitec.mgx.kegg.pathways.access.PathwayAccess;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -23,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.h2.jdbcx.JdbcConnectionPool;
 
 /**
  *
@@ -39,6 +39,8 @@ public class KEGGMaster implements AutoCloseable {
     private final long timeout = 1000L * 60L * 60L * 24L * 7L * 24L; // 24 weeks
     private PathwayAccess pwacc = null;
     private ECNumberAccess ecacc = null;
+    private JdbcConnectionPool pool = null;
+
     //private Connection conn;
     //
     private final static Map<String, KEGGMaster> instances = new HashMap<>();
@@ -73,6 +75,7 @@ public class KEGGMaster implements AutoCloseable {
         try {
             Class.forName("org.h2.Driver");
             //conn = DriverManager.getConnection("jdbc:h2:" + cacheDir + File.separator + "kegg" + ";DEFAULT_TABLE_ENGINE=org.h2.mvstore.db.MVTableEngine");
+            pool = JdbcConnectionPool.create("jdbc:h2:" + cacheDir + File.separator + "kegg" + ";DEFAULT_TABLE_ENGINE=org.h2.mvstore.db.MVTableEngine", "sa", "sa");
             checkDBH2();
         } catch (ClassNotFoundException | SQLException ex) {
             throw new KEGGException(ex);
@@ -127,7 +130,8 @@ public class KEGGMaster implements AutoCloseable {
     }
 
     public final Connection getConnection() throws SQLException {
-        return DriverManager.getConnection("jdbc:h2:" + cacheDir + File.separator + "kegg" + ";DEFAULT_TABLE_ENGINE=org.h2.mvstore.db.MVTableEngine");
+        return pool.getConnection();
+        //return DriverManager.getConnection("jdbc:h2:" + cacheDir + File.separator + "kegg" + ";DEFAULT_TABLE_ENGINE=org.h2.mvstore.db.MVTableEngine");
     }
 
     private void checkDBH2() throws SQLException {
@@ -201,6 +205,7 @@ public class KEGGMaster implements AutoCloseable {
     }
 
     public void setValid(final String type) {
+        System.err.println("now valid: "+ type);
         try (Connection conn = getConnection()) {
             try (PreparedStatement stmt = conn.prepareStatement("UPDATE timestamps SET time=CURRENT_DATE() WHERE type=?")) {
                 stmt.setString(1, type);

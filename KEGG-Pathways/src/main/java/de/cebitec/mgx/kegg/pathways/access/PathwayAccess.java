@@ -80,17 +80,25 @@ public class PathwayAccess extends AccessBase {
     }
 
     private void fetchAllFromServer() throws KEGGException {
+
         try (InputStream in = get(getRESTResource(), "list", "pathway")) {
+            rwl.writeLock().lockInterruptibly();
+
+            // re-check validity after entering critical section
+            if (isValid(PATHWAYS)) {
+                return;
+            }
+
             try (BufferedReader bin = new BufferedReader(new InputStreamReader(in))) {
                 Connection conn = getMaster().getConnection();
                 try (PreparedStatement stmt = conn.prepareStatement("DELETE FROM coords")) {
                     stmt.execute();
                 }
                 try (PreparedStatement stmt = conn.prepareStatement("DELETE FROM pathway")) {
-                    stmt.execute();
+                    stmt.executeUpdate();
                 }
-                //conn.prepareStatement("DELETE FROM ecnumber").execute();
 
+                //conn.prepareStatement("DELETE FROM ecnumber").execute();
                 // save incoming data to a map first to avoid duplicate entries
                 // which sometimes seem to occur when accessing the REST service
                 Map<String, String> data = new HashMap<>();
@@ -111,14 +119,15 @@ public class PathwayAccess extends AccessBase {
                         stmt.addBatch();
                     }
                     stmt.executeBatch();
-                } catch (SQLException ex) {
-                    throw new KEGGException(ex);
+
                 }
 
                 setValid(PATHWAYS);
             }
-        } catch (IOException | SQLException ex) {
+        } catch (IOException | SQLException | InterruptedException ex) {
             throw new KEGGException(ex);
+        } finally {
+            rwl.writeLock().unlock();
         }
     }
 
@@ -238,6 +247,14 @@ public class PathwayAccess extends AccessBase {
         // fetch from db
         final Map<ECNumberI, Collection<Rectangle>> ret = new HashMap<>();
         try (Connection conn = getMaster().getConnection()) {
+            
+            try {
+                rwl.readLock().lockInterruptibly();
+            } catch (InterruptedException ex) {
+                Logger.getLogger(PathwayAccess.class.getName()).log(Level.SEVERE, null, ex);
+                return null;
+            }
+            
             try (PreparedStatement stmt = conn.prepareStatement("SELECT ec_num, x, y, width, height FROM coords WHERE pw_num=?")) {
                 stmt.setString(1, pw.getMapNumber());
                 try (ResultSet rs = stmt.executeQuery()) {
@@ -256,6 +273,8 @@ public class PathwayAccess extends AccessBase {
             }
         } catch (SQLException ex) {
             throw new KEGGException(ex);
+        } finally {
+            rwl.readLock().unlock();
         }
         return ret;
     }
@@ -324,6 +343,14 @@ public class PathwayAccess extends AccessBase {
         }
         // save to db
         try (Connection conn = getMaster().getConnection()) {
+            
+            rwl.writeLock().lockInterruptibly();
+
+            // re-check validity after entering critical section
+            if (isValid(pw)) {
+                return;
+            }
+
             try (PreparedStatement stmt1 = conn.prepareStatement("DELETE FROM coords WHERE pw_num=?")) {
                 stmt1.setString(1, pw.getMapNumber());
                 stmt1.executeUpdate();
@@ -332,11 +359,20 @@ public class PathwayAccess extends AccessBase {
                 stmt1.setString(1, COORDS + "_" + pw.getMapNumber());
                 stmt1.executeUpdate();
             }
-        } catch (SQLException ex) {
+        } catch (SQLException | InterruptedException ex) {
             throw new KEGGException(ex);
+        } finally {
+            rwl.writeLock().unlock();
         }
 
         try (Connection conn = getMaster().getConnection()) {
+            rwl.writeLock().lockInterruptibly();
+            
+            // re-check validity after entering critical section
+            if (isValid(pw)) {
+                return;
+            }
+            
             for (Entry<ECNumberI, Set<Rectangle>> e : data.entrySet()) {
                 try (PreparedStatement stmt = conn.prepareStatement(INSERT_COORD)) {
                     for (Rectangle rect : e.getValue()) {
@@ -353,8 +389,10 @@ public class PathwayAccess extends AccessBase {
             }
 
             setValid(COORDS + "_" + pw.getMapNumber());
-        } catch (SQLException ex) {
+        } catch (SQLException | InterruptedException ex) {
             throw new KEGGException(ex);
+        } finally {
+            rwl.writeLock().unlock();
         }
     }
 

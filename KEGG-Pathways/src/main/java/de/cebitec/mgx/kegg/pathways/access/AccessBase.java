@@ -16,6 +16,7 @@ import java.io.InputStreamReader;
 import java.nio.channels.FileChannel;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -27,6 +28,8 @@ public class AccessBase {
 
     private final KEGGMaster master;
     private final ExecutorService pool;
+
+    protected final ReentrantReadWriteLock rwl = new ReentrantReadWriteLock();
 
     public AccessBase(KEGGMaster master) {
         this.master = master;
@@ -71,17 +74,34 @@ public class AccessBase {
     }
 
     protected boolean isValid(String type) {
+        try {
+            rwl.readLock().lockInterruptibly();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(AccessBase.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
+        
         boolean ret = getMaster().isValid(type);
+        rwl.readLock().unlock();
         return ret;
     }
 
     protected boolean isValid(PathwayI pw) {
+         try {
+            rwl.readLock().lockInterruptibly();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(AccessBase.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
         boolean ret = getMaster().isValid(COORDS + "_" + pw.getMapNumber());
+        rwl.readLock().unlock();
         return ret;
     }
 
-    protected void setValid(String type) {
-         getMaster().setValid(type);
+    protected void setValid(String type) throws InterruptedException {
+        rwl.writeLock().lockInterruptibly();
+        getMaster().setValid(type);
+        rwl.writeLock().unlock();
     }
 
     protected WebResource getRESTResource() {
