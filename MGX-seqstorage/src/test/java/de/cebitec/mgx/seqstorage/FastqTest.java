@@ -4,6 +4,8 @@ import de.cebitec.mgx.sequence.DNAQualitySequenceI;
 import de.cebitec.mgx.sequence.SeqStoreException;
 import de.cebitec.mgx.testutils.TestInput;
 import java.io.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.junit.*;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -191,10 +193,44 @@ public class FastqTest {
     }
 
     @Test
+    public void testSeqLength() throws IOException {
+        System.out.println("testSeqLength");
+        File target = File.createTempFile("testIncreasingSeqLength", "fq");
+        assertNotNull(target);
+
+        try (FASTQWriter fw = new FASTQWriter(target.getAbsolutePath(), QualityEncoding.Sanger)) {
+            assertNotNull(fw);
+            for (int seqCnt = 1; seqCnt <= 2000; seqCnt++) {
+                DNAQualitySequenceI qseq = genSequence(seqCnt);
+                assertNotNull(qseq);
+                assertEquals(seqCnt, qseq.getSequence().length);
+                assertEquals(seqCnt, qseq.getQuality().length);
+                fw.addSequence(qseq);
+            }
+        } catch (SeqStoreException | IOException ex) {
+            fail(ex.getMessage());
+        }
+
+        int seqCnt = 1;
+        try (FASTQReader fr = new FASTQReader(target.getAbsolutePath(), false)) {
+            while (fr.hasMoreElements()) {
+                DNAQualitySequenceI qseq = fr.nextElement();
+                assertEquals(seqCnt, qseq.getSequence().length);
+                assertEquals(seqCnt, qseq.getQuality().length);
+                seqCnt++;
+            }
+        } catch (SeqStoreException ex) {
+            fail(ex.getMessage());
+        }
+        target.delete();
+    }
+
+    @Test
     public void testLongRead() throws Exception {
         System.out.println("testLongRead");
         File f = TestInput.copyTestResource(getClass(), "de/cebitec/mgx/seqstorage/nptest.fq");
-        File target = File.createTempFile("testFQWriter", "xx");
+        File target = File.createTempFile("testFQWriterxx", null);
+        target.delete();
         DNAQualitySequenceI seq = null;
         try (FASTQReader fr = new FASTQReader(f.getAbsolutePath(), false)) {
             try (CSQFWriter csq = new CSQFWriter(target.getAbsolutePath())) {
@@ -211,7 +247,7 @@ public class FastqTest {
         }
 
         // read back result
-        CSQFReader r = new CSQFReader("/tmp/foo");
+        CSQFReader r = new CSQFReader(target.getAbsolutePath());
         int cnt = 0;
         while (r.hasMoreElements()) {
             DNAQualitySequenceI s = r.nextElement();
@@ -222,5 +258,21 @@ public class FastqTest {
             cnt++;
         }
         assertEquals(1, cnt);
+    }
+
+    private static DNAQualitySequenceI genSequence(int len) throws SeqStoreException {
+        DNAQualitySequenceI seq = new QualityDNASequence();
+        byte[] seqName = String.valueOf(len).getBytes();
+        seq.setName(seqName);
+        byte[] s = new byte[len];
+        byte[] q = new byte[len];
+
+        for (int i = 0; i < len; i++) {
+            s[i] = 'A';
+            q[i] = '2';
+        }
+        seq.setSequence(s);
+        seq.setQuality(q);
+        return seq;
     }
 }

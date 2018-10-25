@@ -35,6 +35,8 @@ public class FASTQWriter implements SeqWriterI<DNAQualitySequenceI> {
             case Solexa:
                 qualityOffset = 64;
                 break;
+            default:
+                throw new SeqStoreException("Unhandled quality encoding " + qualityEncoding);
         }
         try {
             seqout = new BufferedOutputStream(new FileOutputStream(filename));
@@ -51,8 +53,14 @@ public class FASTQWriter implements SeqWriterI<DNAQualitySequenceI> {
         if (seq == null) {
             throw new SeqStoreException("null seq!");
         }
+        if (seq.getSequence() == null || seq.getQuality() == null) {
+            throw new SeqStoreException("Sequence lacks DNA sequence or quality information");
+        }
         if (seq.getSequence().length != seq.getQuality().length) {
             throw new SeqStoreException("Error in quality sequence: length differs between sequence and quality.");
+        }
+        if (seq.getName() == null) {
+            throw new SeqStoreException("Sequence has no name.");
         }
         try {
             seqout.write('@');

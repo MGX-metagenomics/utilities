@@ -28,7 +28,7 @@ public class CSQFWriter implements SeqWriterI<DNAQualitySequenceI> {
     public CSQFWriter(String filename) throws IOException, SeqStoreException {
         // make sure we don't accidentally overwrite pre-existing data
         if ((new File(filename + ".csq").exists()) || (new File(filename).exists())) {
-            throw new SeqStoreException("CSQ file already exists");
+            throw new SeqStoreException("CSQ file " + filename + " already exists");
         }
 
         fname = filename;
@@ -44,7 +44,7 @@ public class CSQFWriter implements SeqWriterI<DNAQualitySequenceI> {
     @Override
     public void addSequence(DNAQualitySequenceI seq) throws SeqStoreException {
         try {
-          // save sequence id and offset
+            // save sequence id and offset
             ByteUtils.longsToBytes(seq.getId(), seqout_offset, nmsRecord);
             nameout.write(nmsRecord);
 
