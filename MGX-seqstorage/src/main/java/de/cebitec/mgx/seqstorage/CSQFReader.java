@@ -172,39 +172,57 @@ public class CSQFReader implements SeqReaderI<DNAQualitySequenceI> {
         byte[] buf = new byte[600];
         int bytesRead = raf.read(buf);
         int sepPos;
+
         // double buffer size until we 
         //   * encounter the record separator,
         //   * reach EOF,
-        //   * 
-        while ((sepPos = ByteUtils.indexOf(buf, FourBitEncoder.RECORD_SEPARATOR)) == -1 && bytesRead != -1 && buf.length < sepPos + 1) {
+        //   * separator is not in the lastmost position (access to buf[sepPos+1] is needed)
+        //
+        while (((sepPos = ByteUtils.indexOf(buf, FourBitEncoder.RECORD_SEPARATOR)) == -1 && bytesRead != -1) || (sepPos == buf.length - 1)) {
             byte[] newbuf = new byte[buf.length * 2];
             System.arraycopy(buf, 0, newbuf, 0, buf.length);
             bytesRead = raf.read(newbuf, buf.length, buf.length);
             buf = newbuf;
         }
-        if (sepPos != 0) {
-            byte[] encoded = ByteUtils.substring(buf, 0, sepPos - 1);
-            byte[] decoded = FourBitEncoder.decode(encoded);
-            int encodedQualLen = (int) Math.ceil(decoded.length * buf[sepPos + 1] / 8.0 + 2);
+
+        if (sepPos > 0) {
+            byte[] encodedSeq = ByteUtils.substring(buf, 0, sepPos - 1);
+            byte[] decodedSeq = FourBitEncoder.decode(encodedSeq);
+
+            // bytes needed to store quality; two initial bytes are used to store 
+            // bits per value and an offset to be added to all encoded values
+            int encodedQualLen = (int) Math.ceil(decodedSeq.length * buf[sepPos + 1] / 8.0 + 2);
+
+            // quality exceeds beyond buffer end; enlarge buffer and read 
+            // missing bytes from file
             if (sepPos + encodedQualLen + 1 > buf.length) {
-                byte newbuf[] = new byte[sepPos + encodedQualLen + 1];
-                System.arraycopy(buf, 0, newbuf, 0, buf.length);
-                raf.read(newbuf, buf.length, sepPos + encodedQualLen - buf.length + 1);
+                int partialQlen = buf.length - sepPos - 1; // excluding separator
+                int bytesMissing = encodedQualLen - partialQlen;
+
+                byte[] newbuf = Arrays.copyOf(buf, buf.length + bytesMissing);
+                //assert newbuf[sepPos] == FourBitEncoder.RECORD_SEPARATOR;
+
+                raf.read(newbuf, sepPos + partialQlen + 1, bytesMissing);
                 buf = newbuf;
             }
-            byte[] quality = ByteUtils.substring(buf, sepPos + 1, sepPos + encodedQualLen);
+
+            byte[] encodedQual = ByteUtils.substring(buf, sepPos + 1, sepPos + encodedQualLen);
+            byte[] decodedQual = QualityEncoder.decode(encodedQual, decodedSeq.length);
+
 
             QualityDNASequence seq = new QualityDNASequence(id);
-            seq.setSequence(decoded);
-            seq.setQuality(QualityEncoder.decode(quality, decoded.length));
+            seq.setSequence(decodedSeq);
+            seq.setQuality(decodedQual);
             return seq;
-        } else {
-            byte[] sequence = new byte[0];
-            byte[] quality = new byte[0];
+        } else if (sepPos == 0) {
+            // empty sequence
             QualityDNASequence seq = new QualityDNASequence(id);
-            seq.setSequence(sequence);
-            seq.setQuality(quality);
+            seq.setSequence(new byte[0]);
+            seq.setQuality(new byte[0]);
             return seq;
+        } else { // sepPos == -1
+            assert false;
+            return null;
         }
     }
 }
