@@ -6,6 +6,7 @@
 package de.cebitec.mgx.seqstorage;
 
 import de.cebitec.mgx.osgiutils.MGXOptions;
+import de.cebitec.mgx.sequence.DNAQualitySequenceI;
 import de.cebitec.mgx.sequence.DNASequenceI;
 import de.cebitec.mgx.sequence.SeqStoreException;
 import de.cebitec.mgx.testutils.TestInput;
@@ -105,6 +106,40 @@ public class CSFWriterTest {
             f.delete();
             target.delete();
         }
+    }
+
+    @Test
+    public void testLongRead() throws Exception {
+        System.out.println("testLongRead");
+        File f = TestInput.copyTestResource(getClass(), "/de/cebitec/mgx/seqstorage/nptest.fq");
+        File target = File.createTempFile("testCSFReader", "xxx");
+        target.delete();
+
+        int cnt = 0;
+        DNAQualitySequenceI seq = null;
+        try (FASTQReader fr = new FASTQReader(f.getAbsolutePath(), false)) {
+            try (CSFWriter csq = new CSFWriter(target)) {
+                while (fr.hasMoreElements()) {
+                    seq = fr.nextElement();
+                    csq.addSequence(seq);
+                    cnt++;
+                }
+            }
+        } catch (SeqStoreException ex) {
+            fail(ex.getMessage() + " after sequence " + new String(seq.getName()));
+        }
+        assertEquals(2, cnt);
+
+        // read back result
+        CSFReader r = new CSFReader(target.getAbsolutePath(), false);
+        cnt = 0;
+        while (r.hasMoreElements()) {
+            DNASequenceI s = r.nextElement();
+            assertNotNull(s);
+            cnt++;
+        }
+        assertEquals(2, cnt);
+        target.delete();
     }
 
 //    private File copyTestData() {

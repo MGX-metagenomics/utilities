@@ -190,21 +190,37 @@ public class FastqTest {
         assertEquals(1, seqCnt);
     }
 
-//    @Test
-//    public void testFile() throws Exception {
-//        System.out.println("testFile");
-//        File f = new File("/home/sj/all.fq");
-//        int seqCnt = 0;
-//        DNAQualitySequenceI seq = null;
-//        try (FASTQReader fr = new FASTQReader(f.getAbsolutePath(), false)) {
-//            while (fr.hasMoreElements()) {
-//                seq = fr.nextElement();
-//                seqCnt++;
-//                        
-//            }
-//        } catch (SeqStoreException ex) {
-//            fail(ex.getMessage()+ " after sequence "+ new String(seq.getName()));
-//        }
-//        assertEquals(1, seqCnt);
-//    }
+    @Test
+    public void testLongRead() throws Exception {
+        System.out.println("testLongRead");
+        File f = TestInput.copyTestResource(getClass(), "de/cebitec/mgx/seqstorage/nptest.fq");
+        File target = File.createTempFile("testFQWriter", "xx");
+        DNAQualitySequenceI seq = null;
+        try (FASTQReader fr = new FASTQReader(f.getAbsolutePath(), false)) {
+            try (CSQFWriter csq = new CSQFWriter(target.getAbsolutePath())) {
+                while (fr.hasMoreElements()) {
+                    seq = fr.nextElement();
+                    fr.hasMoreElements();
+                    seq = fr.nextElement();
+                    System.out.println(seq.getSequence().length + " " + seq.getQuality().length);
+                    csq.addSequence(seq);
+                }
+            }
+        } catch (SeqStoreException ex) {
+            fail(ex.getMessage());
+        }
+
+        // read back result
+        CSQFReader r = new CSQFReader("/tmp/foo");
+        int cnt = 0;
+        while (r.hasMoreElements()) {
+            DNAQualitySequenceI s = r.nextElement();
+            System.out.println(s.getSequence().length + " " + s.getQuality().length);
+
+            //System.out.println(cnt);
+            assertNotNull(s);
+            cnt++;
+        }
+        assertEquals(1, cnt);
+    }
 }
