@@ -74,27 +74,12 @@ public class KEGGMaster implements AutoCloseable {
         }
         try {
             Class.forName("org.h2.Driver");
-            //conn = DriverManager.getConnection("jdbc:h2:" + cacheDir + File.separator + "kegg" + ";DEFAULT_TABLE_ENGINE=org.h2.mvstore.db.MVTableEngine");
+            //conn = DriverManager.getConnection("jdbc:h2:" + cacheDir + File.separator + "kegg" + ";DEFAULT_TABLE_ENGINE=org.h2.mvstore.db.MVTableEngine;USER=sa;PASSWORD=sa");
             pool = JdbcConnectionPool.create("jdbc:h2:" + cacheDir + File.separator + "kegg" + ";DEFAULT_TABLE_ENGINE=org.h2.mvstore.db.MVTableEngine", "sa", "sa");
             checkDBH2();
         } catch (ClassNotFoundException | SQLException ex) {
             throw new KEGGException(ex);
         }
-//        try {
-//            Class.forName("org.hsqldb.jdbc.JDBCDriver");
-//            conn = DriverManager.getConnection("jdbc:hsqldb:file:" + cacheDir + File.separator + "kegg.hsqldb", "SA", "");
-//            checkDBHSQL();
-//        } catch (ClassNotFoundException | SQLException ex) {
-//            throw new KEGGException(ex.getMessage());
-//        }
-//        try {
-//            Class.forName("org.sqlite.JDBC");
-//            conn = DriverManager.getConnection("jdbc:sqlite:" + cacheDir + File.separator + "kegg.db");
-//            conn.prepareStatement("PRAGMA foreign_keys = ON").execute();
-//            checkDB();
-//        } catch (ClassNotFoundException | SQLException ex) {
-//            throw new KEGGException(ex.getMessage());
-//        }
     }
 
     public WebResource getRESTResource() {
@@ -131,12 +116,11 @@ public class KEGGMaster implements AutoCloseable {
 
     public final Connection getConnection() throws SQLException {
         return pool.getConnection();
-        //return DriverManager.getConnection("jdbc:h2:" + cacheDir + File.separator + "kegg" + ";DEFAULT_TABLE_ENGINE=org.h2.mvstore.db.MVTableEngine");
     }
 
     private void checkDBH2() throws SQLException {
-        try (Connection conn = getConnection()) {
-            DatabaseMetaData dbm = conn.getMetaData();
+        try (Connection c = getConnection()) {
+            DatabaseMetaData dbm = c.getMetaData();
             try (ResultSet rs = dbm.getTables(null, null, "pathway", null)) {
                 if (rs.next()) {
                     // Table exists
@@ -146,7 +130,7 @@ public class KEGGMaster implements AutoCloseable {
                             + "   mapnum VARCHAR(10), "
                             + "   name VARCHAR(512), "
                             + "   UNIQUE(mapnum))";
-                    try (Statement stmt = conn.createStatement()) {
+                    try (Statement stmt = c.createStatement()) {
                         stmt.execute(sql);
                     }
 
@@ -165,14 +149,14 @@ public class KEGGMaster implements AutoCloseable {
                             //                       + "   FOREIGN KEY(ec_num) REFERENCES ecnumber(number),"
                             + "   UNIQUE(pw_num, ec_num, x, y) "
                             + ")";
-                    try (Statement stmt = conn.createStatement()) {
+                    try (Statement stmt = c.createStatement()) {
                         stmt.execute(sql);
                     }
 
                     sql = "CREATE TABLE IF NOT EXISTS timestamps ("
                             + "type VARCHAR(30), "
                             + "time DATETIME)";
-                    try (Statement stmt = conn.createStatement()) {
+                    try (Statement stmt = c.createStatement()) {
                         stmt.execute(sql);
                     }
                 }
@@ -184,8 +168,8 @@ public class KEGGMaster implements AutoCloseable {
 
     public boolean isValid(final String type) {
         boolean ret = false;
-        try (Connection conn = getConnection()) {
-            try (PreparedStatement stmt = conn.prepareStatement("SELECT time FROM timestamps WHERE type=?")) {
+        try (Connection c = getConnection()) {
+            try (PreparedStatement stmt = c.prepareStatement("SELECT time FROM timestamps WHERE type=?")) {
                 stmt.setString(1, type);
                 try (ResultSet rs = stmt.executeQuery()) {
                     if (rs.next()) {
@@ -205,14 +189,14 @@ public class KEGGMaster implements AutoCloseable {
     }
 
     public void setValid(final String type) {
-        System.err.println("now valid: "+ type);
-        try (Connection conn = getConnection()) {
-            try (PreparedStatement stmt = conn.prepareStatement("UPDATE timestamps SET time=CURRENT_DATE() WHERE type=?")) {
+        //System.err.println("now valid: "+ type);
+        try (Connection c = getConnection()) {
+            try (PreparedStatement stmt = c.prepareStatement("UPDATE timestamps SET time=CURRENT_DATE() WHERE type=?")) {
                 stmt.setString(1, type);
                 stmt.execute();
                 int updateCnt = stmt.getUpdateCount();
                 if (updateCnt != 1) {
-                    try (PreparedStatement pstmt = conn.prepareStatement("INSERT INTO timestamps (type, time) VALUES (?, CURRENT_DATE)")) {
+                    try (PreparedStatement pstmt = c.prepareStatement("INSERT INTO timestamps (type, time) VALUES (?, CURRENT_DATE)")) {
                         pstmt.setString(1, type);
                         pstmt.executeUpdate();
                     }
