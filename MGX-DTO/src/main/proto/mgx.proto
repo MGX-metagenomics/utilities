@@ -506,6 +506,7 @@ message GeneDTO {
     required int32 start = 2;
     required int32 stop = 3;
     required uint64 contig_id = 4;
+    required int32 coverage = 5;
 }
 
 message GeneDTOList {
