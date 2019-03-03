@@ -1,3 +1,5 @@
+syntax = "proto2";
+
 package MGX;
 
 option java_package = "de.cebitec.mgx.dto";
@@ -465,5 +467,51 @@ message QCResultDTO {
 message QCResultDTOList {
     repeated QCResultDTO result = 1;
 }
+
+// metagenome assembly
+
+message AssemblyDTO {
+    required uint64 id = 1;
+    required string name = 2;
+    required uint64 assembly_job_id = 3;
+}
+
+message AssemblyDTOList {
+    repeated AssemblyDTO assembly = 1;
+}
+
+message BinDTO {
+    required uint64 id = 1;
+    required string name = 2;
+    required uint64 assembly_id = 3;
+}
+
+message BinDTOList {
+    repeated BinDTO bin = 1;
+}
+
+message ContigDTO {
+    required uint64 id = 1;
+    required string name = 2;
+    required int32 length = 3;
+    required uint64 bin_id = 4;
+}
+
+message ContigDTOList {
+    repeated ContigDTO contig = 1;
+}
+
+message GeneDTO {
+    required uint64 id = 1;
+    required int32 start = 2;
+    required int32 stop = 3;
+    required uint64 contig_id = 4;
+}
+
+message GeneDTOList {
+    repeated GeneDTO gene = 1;
+}
+
+
 
 
