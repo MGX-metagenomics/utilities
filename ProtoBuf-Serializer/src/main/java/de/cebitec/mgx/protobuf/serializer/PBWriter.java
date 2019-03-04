@@ -8,6 +8,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.net.ssl.SSLHandshakeException;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
@@ -34,7 +35,15 @@ public class PBWriter implements MessageBodyWriter<Message> {
             MediaType mediaType, MultivaluedMap httpHeaders,
             OutputStream entityStream) throws IOException, WebApplicationException {
         try {
-            m.writeTo(entityStream);
+            int retries = 3;
+            while (retries > 0) {
+                try {
+                    m.writeTo(entityStream);
+                    return;
+                } catch (SSLHandshakeException ex) {
+                    retries--;
+                }
+            }
         } catch (IOException e) {
             Logger.getLogger(PBWriter.class.getName()).log(Level.SEVERE, null, e);
         }
