@@ -236,6 +236,7 @@ message ToolDTO {
     required string author = 5;
     optional string url = 6;
     optional string xml = 7;
+    required string scope = 8; // 'read' or 'assembly'
 }
 
 message ToolDTOList  {
@@ -474,6 +475,8 @@ message AssemblyDTO {
     required uint64 id = 1;
     required string name = 2;
     required uint64 assembly_job_id = 3;
+    required uint64 reads_assembled = 4;
+    required uint64 total_length_bp = 5;
 }
 
 message AssemblyDTOList {
@@ -483,7 +486,8 @@ message AssemblyDTOList {
 message BinDTO {
     required uint64 id = 1;
     required string name = 2;
-    required uint64 assembly_id = 3;
+    optional float completeness = 3;
+    required uint64 assembly_id = 4;
 }
 
 message BinDTOList {
@@ -494,7 +498,9 @@ message ContigDTO {
     required uint64 id = 1;
     required string name = 2;
     required int32 length = 3;
-    required uint64 bin_id = 4;
+    required float gc = 4;
+    required float coverage = 5;
+    required uint64 bin_id = 6;
 }
 
 message ContigDTOList {
