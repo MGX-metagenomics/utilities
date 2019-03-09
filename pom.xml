@@ -48,7 +48,8 @@
         <module>MGX-StreamLogger</module>
         <module>MGX-dispatcher-common-api</module>
         <module>MGX-dispatcher-common</module>
-    </modules>
+    <module>MGX-common</module>
+  </modules>
     
     <build>
         <pluginManagement>
