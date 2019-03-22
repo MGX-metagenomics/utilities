@@ -23,7 +23,8 @@
                 <configuration>
                     <instructions>
                         <Export-Package>de.cebitec.mgx.protobuf.serializer</Export-Package>
-                         <Import-Package>
+                        <Import-Package>
+                            javax.net.ssl,
                             javax.ws.rs,
                             javax.ws.rs.core,
                             javax.ws.rs.ext,
@@ -32,17 +33,17 @@
                     </instructions>
                 </configuration>
             </plugin>
-             <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <configuration>
-                        <classpathDependencyExcludes>
-                            <!-- exclude code absent api -->
-                            <classpathDependencyExclude>javax:javaee-api</classpathDependencyExclude>
-                            <classpathDependencyExclude>javax:javaee-web-api</classpathDependencyExclude>
-                        </classpathDependencyExcludes>
-                    </configuration>
-                </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <classpathDependencyExcludes>
+                        <!-- exclude code absent api -->
+                        <classpathDependencyExclude>javax:javaee-api</classpathDependencyExclude>
+                        <classpathDependencyExclude>javax:javaee-web-api</classpathDependencyExclude>
+                    </classpathDependencyExcludes>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
     
