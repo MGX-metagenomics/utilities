@@ -1,11 +1,11 @@
-package de.cebitec.mgx.dispatcher.common.api;
+package de.cebitec.mgx.common;
 
 /**
  *
  * @author sjaenick
  */
 public enum JobState {
-
+    
     CREATED(0),
     VERIFIED(1),
     SUBMITTED(2),
@@ -15,9 +15,14 @@ public enum JobState {
     FAILED(6),
     ABORTED(7),
     IN_DELETION(8);
-    private final int value;
 
-    private JobState(int v) {
-        value = v;
+    private final int code;
+
+    private JobState(int c) {
+        code = c;
     }
-};
+
+    public int getValue() {
+        return code;
+    }
+}
