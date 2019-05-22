@@ -212,5 +212,6 @@ public class KEGGMaster implements AutoCloseable {
 
     @Override
     public void close() throws Exception {
+        pool.dispose();
     }
 }
