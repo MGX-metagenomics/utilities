@@ -1,6 +1,6 @@
 package de.cebitec.mgx.protobuf.serializer;
 
-import com.google.protobuf.GeneratedMessage;
+import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.Message;
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,7 +31,7 @@ public class PBReader implements MessageBodyReader<Message> {
             InputStream entityStream) throws IOException, WebApplicationException {
         try {
             Method newBuilder = type.getMethod("newBuilder");
-            GeneratedMessage.Builder builder = (GeneratedMessage.Builder) newBuilder.invoke(type);
+            GeneratedMessageV3.Builder builder = (GeneratedMessageV3.Builder) newBuilder.invoke(type);
             return builder.mergeFrom(entityStream).build();
         } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | IOException e) {
             throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);

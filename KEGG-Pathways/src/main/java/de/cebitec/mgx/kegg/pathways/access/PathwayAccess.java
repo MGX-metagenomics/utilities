@@ -1,7 +1,5 @@
 package de.cebitec.mgx.kegg.pathways.access;
 
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
 import de.cebitec.mgx.kegg.pathways.KEGGException;
 import de.cebitec.mgx.kegg.pathways.KEGGMaster;
 import static de.cebitec.mgx.kegg.pathways.access.AccessBase.copyFile;
@@ -37,6 +35,8 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.imageio.ImageIO;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Response;
 
 /**
  *
@@ -283,17 +283,17 @@ public class PathwayAccess extends AccessBase {
 
         assert !isValid(pw);
 
-        final WebResource wr = getKEGGResource()
+        final WebTarget wr = getKEGGResource()
                 .path("kegg-bin").path("show_pathway")
                 .queryParam("org_name", "map")
                 .queryParam("mapno", pw.getMapNumber().substring(3));
 //        System.err.println("GET: "+wr.getURI().toASCIIString());
 
-        ClientResponse cr = wr.header("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.1").get(ClientResponse.class);
-        catchException(cr);
+        Response res = wr.request().header("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.1").get(Response.class);
+        catchException(res);
         final Map<ECNumberI, Set<Rectangle>> data = new HashMap<>();
         // fetch and parse
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(cr.getEntityInputStream()))) {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(res.readEntity(InputStream.class)))) {
             Pattern splitSpaces = Pattern.compile("\\s+");
             Pattern ecNumber = Pattern.compile("\\d+[.](-|\\d+)[.](-|\\d+)[.](-|\\d+)");
             String line;

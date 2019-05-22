@@ -1,9 +1,5 @@
 package de.cebitec.mgx.kegg.pathways;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.client.config.ClientConfig;
-import com.sun.jersey.api.client.config.DefaultClientConfig;
 import de.cebitec.mgx.kegg.pathways.access.AccessBase;
 import de.cebitec.mgx.kegg.pathways.access.ECNumberAccess;
 import de.cebitec.mgx.kegg.pathways.access.PathwayAccess;
@@ -22,6 +18,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.WebTarget;
 import org.h2.jdbcx.JdbcConnectionPool;
 
 /**
@@ -62,10 +61,14 @@ public class KEGGMaster implements AutoCloseable {
 
     private KEGGMaster(String cacheDirectory) throws KEGGException {
         cacheDir = cacheDirectory + File.separator;
-        ClientConfig cc = new DefaultClientConfig();
-        cc.getProperties().put(ClientConfig.PROPERTY_THREADPOOL_SIZE, 30);
-        restclient = Client.create(cc);
-        keggclient = Client.create(cc);
+        //ClientConfig cc = new ClientConfig();
+        //cc.getProperties().put(ClientConfig.PROPERTY_THREADPOOL_SIZE, 30);
+        restclient = ClientBuilder.newBuilder()
+                  //  .withConfig(cc)
+                .build();
+        keggclient = ClientBuilder.newBuilder()
+                //    .withConfig(cc)
+                .build();
         File f = new File(cacheDir);
         if (!f.exists()) {
             if (!f.mkdirs()) {
@@ -82,12 +85,12 @@ public class KEGGMaster implements AutoCloseable {
         }
     }
 
-    public WebResource getRESTResource() {
-        return restclient.resource(REST_BASE);
+    public WebTarget getRESTResource() {
+        return restclient.target(REST_BASE);
     }
 
-    public WebResource getKEGGResource() {
-        WebResource ret = keggclient.resource(KEGG_BASE);
+    public WebTarget getKEGGResource() {
+        WebTarget ret = keggclient.target(KEGG_BASE);
         return ret;
     }
 

@@ -1,7 +1,5 @@
 package de.cebitec.mgx.kegg.pathways.access;
 
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
 import de.cebitec.mgx.kegg.pathways.KEGGException;
 import de.cebitec.mgx.kegg.pathways.KEGGMaster;
 import static de.cebitec.mgx.kegg.pathways.access.PathwayAccess.COORDS;
@@ -19,6 +17,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Response;
 
 /**
  *
@@ -40,31 +40,29 @@ public class AccessBase {
         return pool;
     }
 
-    protected final InputStream get(final WebResource resource, final String... path) throws KEGGException {
-        WebResource wr = resource;
+    protected final InputStream get(final WebTarget resource, final String... path) throws KEGGException {
+        WebTarget wr = resource;
         for (String elem : path) {
             wr = wr.path(elem);
         }
-        ClientResponse res = wr.get(ClientResponse.class);
+        Response res = wr.request().get(Response.class);
         catchException(res);
-        return res.getEntityInputStream();
+        return res.readEntity(InputStream.class);
     }
 
-    protected final void catchException(final ClientResponse res) throws KEGGException {
-        if (ClientResponse.Status.fromStatusCode(res.getStatus()) != ClientResponse.Status.OK) {
+    protected void catchException(final Response res) throws KEGGException {
+        if (Response.Status.fromStatusCode(res.getStatus()) != Response.Status.OK) {
             StringBuilder msg = new StringBuilder();
-            try (InputStreamReader isr = new InputStreamReader(res.getEntityInputStream())) {
-                try (BufferedReader r = new BufferedReader(isr)) {
-                    String buf;
-                    while ((buf = r.readLine()) != null) {
-                        msg.append(buf);
-                        msg.append(System.lineSeparator());
-                    }
+            try (BufferedReader r = new BufferedReader(new InputStreamReader(res.readEntity(InputStream.class)))) {
+                String buf;
+                while ((buf = r.readLine()) != null) {
+                    msg.append(buf);
+                    msg.append(System.lineSeparator());
                 }
             } catch (IOException ex) {
                 Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
             }
-            throw new KEGGException(msg.toString());
+            throw new KEGGException(msg.toString().trim());
         }
     }
 
@@ -80,14 +78,14 @@ public class AccessBase {
             Logger.getLogger(AccessBase.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         }
-        
+
         boolean ret = getMaster().isValid(type);
         rwl.readLock().unlock();
         return ret;
     }
 
     protected boolean isValid(PathwayI pw) {
-         try {
+        try {
             rwl.readLock().lockInterruptibly();
         } catch (InterruptedException ex) {
             Logger.getLogger(AccessBase.class.getName()).log(Level.SEVERE, null, ex);
@@ -104,11 +102,11 @@ public class AccessBase {
         rwl.writeLock().unlock();
     }
 
-    protected WebResource getRESTResource() {
+    protected WebTarget getRESTResource() {
         return master.getRESTResource();
     }
 
-    protected WebResource getKEGGResource() {
+    protected WebTarget getKEGGResource() {
         return master.getKEGGResource();
     }
 

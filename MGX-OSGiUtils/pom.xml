@@ -19,7 +19,7 @@
         <dependency>
             <groupId>org.ops4j.pax.exam</groupId>
             <artifactId>pax-exam</artifactId>
-            <version>4.4.0</version>
+            <version>4.13.1</version>
         </dependency>
     </dependencies>
     

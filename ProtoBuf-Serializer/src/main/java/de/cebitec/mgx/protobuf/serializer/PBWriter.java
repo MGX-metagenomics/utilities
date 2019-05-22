@@ -1,6 +1,6 @@
 package de.cebitec.mgx.protobuf.serializer;
 
-import com.google.protobuf.Message;
+import com.google.protobuf.GeneratedMessageV3;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -18,20 +18,20 @@ import javax.ws.rs.ext.Provider;
 
 @Provider
 @Produces("application/x-protobuf")
-public class PBWriter implements MessageBodyWriter<Message> {
+public class PBWriter implements MessageBodyWriter<GeneratedMessageV3> {
 
     @Override
     public final boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
-        return Message.class.isAssignableFrom(type);
+        return GeneratedMessageV3.class.isAssignableFrom(type);
     }
 
     @Override
-    public final long getSize(Message m, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
+    public final long getSize(GeneratedMessageV3 m, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
         return m.getSerializedSize();
     }
 
     @Override
-    public final void writeTo(Message m, Class type, Type genericType, Annotation[] annotations,
+    public final void writeTo(GeneratedMessageV3 m, Class type, Type genericType, Annotation[] annotations,
             MediaType mediaType, MultivaluedMap httpHeaders,
             OutputStream entityStream) throws IOException, WebApplicationException {
         try {
