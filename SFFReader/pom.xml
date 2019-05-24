@@ -4,12 +4,11 @@
     <parent>
         <artifactId>Utilities</artifactId>
         <groupId>de.cebitec.mgx</groupId>
-        <version>1.0</version>
+        <version>2.0</version>
     </parent>
 
     <groupId>de.cebitec.mgx</groupId>
     <artifactId>SFFReader</artifactId>
-    <version>1.0</version>
     <packaging>bundle</packaging>
 
     <name>SFFReader OSGi Bundle</name>
@@ -33,7 +32,7 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>Trove-OSGi</artifactId>
-            <version>1.0</version>
+            <version>2.0</version>
         </dependency>
         
         <dependency>
