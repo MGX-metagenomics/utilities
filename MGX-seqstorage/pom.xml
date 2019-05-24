@@ -178,24 +178,24 @@
         <dependency>
             <groupId>de.cebitec.mgx</groupId>
             <artifactId>MGX-OSGiUtils</artifactId>
-            <version>1.0</version>
+            <version>2.0</version>
             <scope>test</scope>
         </dependency>
         
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>MGX-isequences</artifactId>
-            <version>1.0</version>
+            <version>2.0</version>
         </dependency>
         <dependency>
             <groupId>de.cebitec.mgx</groupId>
             <artifactId>MGX-BufferedRandomAccessFile</artifactId>
-            <version>1.0</version>
+            <version>2.0</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>SFFReader</artifactId>
-            <version>1.0</version>
+            <version>2.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -205,7 +205,7 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>Trove-OSGi</artifactId>
-            <version>1.0</version>
+            <version>2.0</version>
         </dependency>
         <dependency>
             <groupId>de.cebitec.mgx</groupId>
