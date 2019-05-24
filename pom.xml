@@ -36,6 +36,7 @@
         <module>MGX-seqstorage</module>
         <module>MGX-QualityControl</module>
         <module>MGX-ExecutorService</module>
+        <module>MGX-TestUtils</module>
         <module>MGX-ParallelSortedProcessing</module>
         <module>Trove-OSGi</module>
         <module>JFreeChart-OSGi</module>
@@ -47,8 +48,8 @@
         <module>MGX-StreamLogger</module>
         <module>MGX-dispatcher-common-api</module>
         <module>MGX-dispatcher-common</module>
-    <module>MGX-common</module>
-  </modules>
+        <module>MGX-common</module>
+    </modules>
     
     <build>
         <pluginManagement>

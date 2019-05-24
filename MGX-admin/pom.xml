@@ -4,13 +4,12 @@
 
     <groupId>de.cebitec.mgx.admin</groupId>
     <artifactId>MGX-admin</artifactId>
-    <version>1.0</version>
     <packaging>jar</packaging>
     
     <parent>
         <artifactId>Utilities</artifactId>
         <groupId>de.cebitec.mgx</groupId>
-        <version>1.0</version>
+        <version>2.0</version>
     </parent>
 
     <name>MGX-admin</name>
@@ -78,7 +77,7 @@
         <dependency>
             <groupId>de.cebitec.mgx</groupId>
             <artifactId>BioJava-OSGi</artifactId>
-            <version>1.0</version>
+            <version>2.0</version>
         </dependency>
     </dependencies>
 </project>
