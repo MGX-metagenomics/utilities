@@ -4,7 +4,6 @@
     
     <groupId>de.cebitec.mgx</groupId>
     <artifactId>MGX-parallelPropChange</artifactId>
-    <version>1.0</version>
     <packaging>bundle</packaging>
     
     <name>MGX-parallelPropChange</name>
@@ -16,7 +15,7 @@
     <parent>
         <artifactId>Utilities</artifactId>
         <groupId>de.cebitec.mgx</groupId>
-        <version>1.0</version>
+        <version>2.0</version>
     </parent>
     
     <dependencies>
