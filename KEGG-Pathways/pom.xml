@@ -38,7 +38,12 @@
                             javax.ws.rs.core,
                             org.jfree.graphics2d.svg
                         </Import-Package>
-                        <Export-Package>de.cebitec.mgx.kegg.pathways,de.cebitec.mgx.kegg.pathways.access,de.cebitec.mgx.kegg.pathways.api,de.cebitec.mgx.kegg.pathways.model,de.cebitec.mgx.kegg.pathways.paint</Export-Package>
+                        <Export-Package>
+                            de.cebitec.mgx.kegg.pathways,
+                            de.cebitec.mgx.kegg.pathways.access,
+                            de.cebitec.mgx.kegg.pathways.api,
+                            de.cebitec.mgx.kegg.pathways.model,
+                            de.cebitec.mgx.kegg.pathways.paint</Export-Package>
                         <Private-Package>de.cebitec.mgx.kegg.pathways.*</Private-Package>
                     </instructions>
                 </configuration>
