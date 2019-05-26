@@ -30,6 +30,7 @@
                 <configuration>
                     <instructions>
                         <Import-Package>
+                            org.osgi.service.jdbc,
                             org.h2,
                             org.h2.jdbcx,
                             javax.swing,
