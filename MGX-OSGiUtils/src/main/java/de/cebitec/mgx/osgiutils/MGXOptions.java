@@ -54,6 +54,7 @@ public class MGXOptions {
                 //mavenBundle().groupId("jakarta.annotation").artifactId("jakarta.annotation-api").version("1.3.4"),
                 //mavenBundle().groupId("org.glassfish.jersey.connectors").artifactId("jersey-grizzly-connector").version("2.28"),
                 mavenBundle().groupId("com.google.protobuf").artifactId("protobuf-java").version("3.7.1"),
+                mavenBundle().groupId("com.google.guava").artifactId("failureaccess").version("1.0.1"),
                 mavenBundle().groupId("com.google.guava").artifactId("guava").version("27.1-jre"),
                 mavenBundle().groupId("de.cebitec.gpms").artifactId("GPMS-DTO").version("2.0"),
                 mavenBundle().groupId("de.cebitec.gpms").artifactId("GPMS-core-api").version("2.0"),
