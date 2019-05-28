@@ -240,7 +240,11 @@ message ToolDTO {
     required string author = 5;
     optional string url = 6;
     optional string xml = 7;
-    //required string scope = 8; // 'read' or 'assembly'
+    enum ToolScope {
+        READ = 0;
+        ASSEMBLY = 1;
+    }
+    required ToolScope scope = 8;
 }
 
 message ToolDTOList  {
