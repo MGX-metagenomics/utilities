@@ -105,20 +105,35 @@
             <artifactId>h2</artifactId>
             <version>1.4.199</version>
         </dependency>
+        <!--
         <dependency>
             <groupId>org.glassfish.jersey.core</groupId>
             <artifactId>jersey-client</artifactId>
             <version>2.28</version>
         </dependency>
+        -->
+        <!--
+<dependency>
+    <groupId>org.glassfish.jersey.inject</groupId>
+    <artifactId>jersey-hk2</artifactId>
+    <version>2.28</version>
+</dependency>
+        -->
         <dependency>
-            <groupId>org.glassfish.jersey.inject</groupId>
-            <artifactId>jersey-hk2</artifactId>
-            <version>2.28</version>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-client</artifactId>
+            <version>4.0.0.Final</version>
         </dependency>
+
         <dependency>
             <groupId>de.cebitec.mgx</groupId>
             <artifactId>JFreeSVG-OSGi</artifactId>
             <version>2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.service.jdbc</artifactId>
+            <version>1.0.0</version>
         </dependency>
     </dependencies>
 </project>
