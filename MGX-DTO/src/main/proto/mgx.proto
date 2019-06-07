@@ -278,6 +278,19 @@ message JobParameterListDTO {
     repeated JobParameterDTO parameter = 1;
 }
 
+
+ enum JobState {
+    CREATED = 0;
+    VERIFIED = 1;
+    SUBMITTED=2;
+    PENDING=3;
+    RUNNING=4;
+    FINISHED=5;
+    FAILED=6;
+    ABORTED=7;
+    IN_DELETION=8;
+ }
+
 message JobDTO {
   optional uint64 id = 1;
   required uint64 seqrun_id = 2;
@@ -288,20 +301,7 @@ message JobDTO {
   optional uint64 startDate = 5;
   optional uint64 finishDate = 6;
 
-  enum JobState {
-    CREATED = 0;
-    VERIFIED = 1;
-    SUBMITTED=2;
-    PENDING=3;
-    RUNNING=4;
-    FINISHED=5;
-    FAILED=6;
-    ABORTED=7;
-    IN_DELETION=8;
-  }
-
   required JobState state = 7;
-
   required JobParameterListDTO parameters = 8;
 }
 
@@ -482,9 +482,9 @@ message QCResultDTOList {
 message AssemblyDTO {
     required uint64 id = 1;
     required string name = 2;
-    required uint64 assembly_job_id = 3;
+    required uint64 job_id = 3;
     required uint64 reads_assembled = 4;
-    required uint64 total_length_bp = 5;
+    required uint64 n50 = 5;
 }
 
 message AssemblyDTOList {
@@ -496,6 +496,8 @@ message BinDTO {
     required string name = 2;
     optional float completeness = 3;
     required uint64 assembly_id = 4;
+    required uint64 n50 = 5;
+    optional string taxonomy = 6;
 }
 
 message BinDTOList {
@@ -504,15 +506,23 @@ message BinDTOList {
 
 message ContigDTO {
     required uint64 id = 1;
-    required string name = 2;
-    required int32 length = 3;
-    required float gc = 4;
-    required float coverage = 5;
-    required uint64 bin_id = 6;
+    required int32 length_bp = 2;
+    required float gc = 3;
+    required uint64 bin_id = 4;
 }
 
 message ContigDTOList {
     repeated ContigDTO contig = 1;
+}
+
+message AssemblyJobDTO {
+    required uint64 id = 1;
+    required string created_by = 2;
+    repeated uint64 seqrun = 3;
+    // unix timestamp
+    optional uint64 startDate = 5;
+    optional uint64 finishDate = 6;
+    required JobState state = 4;
 }
 
 message GeneDTO {
