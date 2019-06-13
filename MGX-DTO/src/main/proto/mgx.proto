@@ -507,9 +507,11 @@ message BinDTOList {
 
 message ContigDTO {
     required uint64 id = 1;
-    required int32 length_bp = 2;
-    required float gc = 3;
-    required uint64 bin_id = 4;
+    required string name = 2;
+    required int32 length_bp = 3;
+    required float gc = 4;
+    required int32 coverage = 5;
+    required uint64 bin_id = 6;
 }
 
 message ContigDTOList {
