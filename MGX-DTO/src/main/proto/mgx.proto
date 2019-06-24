@@ -495,10 +495,11 @@ message BinDTO {
     required uint64 id = 1;
     required string name = 2;
     optional float completeness = 3;
-    required uint64 assembly_id = 4;
-    required uint64 n50 = 5;
-    optional string taxonomy = 6;
-    required int32 predicted_cds = 7;
+    optional float contamination = 4;
+    required uint64 assembly_id = 5;
+    required uint64 n50 = 6;
+    optional string taxonomy = 7;
+    required int32 predicted_cds = 8;
 }
 
 message BinDTOList {
