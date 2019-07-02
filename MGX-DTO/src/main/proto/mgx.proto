@@ -523,10 +523,14 @@ message AssemblyJobDTO {
     required uint64 id = 1;
     required string created_by = 2;
     repeated uint64 seqrun = 3;
+    required JobState state = 4;
     // unix timestamp
     optional uint64 startDate = 5;
     optional uint64 finishDate = 6;
-    required JobState state = 4;
+}
+
+message AssemblyJobDTOList {
+    repeated AssemblyJobDTO job = 1;
 }
 
 message GeneDTO {
