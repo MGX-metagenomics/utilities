@@ -293,7 +293,8 @@ message JobParameterListDTO {
 
 message JobDTO {
   optional uint64 id = 1;
-  required uint64 seqrun_id = 2;
+  repeated uint64 seqrun = 2;
+  //required uint64 seqrun_id = 2;
   required uint64 tool_id = 3;
   optional string creator = 4;
 
@@ -482,7 +483,7 @@ message QCResultDTOList {
 message AssemblyDTO {
     required uint64 id = 1;
     required string name = 2;
-    required uint64 job_id = 3;
+    optional uint64 job_id = 3;
     required uint64 reads_assembled = 4;
     required uint64 n50 = 5;
 }
@@ -499,7 +500,7 @@ message BinDTO {
     required uint64 assembly_id = 5;
     required uint64 n50 = 6;
     optional string taxonomy = 7;
-    required int32 predicted_cds = 8;
+    optional int32 predicted_cds = 8;
 }
 
 message BinDTOList {
@@ -545,6 +546,11 @@ message GeneDTOList {
     repeated GeneDTO gene = 1;
 }
 
+message GeneCoverageDTO {
+    required uint64 gene_id = 1;
+    required uint64 run_id = 2;
+    required int32 coverage = 3;
+}
 
 
 
