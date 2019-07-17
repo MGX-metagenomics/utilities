@@ -481,7 +481,7 @@ message QCResultDTOList {
 // metagenome assembly
 
 message AssemblyDTO {
-    required uint64 id = 1;
+    optional uint64 id = 1;
     required string name = 2;
     optional uint64 job_id = 3;
     required uint64 reads_assembled = 4;
@@ -493,7 +493,7 @@ message AssemblyDTOList {
 }
 
 message BinDTO {
-    required uint64 id = 1;
+    optional uint64 id = 1;
     required string name = 2;
     optional float completeness = 3;
     optional float contamination = 4;
@@ -508,7 +508,7 @@ message BinDTOList {
 }
 
 message ContigDTO {
-    required uint64 id = 1;
+    optional uint64 id = 1;
     required string name = 2;
     required int32 length_bp = 3;
     required float gc = 4;
@@ -521,7 +521,7 @@ message ContigDTOList {
 }
 
 message AssemblyJobDTO {
-    required uint64 id = 1;
+    optional uint64 id = 1;
     required string created_by = 2;
     repeated uint64 seqrun = 3;
     required JobState state = 4;
@@ -535,7 +535,7 @@ message AssemblyJobDTOList {
 }
 
 message GeneDTO {
-    required uint64 id = 1;
+    optional uint64 id = 1;
     required int32 start = 2;
     required int32 stop = 3;
     required uint64 contig_id = 4;
