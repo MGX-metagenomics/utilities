@@ -552,5 +552,7 @@ message GeneCoverageDTO {
     required int32 coverage = 3;
 }
 
-
+message GeneCoverageDTOList {
+    repeated GeneCoverageDTO gene_coverage = 1;
+}
 
