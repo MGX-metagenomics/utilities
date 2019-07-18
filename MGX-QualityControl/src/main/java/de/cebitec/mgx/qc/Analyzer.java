@@ -12,15 +12,17 @@ import de.cebitec.mgx.sequence.DNASequenceI;
  * @author sj
  */
 public interface Analyzer<T extends DNASequenceI> {
-    
+
     public String getName();
-    
+
     public String getDescription();
-    
+
     public void add(T seq);
 
+    public void addPair(T seq1, T seq2);
+
     public QCResult get();
-    
+
     public long getNumberOfSequences();
-    
+
 }

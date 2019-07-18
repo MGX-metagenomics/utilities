@@ -14,14 +14,14 @@ import static org.junit.Assert.*;
  */
 public class QualityDistributionTest {
 
-    QualityDistribution distribution;
+    FirstReadQualityDistribution distribution;
 
     public QualityDistributionTest() {
     }
 
     @Before
     public void setUp() {
-        distribution = new QualityDistribution();
+        distribution = new FirstReadQualityDistribution();
     }
 
 //    @Ignore("Test can take several minutes")

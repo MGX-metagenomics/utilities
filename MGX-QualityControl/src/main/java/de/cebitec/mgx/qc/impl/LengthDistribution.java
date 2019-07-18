@@ -43,6 +43,12 @@ public class LengthDistribution implements Analyzer<DNASequenceI> {
     }
 
     @Override
+    public void addPair(DNASequenceI seq1, DNASequenceI seq2) {
+        add(seq1);
+        add(seq2);
+    }
+
+    @Override
     public QCResult get() {
         float[] res = new float[maxLen + 1];
         if (maxLen == 0) {

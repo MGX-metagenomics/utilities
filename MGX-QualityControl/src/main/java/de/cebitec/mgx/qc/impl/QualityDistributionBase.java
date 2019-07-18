@@ -8,7 +8,7 @@ import java.util.*;
  *
  * @author Patrick Blumenkamp
  */
-public class QualityDistribution implements Analyzer<DNAQualitySequenceI>{
+public class QualityDistributionBase implements Analyzer<DNAQualitySequenceI>{
 
     private static final int STARTLENGTH = 2_000;
     
@@ -22,7 +22,7 @@ public class QualityDistribution implements Analyzer<DNAQualitySequenceI>{
     private double[] skOld = new double[STARTLENGTH];
     private int maxLength = 0;
 
-    public QualityDistribution() {
+    protected QualityDistributionBase() {
         Arrays.fill(count, 0);
         Arrays.fill(mean, 0);
         Arrays.fill(mk, 0);
@@ -30,8 +30,6 @@ public class QualityDistribution implements Analyzer<DNAQualitySequenceI>{
         Arrays.fill(sk, 0);
         Arrays.fill(skOld, 0);
     }
-    
-    
     
     @Override
     public String getName() {
@@ -69,6 +67,12 @@ public class QualityDistribution implements Analyzer<DNAQualitySequenceI>{
             //average
             mean[i] = ((count[i]-1) * mean[i] + qual[i]) / count[i];
         }
+    }
+
+    @Override
+    public void addPair(DNAQualitySequenceI seq1, DNAQualitySequenceI seq2) {
+        add(seq1);
+        add(seq2);
     }
 
     @Override

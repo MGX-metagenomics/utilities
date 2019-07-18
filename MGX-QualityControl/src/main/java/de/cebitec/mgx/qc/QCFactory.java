@@ -13,9 +13,14 @@ import de.cebitec.mgx.qc.impl.*;
  */
 public class QCFactory {
 
-    public static Analyzer[] getQCAnalyzers(boolean hasQuality) {
+    public static Analyzer[] getQCAnalyzers(boolean hasQuality, boolean isPaired) {
         if (hasQuality) {
-            return new Analyzer[]{ new QualityDistribution(), new LengthDistribution(), new NucleotideDistribution(), new GCDistribution()};
+            if (isPaired) {
+                return new Analyzer[]{new FirstReadQualityDistribution(),new SecondReadQualityDistribution(),
+                    new LengthDistribution(), new NucleotideDistribution(), new GCDistribution()};
+            } else {
+                return new Analyzer[]{new FirstReadQualityDistribution(), new LengthDistribution(), new NucleotideDistribution(), new GCDistribution()};
+            }
         } else {
             return new Analyzer[]{new LengthDistribution(), new NucleotideDistribution(), new GCDistribution()};
         }

@@ -55,8 +55,66 @@ public class GCDistribution implements Analyzer<DNASequenceI> {
         float f = 100f * (gc / (at + gc));
         GC[Math.round(f)]++;
         cnt++;
-
     }
+
+    @Override
+    public void addPair(DNASequenceI seq1, DNASequenceI seq2) {
+         byte[] dna = seq1.getSequence();
+
+        float at = 0;
+        float gc = 0;
+        for (int i = 0; i < dna.length; i++) {
+            switch (dna[i]) {
+                case 'A':
+                    at++;
+                    break;
+                case 'T':
+                    at++;
+                    break;
+                case 'G':
+                    gc++;
+                    break;
+                case 'C':
+                    gc++;
+                    break;
+                case 'N':
+                    break;
+                default:
+                    break;
+                    //System.err.println(new String(dna));
+            }
+        }
+        
+        dna = seq2.getSequence();
+
+        for (int i = 0; i < dna.length; i++) {
+            switch (dna[i]) {
+                case 'A':
+                    at++;
+                    break;
+                case 'T':
+                    at++;
+                    break;
+                case 'G':
+                    gc++;
+                    break;
+                case 'C':
+                    gc++;
+                    break;
+                case 'N':
+                    break;
+                default:
+                    break;
+                    //System.err.println(new String(dna));
+            }
+        }
+        
+        float f = 100f * (gc / (at + gc));
+        GC[Math.round(f)]++;
+        cnt++;
+    }
+    
+    
 
     @Override
     public QCResult get() {

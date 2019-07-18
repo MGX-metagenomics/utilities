@@ -35,6 +35,12 @@ public class NucleotideDistribution implements Analyzer<DNASequenceI> {
     }
 
     @Override
+    public void addPair(DNASequenceI seq1, DNASequenceI seq2) {
+        // nucleotide histogram is only computed for the first 100 bp
+        add(seq1);
+    }
+
+    @Override
     public synchronized void add(DNASequenceI seq) {
         byte[] dna = seq.getSequence();
         if (dna.length > maxLen) {
