@@ -240,7 +240,7 @@ message ToolDTO {
     optional float version = 4;
     required string author = 5;
     optional string url = 6;
-    optional string xml = 7;
+    optional string content = 7;
     enum ToolScope {
         READ = 0;
         ASSEMBLY = 1;
