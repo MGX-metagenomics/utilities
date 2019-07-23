@@ -1,11 +1,8 @@
 package de.cebitec.mgx.seqstorage;
 
-import static de.cebitec.mgx.seqstorage.encoding.FileMagic.lineSeparator;
 import de.cebitec.mgx.sequence.DNAQualitySequenceI;
 import de.cebitec.mgx.sequence.SeqStoreException;
 import de.cebitec.mgx.sequence.SeqWriterI;
-import java.io.BufferedOutputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 
 /**
