@@ -18,6 +18,11 @@ public class FirstReadQualityDistribution extends QualityDistributionBase {
     }
 
     @Override
+    public String getName() {
+        return "Forward read quality";
+    }
+
+    @Override
     public void addPair(DNAQualitySequenceI seq1, DNAQualitySequenceI seq2) {
         add(seq1);
     }

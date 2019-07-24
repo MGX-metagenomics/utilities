@@ -8,11 +8,11 @@ import java.util.*;
  *
  * @author Patrick Blumenkamp
  */
-public class QualityDistributionBase implements Analyzer<DNAQualitySequenceI>{
+public abstract class QualityDistributionBase implements Analyzer<DNAQualitySequenceI>{
 
     private static final int STARTLENGTH = 2_000;
     
-    public static final String NAME = "Sequence quality";
+    //public static final String NAME = "Sequence quality";
     
     private long[] count = new long[STARTLENGTH];
     private double[] mean = new double[STARTLENGTH];
@@ -31,10 +31,10 @@ public class QualityDistributionBase implements Analyzer<DNAQualitySequenceI>{
         Arrays.fill(skOld, 0);
     }
     
-    @Override
-    public String getName() {
-        return NAME;
-    }
+//    @Override
+//    public String getName() {
+//        return NAME;
+//    }
 
     @Override
     public void add(DNAQualitySequenceI seq) {

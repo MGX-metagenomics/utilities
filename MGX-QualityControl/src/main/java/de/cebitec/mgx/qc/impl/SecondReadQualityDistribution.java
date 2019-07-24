@@ -18,6 +18,11 @@ public class SecondReadQualityDistribution extends QualityDistributionBase {
     }
 
     @Override
+    public String getName() {
+        return "Reverse read quality";
+    }
+    
+    @Override
     public void addPair(DNAQualitySequenceI seq1, DNAQualitySequenceI seq2) {
         add(seq2);
     }
