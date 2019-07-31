@@ -17,7 +17,7 @@ public class PairedEndFASTQWriter implements SeqWriterI<DNAQualitySequenceI> {
 
     public PairedEndFASTQWriter(String filename, QualityEncoding qualityEncoding) throws SeqStoreException {
         int idx = filename.lastIndexOf(".");
-        String prefix = filename.substring(0, idx - 1);
+        String prefix = filename.substring(0, idx);
         String suffix = filename.substring(idx);
         first = new FASTQWriter(prefix + "_R1" + suffix, qualityEncoding);
         second = new FASTQWriter(prefix + "_R2" + suffix, qualityEncoding);
