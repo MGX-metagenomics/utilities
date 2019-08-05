@@ -502,6 +502,7 @@ message BinDTO {
     required uint64 n50 = 6;
     optional string taxonomy = 7;
     optional int32 predicted_cds = 8;
+    optional uint64 total_bp = 9;
 }
 
 message BinDTOList {
@@ -515,6 +516,7 @@ message ContigDTO {
     required float gc = 4;
     required int32 coverage = 5;
     required uint64 bin_id = 6;
+    optional int32 number_cDS = 7;
 }
 
 message ContigDTOList {
