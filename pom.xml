@@ -50,7 +50,8 @@
         <module>MGX-dispatcher-common</module>
         <module>MGX-common</module>
     <module>RESTEasy-OSGi</module>
-  </modules>
+        <module>DNAUtils</module>
+    </modules>
     
     <build>
         <pluginManagement>
