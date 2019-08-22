@@ -11,8 +11,39 @@ package de.cebitec.mgx.dnautils;
  */
 public class DNAUtils {
 
+    // genetic code 11
+    private final static String AAs = "FFLLSSSSYY**CC*WLLLLPPPPHHQQRRRRIIIMTTTTNNKKSSRRVVVVAAAADDEEGGGG";
+    private final static String Starts = "---M------**--*----M------------MMMM---------------M------------";
+    private final static String Base1 = "TTTTTTTTTTTTTTTTCCCCCCCCCCCCCCCCAAAAAAAAAAAAAAAAGGGGGGGGGGGGGGGG";
+    private final static String Base2 = "TTTTCCCCAAAAGGGGTTTTCCCCAAAAGGGGTTTTCCCCAAAAGGGGTTTTCCCCAAAAGGGG";
+    private final static String Base3 = "TCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAG";
+    
+    private static char codonToAA(String codon) {
+        if (codon.length() != 3) {
+            return 'X';
+        }
+        int i = 0;
+        while (i < Base1.length()) {
+            if (codon.charAt(0) == Base1.charAt(i)
+                    && codon.charAt(1) == Base2.charAt(i)
+                    && codon.charAt(2)== Base3.charAt(i)) {
+                return AAs.charAt(i);
+//                return (Starts.charAt(i) != '-')
+//                        ? Starts.charAt(i)
+//                        : AAs.charAt(i);
+            }
+            i++;
+        }
+        return 'X';
+    }
+
     public static String translate(String dna) {
-        return dna;
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < dna.length() - 2; i+= 3) {
+            String codon = dna.substring(i, i + 3);
+            builder.append(codonToAA(codon));
+        }
+        return builder.toString();
     }
 
     public static String reverseComplement(String dna) {
