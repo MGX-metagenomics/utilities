@@ -11,6 +11,10 @@ package de.cebitec.mgx.dnautils;
  */
 public class DNAUtils {
 
+    public static String translate(String dna) {
+        return dna;
+    }
+
     public static String reverseComplement(String dna) {
         StringBuilder builder = new StringBuilder();
 
