@@ -559,3 +559,14 @@ message GeneCoverageDTOList {
     repeated GeneCoverageDTO gene_coverage = 1;
 }
 
+message GeneObservationDTO {
+    required int32 start = 1;
+    required int32 stop = 2;
+    required string attribute_name = 3;
+    required string attribute_type_value = 4;
+}
+
+message GeneObservationDTOList {
+    repeated GeneObservationDTO observation = 1;
+}
+
