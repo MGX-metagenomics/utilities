@@ -296,16 +296,16 @@ message JobParameterListDTO {
 message JobDTO {
   uint64 id = 1;
   repeated uint64 seqrun = 2;
-  //uint64 seqrun_id = 2;
-  uint64 tool_id = 3;
-  string creator = 4;
+  uint64 assembly_id = 3;
+  uint64 tool_id = 4;
+  string creator = 5;
 
   // unix timestamp
-  uint64 startDate = 5;
-  uint64 finishDate = 6;
+  uint64 startDate = 6;
+  uint64 finishDate = 7;
 
-  JobState state = 7;
-  JobParameterListDTO parameters = 8;
+  JobState state = 8;
+  JobParameterListDTO parameters = 9;
 }
 
 message JobDTOList  {
