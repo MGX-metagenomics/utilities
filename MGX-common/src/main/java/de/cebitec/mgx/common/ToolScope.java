@@ -12,7 +12,8 @@ package de.cebitec.mgx.common;
 public enum ToolScope {
     
     READ(0),
-    ASSEMBLY(1);
+    ASSEMBLY(1),
+    GENE_ANNOTATION(2);
 
     private final int code;
 
