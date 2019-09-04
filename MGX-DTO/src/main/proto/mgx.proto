@@ -504,6 +504,7 @@ message BinDTO {
     string taxonomy = 7;
     int32 predicted_cds = 8;
     uint64 total_bp = 9;
+    int32 num_contigs = 10;
 }
 
 message BinDTOList {
