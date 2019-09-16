@@ -245,6 +245,7 @@ message ToolDTO {
     enum ToolScope {
         READ = 0;
         ASSEMBLY = 1;
+        GENE_ANNOTATION = 2;
     }
     ToolScope scope = 8;
 }
