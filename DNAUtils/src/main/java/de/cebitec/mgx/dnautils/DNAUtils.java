@@ -17,7 +17,7 @@ public class DNAUtils {
     private final static String Base1 = "TTTTTTTTTTTTTTTTCCCCCCCCCCCCCCCCAAAAAAAAAAAAAAAAGGGGGGGGGGGGGGGG";
     private final static String Base2 = "TTTTCCCCAAAAGGGGTTTTCCCCAAAAGGGGTTTTCCCCAAAAGGGGTTTTCCCCAAAAGGGG";
     private final static String Base3 = "TCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAG";
-    
+
     private static char codonToAA(String codon) {
         if (codon.length() != 3) {
             return 'X';
@@ -26,11 +26,8 @@ public class DNAUtils {
         while (i < Base1.length()) {
             if (codon.charAt(0) == Base1.charAt(i)
                     && codon.charAt(1) == Base2.charAt(i)
-                    && codon.charAt(2)== Base3.charAt(i)) {
+                    && codon.charAt(2) == Base3.charAt(i)) {
                 return AAs.charAt(i);
-//                return (Starts.charAt(i) != '-')
-//                        ? Starts.charAt(i)
-//                        : AAs.charAt(i);
             }
             i++;
         }
@@ -39,7 +36,7 @@ public class DNAUtils {
 
     public static String translate(String dna) {
         StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < dna.length() - 2; i+= 3) {
+        for (int i = 0; i < dna.length() - 2; i += 3) {
             String codon = dna.substring(i, i + 3);
             builder.append(codonToAA(codon));
         }
