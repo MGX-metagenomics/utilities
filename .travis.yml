@@ -31,7 +31,9 @@ script:
   - mvn clean install
 
 after_success: |
-  mvn deploy -Dregistry=https://maven.pkg.github.com/MGX-metagenomics -Dtoken=GH_TOKEN
+  cp .travis/settings.xml ${HOME}/.m2
+  sed -i "s,TOKEN,${PKG_DEPLOY_TOKEN},g" ${HOME}/.m2/settings.xml
+  mvn deploy
   if [ -n "$GITHUB_API_KEY" ]; then
     cd "$TRAVIS_BUILD_DIR"
     # fetch KEGG data
