@@ -18,11 +18,11 @@ message MGXStringList {
 }
 
 message MGXLong {
-  uint64 value = 1;
+  sint64 value = 1;
 }
 
 message MGXLongList {
-  repeated uint64 long = 1;
+  repeated sint64 long = 1;
 }
 
 message MGXDouble {
@@ -57,10 +57,10 @@ message ChoicesDTO {
 // ontology repository
 
 message TermDTO {
-    uint64 id = 1;
+    sint64 id = 1;
     string name = 2;
     string description = 3;
-    uint64 parent_id = 4;
+    sint64 parent_id = 4;
 }
 
 message TermDTOList {
@@ -72,7 +72,7 @@ message TermDTOList {
 // attributetype
 
 message AttributeTypeDTO {
-  uint64 id = 1;
+  sint64 id = 1;
   string name = 2;
   string value_type = 3;   //  D: discrete, N: numeric
   string structure = 4;    //  B: basic, H: hierarchical
@@ -85,11 +85,11 @@ message AttributeTypeDTOList {
 // attribute
 
 message AttributeDTO {
-  uint64 id = 1;
-  uint64 attribute_type_id = 2;
+  sint64 id = 1;
+  sint64 attribute_type_id = 2;
   string value = 3;
-  uint64 jobid = 4;
-  uint64 parent_id = 5;
+  sint64 job_id = 4;
+  sint64 parent_id = 5;
 }
 
 message AttributeDTOList {
@@ -133,9 +133,9 @@ message ObservationDTOList {
 // bulk observation import for eval module
 
 message BulkObservationDTO {
-    uint64 seqrun_id = 1;
+    sint64 seqrun_id = 1;
     string seq_name = 2;
-    uint64 attribute_id = 3;
+    sint64 attribute_id = 3;
     int32 start = 4;
     int32 stop = 5;
 }
@@ -147,7 +147,7 @@ message BulkObservationDTOList {
 
 // Habitat
 message HabitatDTO {
-    uint64 id = 1;
+    sint64 id = 1;
     string name = 2;
     double gps_latitude = 3;
     double gps_longitude = 4;
@@ -162,9 +162,9 @@ message HabitatDTOList  {
 
 // Sample
 message SampleDTO {
-    uint64 id = 1;
-    uint64 habitatId = 2;
-    uint64 collectiondate = 3;
+    sint64 id = 1;
+    sint64 habitat_id = 2;
+    sint64 collectiondate = 3;
     string material = 4;
     double temperature = 5;
     int32 volume = 6;
@@ -179,8 +179,8 @@ message SampleDTOList {
 // DNAExtract
 
 message DNAExtractDTO {
-    uint64 id = 1;
-    uint64 sample_id = 2;
+    sint64 id = 1;
+    sint64 sample_id = 2;
     string name = 3;
     string method = 4;
     string protocolName = 5;
@@ -202,8 +202,8 @@ message DNAExtractDTOList {
 // SeqRun
 
 message SeqRunDTO {
-    uint64 id = 1;
-    uint64 extract_id = 2;
+    sint64 id = 1;
+    sint64 extract_id = 2;
     string name = 3;
     bool submitted_to_insdc = 4;
     string accession = 5;
@@ -220,7 +220,7 @@ message SeqRunDTOList {
 // Sequence
 
 message SequenceDTO {
-  uint64 id = 1;
+  sint64 id = 1;
   string name = 2;
   string sequence = 3;
   bytes quality = 4;
@@ -235,7 +235,7 @@ message SequenceDTOList {
 
 // Tool
 message ToolDTO {
-    uint64 id = 1;
+    sint64 id = 1;
     string name = 2;
     string description = 3;
     float version = 4;
@@ -261,8 +261,8 @@ message ToolDTOList  {
 
 
 message JobParameterDTO {
-    uint64 id = 1;
-    uint64 node_id = 2;
+    sint64 id = 1;
+    sint64 node_id = 2;
     string user_name = 3;
     string user_desc = 4;
 
@@ -295,10 +295,10 @@ message JobParameterListDTO {
  }
 
 message JobDTO {
-  uint64 id = 1;
+  sint64 id = 1;
   repeated uint64 seqrun = 2;
-  uint64 assembly_id = 3;
-  uint64 tool_id = 4;
+  sint64 assembly_id = 3;
+  sint64 tool_id = 4;
   string creator = 5;
 
   // unix timestamp
@@ -326,7 +326,7 @@ message JobsAndAttributeTypesDTO {
 
 // reference
 message ReferenceDTO {
-    uint64 id = 1;
+    sint64 id = 1;
     string name = 2;
     int32 length = 3;
 }
@@ -336,7 +336,7 @@ message ReferenceDTOList  {
 }
 
 message RegionDTO {
-    uint64 id = 1;
+    sint64 id = 1;
     string name = 2;
     string description = 3;
     int32 start = 4;
@@ -349,10 +349,10 @@ message RegionDTOList  {
 }
 
 message MappingDTO {
-     uint64 id = 1;
-     uint64 run_id = 2;
-     uint64 reference_id = 3;
-     uint64 job_id = 4;
+     sint64 id = 1;
+     sint64 run_id = 2;
+     sint64 reference_id = 3;
+     sint64 job_id = 4;
 }
 
 message MappingDTOList  {
@@ -360,7 +360,7 @@ message MappingDTOList  {
 }
 
 message MappedSequenceDTO {
-    uint64 seq_id = 1;
+    sint64 seq_id = 1;
     int32 start = 2;
     int32 stop = 3;
     float identity = 4;
@@ -484,9 +484,9 @@ message QCResultDTOList {
 // metagenome assembly
 
 message AssemblyDTO {
-    uint64 id = 1;
+    sint64 id = 1;
     string name = 2;
-    uint64 job_id = 3;
+    sint64 job_id = 3;
     uint64 reads_assembled = 4;
     uint64 n50 = 5;
 }
@@ -496,11 +496,11 @@ message AssemblyDTOList {
 }
 
 message BinDTO {
-    uint64 id = 1;
+    sint64 id = 1;
     string name = 2;
     float completeness = 3;
     float contamination = 4;
-    uint64 assembly_id = 5;
+    sint64 assembly_id = 5;
     uint64 n50 = 6;
     string taxonomy = 7;
     int32 predicted_cds = 8;
@@ -513,12 +513,12 @@ message BinDTOList {
 }
 
 message ContigDTO {
-    uint64 id = 1;
+    sint64 id = 1;
     string name = 2;
     int32 length_bp = 3;
     float gc = 4;
     int32 coverage = 5;
-    uint64 bin_id = 6;
+    sint64 bin_id = 6;
     int32 number_cDS = 7;
 }
 
@@ -527,9 +527,9 @@ message ContigDTOList {
 }
 
 message AssemblyJobDTO {
-    uint64 id = 1;
+    sint64 id = 1;
     string created_by = 2;
-    repeated uint64 seqrun = 3;
+    repeated sint64 seqrun = 3;
     JobState state = 4;
     // unix timestamp
     uint64 startDate = 5;
@@ -541,10 +541,10 @@ message AssemblyJobDTOList {
 }
 
 message GeneDTO {
-    uint64 id = 1;
+    sint64 id = 1;
     int32 start = 2;
     int32 stop = 3;
-    uint64 contig_id = 4;
+    sint64 contig_id = 4;
     int32 coverage = 5;
 }
 
@@ -553,8 +553,8 @@ message GeneDTOList {
 }
 
 message GeneCoverageDTO {
-    uint64 gene_id = 1;
-    uint64 run_id = 2;
+    sint64 gene_id = 1;
+    sint64 run_id = 2;
     int32 coverage = 3;
 }
 
