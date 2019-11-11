@@ -573,3 +573,15 @@ message GeneObservationDTOList {
     repeated GeneObservationDTO observation = 1;
 }
 
+// used by annotation service
+message GeneAnnotationDTO {
+    int32 start = 1;
+    int32 stop = 2;
+    sint64 attribute_id = 3;
+    sint64 gene_id = 4;
+}
+
+message GeneAnnotationDTOList {
+    repeated GeneAnnotationDTO annotation = 1;
+}
+
