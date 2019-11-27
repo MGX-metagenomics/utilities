@@ -37,9 +37,9 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>net.dongliu</groupId>
-                <artifactId>maven-protoc-plugin</artifactId>
-                <version>0.3.5</version>
+                <groupId>org.xolstice.maven.plugins</groupId>
+                <artifactId>protobuf-maven-plugin</artifactId>
+                <version>0.6.1</version>
                 <executions>
                     <execution>
                         <goals>
@@ -61,14 +61,8 @@
         <dependency>
             <groupId>com.google.protobuf</groupId>
             <artifactId>protobuf-java</artifactId>
-            <version>3.7.1</version>
+            <version>3.11.0</version>
         </dependency>
     </dependencies>
 
-    <!-- <pluginRepositories>
-        <pluginRepository>
-            <id>dtrott</id>
-            <url>http://maven.davidtrott.com/repository</url>
-        </pluginRepository>
-    </pluginRepositories> -->
 </project>
