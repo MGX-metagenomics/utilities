@@ -9,7 +9,7 @@ dist: bionic
 
 sudo: required
 
-jdk: oraclejdk8
+jdk: oraclejdk11
 
 branches:
   only:
