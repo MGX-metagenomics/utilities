@@ -24,8 +24,9 @@ env:
   - TARGET_REPO="github.com/MGX-metagenomics/MGX-gui.git"
 
 before_install:
+  - sudo add-apt-repository -y ppa:maarten-fonville/protobuf
   - sudo apt-get update -qq
-  - sudo apt-get install -qq protobuf-compiler
+  - sudo apt-get install -qq protobuf
 
 script:
   - mvn clean install
