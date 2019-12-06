@@ -13,7 +13,7 @@ jdk: oraclejdk8
 
 branches:
   only:
-    - master
+    - utilities_2_0
 
 cache:
   directories:
@@ -36,7 +36,7 @@ after_success: |
     cd "$TRAVIS_BUILD_DIR"
     # fetch KEGG data
     cd KEGG-Pathways/target && java -jar KEGG-Pathways-1.0.jar
-    git clone git://${TARGET_REPO}
+    git clone -b MGX_gui_2_0 git://${TARGET_REPO}
     SRC=/tmp/kegg/kegg.mv.db
     TRG="MGX-gui/MGX-KeggViewer/src/main/resources/de/cebitec/mgx/gui/keggviewer/kegg.mv.db"
     if [ ! $(cmp -s ${SRC} ${TRG} ) ]; then
