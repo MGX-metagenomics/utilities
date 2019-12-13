@@ -35,6 +35,7 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.imageio.ImageIO;
+import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
@@ -125,6 +126,10 @@ public class PathwayAccess extends AccessBase {
                 setValid(PATHWAYS);
             }
         } catch (IOException | SQLException | InterruptedException ex) {
+            Exception ex1 = ex;
+            while (ex1.getCause() != null && ex1.getCause() instanceof Exception) {
+                ex1 = (Exception) ex1.getCause();
+            }
             throw new KEGGException(ex);
         } finally {
             rwl.writeLock().unlock();
@@ -151,11 +156,15 @@ public class PathwayAccess extends AccessBase {
                 copyFile(tmpFile, cacheFile);
                 tmpFile.delete();
             }
-        } catch (IOException ex) {
+        } catch (IOException | ProcessingException ex) {
             if (cacheFile.exists()) {
                 cacheFile.delete();
             }
-            throw new KEGGException(ex);
+            Exception ex1 = ex;
+            while (ex1.getCause() != null && ex1.getCause() instanceof Exception) {
+                ex1 = (Exception) ex1.getCause();
+            }
+            throw new KEGGException(ex1.getMessage());
         }
     }
 
@@ -183,56 +192,6 @@ public class PathwayAccess extends AccessBase {
         return img;
     }
 
-//    private int getPathwayID(final PathwayI pw) {
-//        final Result<Integer> ret = new Result<>(-1);
-//        getMaster().doSQL(new SQLWrapper(getMaster()) {
-//            @Override
-//            public void doSQL(Connection conn) throws KEGGException {
-//                 validate the pathway itself
-//                try (PreparedStatement stmt = conn.prepareStatement("SELECT id FROM pathway WHERE mapnum=?")) {
-//                    stmt.setString(1, pw.getMapNum());
-//                    try (ResultSet rs = stmt.executeQuery()) {
-//                        if (rs.next()) {
-//                            ret.set(rs.getInt(1));
-//                        }
-//                    }
-//                } catch (SQLException ex) {
-//                    throw new KEGGException(ex.getMessage());
-//                }
-//                if (ret.get() == -1) {
-//                    throw new KEGGException("No such pathway: " + pw.getMapNum());
-//                }
-//            }
-//        });
-//        return ret.get();
-//    }
-//
-//    private int getECNumberID(Connection conn, ECNumberI ecNum) throws SQLException {
-//        int ec_id = -1;
-//        try (PreparedStatement stmt = conn.prepareStatement(SELECT_EC)) {
-//            stmt.setString(1, ecNum.getNumber());
-//            try (ResultSet rs = stmt.executeQuery()) {
-//                if (rs.next()) {
-//                    ec_id = rs.getInt(1);
-//                }
-//            }
-//        }
-//        if (ec_id == -1) {
-//            try (PreparedStatement stmt = conn.prepareStatement(INSERT_EC)) {
-//                stmt.setString(1, ecNum.getNumber());
-//                stmt.executeUpdate();
-//                try (PreparedStatement stmt2 = conn.prepareStatement("SELECT id FROM ecnumber WHERE number=?")) {
-//                    stmt2.setString(1, ecNum.getNumber());
-//                    try (ResultSet rs = stmt2.executeQuery()) {
-//                        if (rs.next()) {
-//                            ec_id = rs.getInt(1);
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//        return ec_id;
-//    }
     public Map<ECNumberI, Collection<Rectangle>> getCoords(final PathwayI pw) throws KEGGException {
 
         if (!isValid(PATHWAYS)) {
@@ -247,14 +206,14 @@ public class PathwayAccess extends AccessBase {
         // fetch from db
         final Map<ECNumberI, Collection<Rectangle>> ret = new HashMap<>();
         try (Connection conn = getMaster().getConnection()) {
-            
+
             try {
                 rwl.readLock().lockInterruptibly();
             } catch (InterruptedException ex) {
                 Logger.getLogger(PathwayAccess.class.getName()).log(Level.SEVERE, null, ex);
                 return null;
             }
-            
+
             try (PreparedStatement stmt = conn.prepareStatement("SELECT ec_num, x, y, width, height FROM coords WHERE pw_num=?")) {
                 stmt.setString(1, pw.getMapNumber());
                 try (ResultSet rs = stmt.executeQuery()) {
@@ -325,7 +284,6 @@ public class PathwayAccess extends AccessBase {
 
                         Matcher matcher = ecNumber.matcher(titleString);
                         if (matcher.find()) {
-//                            ECNumberI ecNum = new ECNumber(titleString.substring(matcher.start(), matcher.end()));
                             ECNumberI ecNum = ECNumberFactory.fromString(titleString.substring(matcher.start(), matcher.end()));
                             if (data.containsKey(ecNum)) {
                                 data.get(ecNum).add(rect);
@@ -339,11 +297,15 @@ public class PathwayAccess extends AccessBase {
                 }
             }
         } catch (IOException ex) {
+            Exception ex1 = ex;
+            while (ex1.getCause() != null && ex1.getCause() instanceof Exception) {
+                ex1 = (Exception) ex1.getCause();
+            }
             throw new KEGGException(ex);
         }
         // save to db
         try (Connection conn = getMaster().getConnection()) {
-            
+
             rwl.writeLock().lockInterruptibly();
 
             // re-check validity after entering critical section
@@ -367,12 +329,12 @@ public class PathwayAccess extends AccessBase {
 
         try (Connection conn = getMaster().getConnection()) {
             rwl.writeLock().lockInterruptibly();
-            
+
             // re-check validity after entering critical section
             if (isValid(pw)) {
                 return;
             }
-            
+
             for (Entry<ECNumberI, Set<Rectangle>> e : data.entrySet()) {
                 try (PreparedStatement stmt = conn.prepareStatement(INSERT_COORD)) {
                     for (Rectangle rect : e.getValue()) {
@@ -470,15 +432,14 @@ public class PathwayAccess extends AccessBase {
             throw new KEGGException(ex);
         }
 
-        StringBuilder sql = new StringBuilder()
-                .append("SELECT DISTINCT mapnum, name FROM pathway LEFT JOIN coords ON (pathway.mapnum=coords.pw_num) WHERE coords.ec_num IN (")
-                .append(join(ecs, ",", "'"))
-                .append(")");
+        String sql = "SELECT DISTINCT mapnum, name FROM pathway LEFT JOIN coords ON (pathway.mapnum=coords.pw_num) WHERE coords.ec_num IN ("
+                + join(ecs, ",", "'")
+                + ")";
 
         final Set<PathwayI> ret = new HashSet<>();
 
         try (Connection conn = getMaster().getConnection()) {
-            try (PreparedStatement stmt = conn.prepareStatement(sql.toString())) {
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                 try (ResultSet rs = stmt.executeQuery()) {
                     while (rs.next()) {
                         ret.add(new Pathway(rs.getString(1), rs.getString(2)));

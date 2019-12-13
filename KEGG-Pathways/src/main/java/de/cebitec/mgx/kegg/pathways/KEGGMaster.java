@@ -16,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ws.rs.client.Client;
@@ -64,9 +65,13 @@ public class KEGGMaster implements AutoCloseable {
         //ClientConfig cc = new ClientConfig();
         //cc.getProperties().put(ClientConfig.PROPERTY_THREADPOOL_SIZE, 30);
         restclient = ClientBuilder.newBuilder()
-                  //  .withConfig(cc)
+                .connectTimeout(5, TimeUnit.SECONDS)
+                .readTimeout(10, TimeUnit.SECONDS)
+                //  .withConfig(cc)
                 .build();
         keggclient = ClientBuilder.newBuilder()
+                .connectTimeout(5, TimeUnit.SECONDS)
+                .readTimeout(10, TimeUnit.SECONDS)
                 //    .withConfig(cc)
                 .build();
         File f = new File(cacheDir);

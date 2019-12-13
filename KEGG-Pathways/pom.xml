@@ -37,6 +37,7 @@
                             javax.imageio,
                             javax.ws.rs.client,
                             javax.ws.rs.core,
+                            javax.ws.rs,
                             org.jfree.graphics2d.svg
                         </Import-Package>
                         <Export-Package>

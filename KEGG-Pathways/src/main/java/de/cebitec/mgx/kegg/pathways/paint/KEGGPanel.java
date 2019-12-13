@@ -63,7 +63,10 @@ public class KEGGPanel extends JComponent {
         try {
             image = worker.get();
         } catch (InterruptedException | ExecutionException ex) {
-            Logger.getLogger(KEGGPanel.class.getName()).log(Level.SEVERE, null, ex);
+            //Logger.getLogger(KEGGPanel.class.getName()).log(Level.SEVERE, null, ex);
+            if (ex.getCause() instanceof KEGGException) {
+                throw (KEGGException) ex.getCause();
+            }
             throw new KEGGException(ex);
         }
         int width = image.getWidth();
