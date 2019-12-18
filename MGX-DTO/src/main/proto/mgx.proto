@@ -419,7 +419,7 @@ message BytesDTO {
 message SearchRequestDTO {
     string term = 1;
     bool exact = 2;
-    repeated uint64 seqrun_id = 3;
+    uint64 seqrun_id = 3;
 }
 
 message SearchResultDTO {
