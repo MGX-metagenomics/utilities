@@ -23,7 +23,7 @@ public class MGXOptions {
                 testUtils(),
                 gpmsBundles(),
                 seqIOBundles(),
-                serviceLoaderBundles(),
+//                serviceLoaderBundles(),
                 mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-parallelPropChange").version("2.0"),
                 mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-common").version("2.0"),
                 mavenBundle().groupId("de.cebitec.mgx").artifactId("Trove-OSGi").version("2.0"),
@@ -48,7 +48,7 @@ public class MGXOptions {
                 mavenBundle().groupId("org.jboss.spec.javax.ws.rs").artifactId("jboss-jaxrs-api_2.1_spec").version("1.0.2.Final"),
                 mavenBundle().groupId("javax.enterprise").artifactId("cdi-api").version("1.2"),
                 mavenBundle().groupId("javax.el").artifactId("javax.el-api").version("3.0.0"),
-                mavenBundle().groupId("io.smallrye").artifactId("smallrye-config").version("1.3.3"),
+                //mavenBundle().groupId("org.apache.geronimo.config").artifactId("geronimo-config-impl").version("1.0"),
                 mavenBundle().groupId("org.eclipse.microprofile.config").artifactId("microprofile-config-api").version("1.3"),
                 mavenBundle().groupId("com.google.protobuf").artifactId("protobuf-java").version("3.11.0"),
                 mavenBundle().groupId("com.google.guava").artifactId("failureaccess").version("1.0.1"),
@@ -73,11 +73,11 @@ public class MGXOptions {
         );
     }
 
-    public static CompositeOption serviceLoaderBundles() {
-        return new DefaultCompositeOption(
-                mavenBundle().groupId("org.apache.aries.spifly").artifactId("org.apache.aries.spifly.dynamic.bundle").version("1.0.1"),
-                mavenBundle().groupId("org.apache.aries").artifactId("org.apache.aries.util").version("1.0.0"),
-                mavenBundle().groupId("org.ow2.asm").artifactId("asm-debug-all").version("5.0.3"));
-    }
+//    public static CompositeOption serviceLoaderBundles() {
+//        return new DefaultCompositeOption(
+//                mavenBundle().groupId("org.apache.aries.spifly").artifactId("org.apache.aries.spifly.dynamic.bundle").version("1.0.1"),
+//                mavenBundle().groupId("org.apache.aries").artifactId("org.apache.aries.util").version("1.0.0"),
+//                mavenBundle().groupId("org.ow2.asm").artifactId("asm-debug-all").version("5.0.3"));
+//    }
 
 }
