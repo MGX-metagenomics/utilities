@@ -31,6 +31,16 @@
             <artifactId>resteasy-client</artifactId>
             <version>4.0.0.Final</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpcore-nio</artifactId>
+            <version>4.4.13</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpasyncclient</artifactId>
+            <version>4.1.4</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -60,6 +70,7 @@
                             org.jboss.resteasy.spi.interception, 
                             org.jboss.resteasy.spi.metadata, 
                             org.jboss.resteasy.spi.validation,
+                            org.jboss.resteasy.spi.statistics,
                             org.jboss.resteasy.client.jaxrs.internal.proxy.extractors,
                             org.jboss.resteasy.tracing,
                             org.jboss.resteasy.plugins.server,
@@ -95,7 +106,18 @@
                             org.apache.http.ssl,
                             org.apache.http.impl.entity,
                             org.apache.commons.logging,
-                            org.reactivestreams
+                            org.reactivestreams,
+                            org.apache.http.nio,
+                            org.apache.http.nio.protocol,
+                            org.apache.http.nio.entity,
+                            org.apache.http.nio.util,
+                            org.apache.http.nio.reactor,
+                            org.apache.http.nio.reactor.ssl,
+                            org.apache.http.impl.nio.reactor,
+                            org.apache.http.nio.client,
+                            org.apache.http.nio.conn,
+                            org.apache.http.nio.conn.scheme,
+                            org.apache.http.impl.nio.client
                         </_exportcontents>
                         <Export-Package/> 
                         <Import-Package>
