@@ -6,14 +6,8 @@
 package de.cebitec.mgx.seqstorage;
 
 import de.cebitec.mgx.osgiutils.MGXOptions;
-import static de.cebitec.mgx.seqstorage.FASTQReader.LINEBREAK;
 import de.cebitec.mgx.testutils.TestInput;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.util.ArrayList;
-import java.util.List;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.runner.RunWith;
@@ -42,7 +36,7 @@ public class ByteStreamTokenizerTest {
                 mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-BufferedRandomAccessFile").versionAsInProject(),
                 mavenBundle().groupId("de.cebitec.mgx").artifactId("Trove-OSGi").versionAsInProject(),
                 mavenBundle().groupId("org.apache.commons").artifactId("commons-math3").versionAsInProject(),
-                MGXOptions.serviceLoaderBundles(),
+                //MGXOptions.serviceLoaderBundles(),
                 MGXOptions.testUtils(),
                 systemProperty("org.ops4j.pax.logging.DefaultServiceLog.level").value("WARN"),
                 bundle("reference:file:target/classes")
