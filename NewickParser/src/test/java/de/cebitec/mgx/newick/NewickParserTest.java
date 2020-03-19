@@ -1,9 +1,6 @@
 package de.cebitec.mgx.newick;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.Writer;
-import java.util.Iterator;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

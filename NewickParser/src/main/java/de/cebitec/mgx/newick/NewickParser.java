@@ -23,7 +23,7 @@ public class NewickParser {
 
     public static NodeI parse(InputStream is) throws ParserException {
         try {
-            return new NewickParserImpl(is).tree();
+            return new NewickParserImpl(is, "UTF8").tree();
         } catch (ParseException ex) {
             throw new ParserException(ex);
         }
