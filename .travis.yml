@@ -56,7 +56,7 @@ after_success: |
   fi
   if [ -n "$PKG_DEPLOY_TOKEN" ]; then
     cd "$TRAVIS_BUILD_DIR"
-    mvn deploy -Dregistry=https://maven.pkg.github.com/MGX-metagenomics -Dtoken="$PKG_DEPLOY_TOKEN"
+    mvn deploy -Dregistry=https://maven.pkg.github.com/MGX-metagenomics -Dtoken="$GITHUB_API_KEY"
   else 
     echo "No deploy token available."
   fi
