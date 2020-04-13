@@ -53,7 +53,7 @@ public class AccessBase {
     protected void catchException(final Response res) throws KEGGException {
         if (Response.Status.fromStatusCode(res.getStatus()) != Response.Status.OK) {
             StringBuilder msg = new StringBuilder();
-            try (BufferedReader r = new BufferedReader(new InputStreamReader(res.readEntity(InputStream.class)))) {
+            try ( BufferedReader r = new BufferedReader(new InputStreamReader(res.readEntity(InputStream.class)))) {
                 String buf;
                 while ((buf = r.readLine()) != null) {
                     msg.append(buf);
@@ -115,23 +115,14 @@ public class AccessBase {
     }
 
     protected static void copyFile(File in, File out) throws IOException {
-        FileInputStream fis = new FileInputStream(in);
-        FileOutputStream fos = new FileOutputStream(out);
-        FileChannel inChannel = fis.getChannel();
-        FileChannel outChannel = fos.getChannel();
-        try {
-            inChannel.transferTo(0, inChannel.size(), outChannel);
-        } catch (IOException e) {
-            throw e;
-        } finally {
-            if (inChannel != null) {
-                inChannel.close();
+        try (FileInputStream fis = new FileInputStream(in)) {
+            try (FileOutputStream fos = new FileOutputStream(out)) {
+                try (FileChannel inChannel = fis.getChannel()) {
+                    try (FileChannel outChannel = fos.getChannel()) {
+                        inChannel.transferTo(0, inChannel.size(), outChannel);
+                    }
+                }
             }
-            if (outChannel != null) {
-                outChannel.close();
-            }
-            fis.close();
-            fos.close();
         }
     }
 }
