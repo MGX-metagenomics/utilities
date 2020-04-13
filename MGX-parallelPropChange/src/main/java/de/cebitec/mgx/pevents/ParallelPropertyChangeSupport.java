@@ -15,6 +15,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -25,7 +26,7 @@ import java.util.logging.Logger;
 public class ParallelPropertyChangeSupport extends PropertyChangeSupport implements AutoCloseable {
 
     private volatile static EventDistributor distributor = null;
-    private volatile static int numInstances = 0;
+    private volatile static AtomicInteger numInstances = new AtomicInteger(0);
     private volatile boolean closed = false;
     private final boolean traceErrors;
     private final boolean returnImmediate;
@@ -44,7 +45,7 @@ public class ParallelPropertyChangeSupport extends PropertyChangeSupport impleme
     public ParallelPropertyChangeSupport(Object sourceBean, boolean traceErrors, boolean returnImmediate) {
         super(sourceBean);
         this.source = sourceBean;
-        numInstances++;
+        numInstances.addAndGet(1);
         this.traceErrors = traceErrors;
         this.returnImmediate = returnImmediate;
     }
@@ -245,8 +246,8 @@ public class ParallelPropertyChangeSupport extends PropertyChangeSupport impleme
     public final synchronized void close() {
         if (!closed) {
             closed = true;
-            numInstances--;
-            if (numInstances == 0 && distributor != null) {
+            int remainingInstances = numInstances.addAndGet(-1);
+            if (remainingInstances == 0 && distributor != null) {
                 distributor.close();
                 distributor = null;
             }
