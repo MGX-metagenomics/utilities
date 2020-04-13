@@ -55,6 +55,7 @@ after_success: |
     echo "No GitHub API key found."
   fi
   if [ -n "$PKG_DEPLOY_TOKEN" ]; then
+    cd "$TRAVIS_BUILD_DIR"
     mvn deploy -Dregistry=https://maven.pkg.github.com/MGX-metagenomics -Dtoken="$PKG_DEPLOY_TOKEN"
   else 
     echo "No deploy token available."
