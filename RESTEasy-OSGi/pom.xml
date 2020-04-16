@@ -25,11 +25,10 @@
             <version>7.0.0</version>
             <scope>provided</scope>
         </dependency>
-                
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-client</artifactId>
-            <version>4.0.0.Final</version>
+            <version>4.5.3.Final</version>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
@@ -155,13 +154,6 @@
                     <version>4.0.3</version>
                     <scope>provided</scope>
                 </dependency>
-                <!-- To include a shell:
-                <dependency>
-                    <groupId>org.apache.felix</groupId>
-                    <artifactId>org.apache.felix.gogo.shell</artifactId>
-                    <version>0.10.0</version>
-                </dependency>
-                -->
             </dependencies>
         </profile>
     </profiles>
