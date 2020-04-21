@@ -26,6 +26,7 @@ env:
 before_install:
   - sudo apt-get update -qq
   - sudo apt-get install -qq protobuf-compiler
+  - sudo ln -s /usr/bin/protoc /usr/bin/protoc-2
 
 script:
   - mvn clean install
