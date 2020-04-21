@@ -7,6 +7,10 @@
     <version>2.0</version>
     <packaging>pom</packaging>
     <name>Utilities</name>
+    
+    <scm>
+        <url>https://github.com/mgx-metagenomics/utilities</url>
+    </scm>
 
     <prerequisites>
         <maven>3.5.0</maven>
@@ -50,7 +54,7 @@
         <module>MGX-dispatcher-common-api</module>
         <module>MGX-dispatcher-common</module>
         <module>MGX-common</module>
-    <module>RESTEasy-OSGi</module>
+        <module>RESTEasy-OSGi</module>
         <module>DNAUtils</module>
     </modules>
     
@@ -95,13 +99,13 @@
             </plugins>
         </pluginManagement>
     </build>
-
+    
     <distributionManagement>
         <repository>
             <id>github</id>
-            <name>GitHub Maven Packages</name>
-            <url>https://maven.pkg.github.com/MGX-metagenomics/utilities</url>
+            <name>GitHub mgx-metagenomics Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/mgx-metagenomics/utilities</url>
         </repository>
     </distributionManagement>
-    
+
 </project>
