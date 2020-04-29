@@ -231,6 +231,8 @@ public class FastqTest {
         File f = TestInput.copyTestResource(getClass(), "de/cebitec/mgx/seqstorage/nptest.fq");
         File target = File.createTempFile("testFQWriterxx", null);
         target.delete();
+        
+        long seqId = 1;
         DNAQualitySequenceI seq = null;
         try (FASTQReader fr = new FASTQReader(f.getAbsolutePath(), false)) {
             try (CSQFWriter csq = new CSQFWriter(target.getAbsolutePath())) {
@@ -238,6 +240,7 @@ public class FastqTest {
                     seq = fr.nextElement();
                     fr.hasMoreElements();
                     seq = fr.nextElement();
+                    seq.setId(seqId++);
                     System.out.println(seq.getSequence().length + " " + seq.getQuality().length);
                     csq.addSequence(seq);
                 }
