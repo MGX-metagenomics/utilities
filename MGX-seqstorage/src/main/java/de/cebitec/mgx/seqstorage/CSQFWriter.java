@@ -43,6 +43,11 @@ public class CSQFWriter implements SeqWriterI<DNAQualitySequenceI> {
 
     @Override
     public void addSequence(DNAQualitySequenceI seq) throws SeqStoreException {
+
+        if (seq.getId() <= 0) {
+            throw new SeqStoreException("Sequence IDs <= 0 are not supported.");
+        }
+
         try {
             // save sequence id and offset
             ByteUtils.longsToBytes(seq.getId(), seqout_offset, nmsRecord);
