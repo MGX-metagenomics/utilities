@@ -64,10 +64,6 @@ public class CSFWriter implements SeqWriterI<DNASequenceI> {
             throw new SeqStoreException("Writer has already been closed.");
         }
         
-        if (seq.getId() <= 0) {
-            throw new SeqStoreException("Sequence IDs <= 0 are not supported.");
-        }
-        
         try {
             // save sequence id and offset
             ByteUtils.longsToBytes(seq.getId(), seqout_offset, nmsRecord);

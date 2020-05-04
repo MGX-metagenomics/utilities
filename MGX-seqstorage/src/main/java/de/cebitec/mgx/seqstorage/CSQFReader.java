@@ -5,7 +5,6 @@ import de.cebitec.mgx.seqstorage.encoding.*;
 import de.cebitec.mgx.sequence.*;
 import java.io.*;
 import java.util.*;
-import java.util.zip.GZIPInputStream;
 
 /**
  *
@@ -14,11 +13,10 @@ import java.util.zip.GZIPInputStream;
 public class CSQFReader implements SeqReaderI<DNAQualitySequenceI> {
 
     private InputStream seqin;
-    private InputStream namein;
     private final String csqfile;
     private final String namefile;
     private DNAQualitySequenceI holder = null;
-    private NMSReader idx = null;
+    private final NMSIndex idx;
     private BufferedRandomAccessFile raf = null;
     private byte[] record = new byte[16];
 
@@ -34,21 +32,13 @@ public class CSQFReader implements SeqReaderI<DNAQualitySequenceI> {
         if (gzipCompressed) {
             throw new SeqStoreException("Compressed CSQ format unsupported.");
         }
+        
         csqfile = filename + ".csq";
         namefile = filename;
         try {
-            FileMagic.validateMagic(namefile, FileMagic.NMS_MAGIC);
             FileMagic.validateMagic(csqfile, FileMagic.CSQ_MAGIC);
             seqin = new BufferedInputStream(new FileInputStream(csqfile));
-            if (gzipCompressed) {
-                InputStream gzstream = new GZIPInputStream(new FileInputStream(namefile));
-                namein = new BufferedInputStream(gzstream);
-            } else {
-                namein = new BufferedInputStream(new FileInputStream(namefile));
-            }
-            if (namein.skip(FileMagic.CSQ_MAGIC.length) < FileMagic.CSF_MAGIC.length) {
-                throw new SeqStoreException("Corrupted file " + csqfile);
-            }
+            idx = new NMSIndex(namefile);
         } catch (SeqStoreException | IOException ex) {
             throw new SeqStoreException(ex.getMessage());
         }
@@ -76,9 +66,6 @@ public class CSQFReader implements SeqReaderI<DNAQualitySequenceI> {
         Arrays.sort(ids);
 
         try {
-            if (idx == null) {
-                idx = new NMSReader(namein);
-            }
             if (raf == null) {
                 raf = new BufferedRandomAccessFile(csqfile, "r");
             }
@@ -124,7 +111,7 @@ public class CSQFReader implements SeqReaderI<DNAQualitySequenceI> {
             /*
              * read new element
              */
-            if (namein.read(record) != 16) {
+            if (idx.read(record) != 16) {
                 return false;
             }
 
@@ -151,13 +138,8 @@ public class CSQFReader implements SeqReaderI<DNAQualitySequenceI> {
                 seqin.close();
                 seqin = null;
             }
-            if (namein != null) {
-                namein.close();
-                namein = null;
-            }
             if (idx != null) {
                 idx.close();
-                idx = null;
             }
             if (raf != null) {
                 raf.close();
@@ -208,7 +190,6 @@ public class CSQFReader implements SeqReaderI<DNAQualitySequenceI> {
 
             byte[] encodedQual = ByteUtils.substring(buf, sepPos + 1, sepPos + encodedQualLen);
             byte[] decodedQual = QualityEncoder.decode(encodedQual, decodedSeq.length);
-
 
             QualityDNASequence seq = new QualityDNASequence(id);
             seq.setSequence(decodedSeq);
