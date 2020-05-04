@@ -5,15 +5,11 @@ import de.cebitec.mgx.seqstorage.encoding.*;
 import de.cebitec.mgx.sequence.DNASequenceI;
 import de.cebitec.mgx.sequence.SeqReaderI;
 import de.cebitec.mgx.sequence.SeqStoreException;
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.zip.GZIPInputStream;
 
 /**
  *
@@ -22,11 +18,10 @@ import java.util.zip.GZIPInputStream;
 public class CSFReader implements SeqReaderI<DNASequenceI> {
 
     private final ByteStreamTokenizer seqin;
-    private final InputStream namein;
     private final String csffile;
     private final String namefile;
     private DNASequenceI holder = null;
-    private NMSReader idx = null;
+    private final NMSIndex idx;
     private BufferedRandomAccessFile raf = null;
     private final byte[] record = new byte[16];
 
@@ -38,21 +33,13 @@ public class CSFReader implements SeqReaderI<DNASequenceI> {
         if (gzipCompressed) {
             throw new SeqStoreException("Compressed CSF format unsupported.");
         }
+        
         csffile = filename + ".csf";
         namefile = filename;
         try {
-            FileMagic.validateMagic(namefile, FileMagic.NMS_MAGIC);
             FileMagic.validateMagic(csffile, FileMagic.CSF_MAGIC);
             seqin = new ByteStreamTokenizer(csffile, gzipCompressed, FourBitEncoder.RECORD_SEPARATOR, FileMagic.CSF_MAGIC.length);
-            if (gzipCompressed) {
-                InputStream gzstream = new GZIPInputStream(new FileInputStream(namefile));
-                namein = new BufferedInputStream(gzstream);
-            } else {
-                namein = new BufferedInputStream(new FileInputStream(namefile));
-            }
-            if (namein.skip(FileMagic.CSF_MAGIC.length) < FileMagic.CSF_MAGIC.length) {
-                throw new SeqStoreException("Corrupted file " + csffile);
-            }
+            idx = new NMSIndex(namefile);
         } catch (IOException ex) {
             throw new SeqStoreException(ex.getMessage());
         }
@@ -70,7 +57,7 @@ public class CSFReader implements SeqReaderI<DNASequenceI> {
          * read new element
          */
         try {
-            if (namein.read(record) != 16) {
+            if (idx.read(record) != 16) {
                 return false;
             }
         } catch (IOException ex) {
@@ -108,12 +95,8 @@ public class CSFReader implements SeqReaderI<DNASequenceI> {
             if (seqin != null) {
                 seqin.close();
             }
-            if (namein != null) {
-                namein.close();
-            }
             if (idx != null) {
                 idx.close();
-                idx = null;
             }
             if (raf != null) {
                 raf.close();
@@ -145,9 +128,6 @@ public class CSFReader implements SeqReaderI<DNASequenceI> {
         Arrays.sort(ids);
 
         try {
-            if (idx == null) {
-                idx = new NMSReader(namein);
-            }
             if (raf == null) {
                 raf = new BufferedRandomAccessFile(csffile, "r");
             }
