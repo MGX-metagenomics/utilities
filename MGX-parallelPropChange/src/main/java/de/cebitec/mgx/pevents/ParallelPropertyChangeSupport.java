@@ -15,6 +15,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -188,11 +189,18 @@ public class ParallelPropertyChangeSupport extends PropertyChangeSupport impleme
             super.addPropertyChangeListener(propertyName, new WeakPropertyChangeListener(listener));
         }
     }
+    
+    private volatile PropertyChangeEvent lastEvent = null;
+    private final Semaphore busy = new Semaphore(10);
 
     @Override
     public final void firePropertyChange(PropertyChangeEvent event) {
 
+        busy.acquireUninterruptibly();
+        lastEvent = event;
+        
         if (closed) {
+            busy.release();
             throw new RuntimeException("PropertyChangeSupport has already been closed.");
         }
 
@@ -205,6 +213,7 @@ public class ParallelPropertyChangeSupport extends PropertyChangeSupport impleme
         }
 
         if (listeners.length == 0) {
+            busy.release();
             return;
         }
 
@@ -234,7 +243,7 @@ public class ParallelPropertyChangeSupport extends PropertyChangeSupport impleme
                 aEvent.await();
             }
         }
-
+        busy.release();
     }
 
     private synchronized static void startDistributor() {
@@ -248,6 +257,9 @@ public class ParallelPropertyChangeSupport extends PropertyChangeSupport impleme
 
     @Override
     public final synchronized void close() {
+        
+        busy.acquireUninterruptibly(10);
+        
         if (!closed) {
             closed = true;
             int remainingInstances = numInstances.addAndGet(-1);
@@ -259,13 +271,15 @@ public class ParallelPropertyChangeSupport extends PropertyChangeSupport impleme
             if (traceErrors) {
                 PropertyChangeListener[] propertyChangeListeners = getPropertyChangeListeners();
                 if (propertyChangeListeners != null && propertyChangeListeners.length > 0) {
-                    LOG.log(Level.INFO, "Removing PropertyChangeSupport for source {0} with remaining listeners:", source);
+                    LOG.log(Level.INFO, "Removing PropertyChangeSupport for source {0} (last event: {1}) with remaining listeners:", new Object[]{source, lastEvent == null ? "null" : lastEvent.getPropertyName()});
                     for (PropertyChangeListener pcl : propertyChangeListeners) {
                         LOG.log(Level.INFO, "  {0}", pcl);
                     }
                 }
             }
         }
+        
+        busy.release(10);
     }
 
     private final class WeakPropertyChangeListener implements PropertyChangeListener {
