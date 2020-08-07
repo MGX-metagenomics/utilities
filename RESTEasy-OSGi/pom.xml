@@ -28,7 +28,7 @@
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-client</artifactId>
-            <version>4.5.3.Final</version>
+            <version>4.5.6.Final</version>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
@@ -39,6 +39,20 @@
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpasyncclient</artifactId>
             <version>4.1.4</version>
+        </dependency>
+        
+        <!-- httpclient and httpcore are transitive dependencies of resteasy-client;
+             declare as direct dependency and use newer versions of these
+        -->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.12</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpcore</artifactId>
+            <version>4.4.13</version>
         </dependency>
     </dependencies>
 
@@ -70,9 +84,11 @@
                             org.jboss.resteasy.spi.metadata, 
                             org.jboss.resteasy.spi.validation,
                             org.jboss.resteasy.spi.statistics,
+                            org.jboss.resteasy.statistics,
                             org.jboss.resteasy.client.jaxrs.internal.proxy.extractors,
                             org.jboss.resteasy.tracing,
                             org.jboss.resteasy.plugins.server,
+                            org.jboss.resteasy.util.snapshot,
                             org.apache.http,
                             org.apache.http.conn.scheme, 
                             org.apache.http.entity,
