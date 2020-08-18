@@ -23,6 +23,8 @@ message MGXLong {
 
 message MGXLongList {
   repeated sint64 long = 1;
+  bool complete = 2;
+  string uuid = 3;
 }
 
 message MGXDouble {
