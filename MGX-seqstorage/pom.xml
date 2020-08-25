@@ -38,7 +38,7 @@
                     <execution>
                         <goals>
                             <goal>manifest</goal>
-                         <!--   <goal>wrap</goal> -->
+                            <!--   <goal>wrap</goal> -->
                         </goals>
                     </execution>
                 </executions>
@@ -55,10 +55,10 @@
                             de.cebitec.mgx.seqstorage,
                             de.cebitec.mgx.seqstorage.encoding
                         </Export-Package>
-                        <Private-Package>de.cebitec.mgx.seqstorage.encoding</Private-Package>
-                 <!--       <Require-Capability>osgi.extender; filter:="(osgi.extender=osgi.serviceloader.registrar)"</Require-Capability>
-                        <Provide-Capability>osgi.serviceloader; osgi.serviceloader=de.cebitec.mgx.sequence.FactoryI</Provide-Capability>
-                        -->
+                        <Private-Package>
+                            de.cebitec.mgx.seqstorage.encoding,
+                            de.cebitec.mgx.seqstorage.internal
+                        </Private-Package>
                         <Bundle-Activator>de.cebitec.mgx.seqstorage.Activator</Bundle-Activator>
                     </instructions>
                 </configuration>
