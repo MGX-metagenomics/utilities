@@ -20,24 +20,20 @@ import java.util.Set;
  */
 public class SFFReader implements SeqReaderI<DNAQualitySequenceI> {
 
-    private final de.cebitec.mgx.sffreader.SFFReader reader;
+    private de.cebitec.mgx.sffreader.SFFReader reader = null;
     private final String file;
     private DNAQualitySequenceI holder = null;
 
     public SFFReader(String uri) throws SeqStoreException {
         this(uri, false);
     }
-    
-    public SFFReader(String uri, boolean is_compressed) throws SeqStoreException{
+
+    public SFFReader(String uri, boolean is_compressed) throws SeqStoreException {
         if (is_compressed) {
-            throw new SeqStoreException("Compressed SFF is not supported yet.");
+            throw new SeqStoreException("Compressed SFF is not supported.");
         }
-        this.file = uri;        
-        try {
-            reader = new de.cebitec.mgx.sffreader.SFFReader(uri);
-        } catch (IOException ex) {
-            throw new SeqStoreException("File not found or unreadable: " + file + "\n" + ex.getMessage());
-        }                
+        this.file = uri;
+
     }
 
     @Override
@@ -49,7 +45,7 @@ public class SFFReader implements SeqReaderI<DNAQualitySequenceI> {
     public Set<DNAQualitySequenceI> fetch(long[] ids) throws SeqStoreException {
         Set<DNAQualitySequenceI> res = new HashSet<>(ids.length);
         Set<Long> idList = new HashSet<>(ids.length);
-        for (int i =0; i< ids.length; i++) {
+        for (int i = 0; i < ids.length; i++) {
             idList.add(ids[i]);
         }
         while (hasMoreElements() && !idList.isEmpty()) {
@@ -65,25 +61,37 @@ public class SFFReader implements SeqReaderI<DNAQualitySequenceI> {
         }
         return res;
     }
-    
-    
+
     @Override
     public boolean hasMoreElements() throws SeqStoreException {
-        if (reader.hasMoreElements()){
+
+        if (holder != null) {
+            return true;
+        }
+        
+        if (reader == null) {
+            try {
+                reader = new de.cebitec.mgx.sffreader.SFFReader(file);
+            } catch (IOException ex) {
+                throw new SeqStoreException("File not found or unreadable: " + file + "\n" + ex.getMessage());
+            }
+        }
+
+        if (reader.hasMoreElements()) {
             SFFRead read = reader.nextElement();
 
             QualityDNASequence seq;
-            
+
             seq = new QualityDNASequence();
             seq.setName(read.getName().getBytes());
             seq.setSequence(read.getBases().getBytes());
             seq.setQuality(read.getQuality());
-            
+
             holder = seq;
             return true;
         } else {
             return false;
-        }        
+        }
     }
 
     @Override
@@ -96,7 +104,10 @@ public class SFFReader implements SeqReaderI<DNAQualitySequenceI> {
     @Override
     public final void close() throws SeqStoreException {
         try {
-            reader.close();
+            if (reader == null) {
+                reader.close();
+                reader = null;
+            }
         } catch (IOException ex) {
             throw new SeqStoreException(ex.getMessage());
         }
