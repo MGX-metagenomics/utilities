@@ -53,10 +53,12 @@
                             org.apache.commons.math3.util
                         </Import-Package>
                         <Export-Package>
-                            de.cebitec.mgx.seqstorage,
-                            de.cebitec.mgx.seqstorage.encoding
+                            de.cebitec.mgx.seqstorage
                         </Export-Package>
-                        <Private-Package>de.cebitec.mgx.seqstorage.encoding</Private-Package>
+                        <Private-Package>
+                            de.cebitec.mgx.seqstorage.encoding,
+                            de.cebitec.mgx.seqstorage.internal
+                        </Private-Package>
                  <!--       <Require-Capability>osgi.extender; filter:="(osgi.extender=osgi.serviceloader.registrar)"</Require-Capability>
                         <Provide-Capability>osgi.serviceloader; osgi.serviceloader=de.cebitec.mgx.sequence.FactoryI</Provide-Capability>
                         -->

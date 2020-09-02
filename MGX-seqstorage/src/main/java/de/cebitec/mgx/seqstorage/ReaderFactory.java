@@ -1,5 +1,6 @@
 package de.cebitec.mgx.seqstorage;
 
+import de.cebitec.mgx.seqstorage.internal.FileUtil;
 import de.cebitec.mgx.sequence.DNASequenceI;
 import de.cebitec.mgx.sequence.FactoryI;
 import de.cebitec.mgx.sequence.SeqReaderI;
@@ -38,7 +39,7 @@ public class ReaderFactory implements FactoryI<DNASequenceI> {
         // check for gzip compression
         boolean is_compressed;
         try {
-            is_compressed = GZIP.isGzip(file);
+            is_compressed = FileUtil.isGzip(file);
         } catch (IOException ex) {
             throw new SeqStoreException(ex.getMessage());
         }

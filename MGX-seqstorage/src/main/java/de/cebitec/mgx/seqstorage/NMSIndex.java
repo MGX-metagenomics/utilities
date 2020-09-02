@@ -2,12 +2,10 @@ package de.cebitec.mgx.seqstorage;
 
 import de.cebitec.mgx.seqstorage.encoding.ByteUtils;
 import de.cebitec.mgx.seqstorage.encoding.FileMagic;
+import de.cebitec.mgx.seqstorage.internal.LargeMappedByteBuffer;
 import de.cebitec.mgx.sequence.SeqStoreException;
 import java.io.File;
 import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.nio.MappedByteBuffer;
-import java.nio.channels.FileChannel;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -17,8 +15,7 @@ import java.util.logging.Logger;
  */
 public class NMSIndex {
 
-    private final RandomAccessFile raf;
-    private MappedByteBuffer mapped;
+    private LargeMappedByteBuffer mapped;
     private final byte[] buf = new byte[16];
     private final int numRecords;
 
@@ -30,16 +27,15 @@ public class NMSIndex {
 
     public NMSIndex(File nmsFile) throws IOException, SeqStoreException {
         FileMagic.validateMagic(nmsFile.getAbsolutePath(), FileMagic.NMS_MAGIC);
-        raf = new RandomAccessFile(nmsFile, "r");
-        mapped = raf.getChannel().map(FileChannel.MapMode.READ_ONLY, 0, nmsFile.length());
+        mapped = new LargeMappedByteBuffer(nmsFile);
         numRecords = (int) ((nmsFile.length() - FileMagic.NMS_MAGIC.length) / RECORD_SIZE);
-        
+
         // skip after file magic
         mapped.position(FileMagic.NMS_MAGIC.length);
     }
 
     public int read(byte[] buf) throws IOException {
-        int numBytes = buf.length < mapped.remaining() ? buf.length : mapped.remaining();
+        int numBytes = (int) (buf.length < mapped.remaining() ? buf.length : mapped.remaining());
         mapped.get(buf, 0, numBytes);
         return numBytes;
     }
@@ -57,10 +53,13 @@ public class NMSIndex {
         // read and convert record
         mapped.position(index * RECORD_SIZE + FileMagic.NMS_MAGIC.length);
         mapped.get(buf, 0, buf.length);
-//        long readId = ByteUtils.bytesToLong(buf);
-//        if (readId != id) {
-//            throw new SeqStoreException("ERROR.");
-//        }
+        
+        // sanity check
+        long readId = ByteUtils.bytesToLong(buf);
+        if (readId != id) {
+            throw new SeqStoreException("ERROR.");
+        }
+        
         long offset = ByteUtils.bytesToLong(buf, 8);
         return offset;
     }
@@ -72,7 +71,7 @@ public class NMSIndex {
 
             int midOffset = FileMagic.NMS_MAGIC.length + (midIdx * RECORD_SIZE);
             mapped.position(midOffset);
-            mapped.get(buf, 0, buf.length);
+            mapped.get(buf, 0, 8); // we only need to read the id field
             long readId = ByteUtils.bytesToLong(buf);
 
             // If the element is present at the middle 
@@ -102,9 +101,8 @@ public class NMSIndex {
     }
 
     public void close() {
-        mapped = null;
         try {
-            raf.close();
+            mapped.close();
         } catch (IOException ex) {
             Logger.getLogger(NMSIndex.class.getName()).log(Level.SEVERE, null, ex);
         }
