@@ -16,22 +16,16 @@ import java.util.Set;
  */
 public class FastaReader implements SeqReaderI<DNASequenceI> {
 
-    private final ByteStreamTokenizer stream;
+    private ByteStreamTokenizer stream = null;
     private byte[] buf = null;
     private DNASequenceI seq = null;
     private final String fastafile;
+    private final boolean gzipCompressed;
     public static final byte LINEBREAK = '\n';
 
     public FastaReader(String filename, boolean gzipCompressed) throws SeqStoreException {
         fastafile = filename;
-        try {
-            stream = new ByteStreamTokenizer(fastafile, gzipCompressed, LINEBREAK, 0);
-        } catch (IOException ex) {
-            throw new SeqStoreException("File not found or unreadable: " + fastafile);
-        }
-
-        // read first line
-        buf = stream.hasNext() ? stream.next() : null; // header
+        this.gzipCompressed = gzipCompressed;
     }
 
     @Override
@@ -40,14 +34,23 @@ public class FastaReader implements SeqReaderI<DNASequenceI> {
             return true;
         }
 
-        if (buf.length == 0) {
-            while (buf.length == 0 && stream.hasNext()) {
+        if (stream == null) {
+            try {
+                stream = new ByteStreamTokenizer(fastafile, gzipCompressed, LINEBREAK, 0);
+                buf = stream.hasNext() ? stream.next() : null; // header
+            } catch (IOException ex) {
+                throw new SeqStoreException("File not found or unreadable: " + fastafile);
+            }
+        }
+
+        if (buf == null || buf.length == 0) {
+            while ((buf == null || buf.length == 0) && stream.hasNext()) {
                 buf = stream.next();
             }
         }
 
         // sequence header has to start with '>'
-        if (buf.length == 0 || buf[0] != '>') {
+        if (buf == null || buf.length == 0 || buf[0] != '>') {
             return false;
         }
 
@@ -72,7 +75,6 @@ public class FastaReader implements SeqReaderI<DNASequenceI> {
 //            System.arraycopy(seqname, 0, tmp, 0, trimPos);
 //            seqname = tmp;
 //        }
-
         seq = new DNASequence();
         seq.setName(seqname);
 
@@ -115,7 +117,10 @@ public class FastaReader implements SeqReaderI<DNASequenceI> {
 
     @Override
     public void close() {
-        stream.close();
+        if (stream != null) {
+            stream.close();
+            stream = null;
+        }
     }
 
     @Override

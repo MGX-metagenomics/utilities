@@ -15,8 +15,9 @@ import java.util.Set;
 public class FASTQReader implements SeqReaderI<DNAQualitySequenceI> {
 
     private QualityDNASequence seq = null;
-    private final ByteStreamTokenizer stream;
+    private ByteStreamTokenizer stream = null;
     private final String fastqfile;
+    private final boolean gzipCompressed;
     private QualityEncoding qualityEncoding = null;
     private int qualityOffset = 0;
     public static final byte LINEBREAK = '\n';
@@ -27,11 +28,7 @@ public class FASTQReader implements SeqReaderI<DNAQualitySequenceI> {
 
     public FASTQReader(String filename, boolean gzipCompressed) throws SeqStoreException {
         fastqfile = filename;
-        try {
-            stream = new ByteStreamTokenizer(fastqfile, gzipCompressed, LINEBREAK, 0);
-        } catch (IOException ex) {
-            throw new SeqStoreException("File not found or unreadable: " + fastqfile + "\n" + ex.getMessage());
-        }
+        this.gzipCompressed = gzipCompressed;
     }
 
     @Override
@@ -43,11 +40,15 @@ public class FASTQReader implements SeqReaderI<DNAQualitySequenceI> {
         byte[] l1, l2, l3, l4;
 
         try {
+            if (stream == null) {
+                stream = new ByteStreamTokenizer(fastqfile, gzipCompressed, LINEBREAK, 0);
+            }
+            
             l1 = stream.hasNext() ? stream.next() : null; // header
             l2 = stream.hasNext() ? stream.next() : null; // dna sequence
             l3 = stream.hasNext() ? stream.next() : null; // quality header
             l4 = stream.hasNext() ? stream.next() : null; // quality string
-        } catch (Exception e) {
+        } catch (SeqStoreException | IOException e) {
             return false;
         }
 

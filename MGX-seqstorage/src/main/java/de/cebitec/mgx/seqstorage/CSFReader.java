@@ -17,11 +17,12 @@ import java.util.Set;
  */
 public class CSFReader implements SeqReaderI<DNASequenceI> {
 
-    private final ByteStreamTokenizer seqin;
+    private ByteStreamTokenizer seqin = null;
     private final String csffile;
     private final String namefile;
+    private final boolean gzipCompressed;
     private DNASequenceI holder = null;
-    private final NMSIndex idx;
+    private NMSIndex idx = null;
     private BufferedRandomAccessFile raf = null;
     private final byte[] record = new byte[16];
 
@@ -33,16 +34,11 @@ public class CSFReader implements SeqReaderI<DNASequenceI> {
         if (gzipCompressed) {
             throw new SeqStoreException("Compressed CSF format unsupported.");
         }
-        
+
         csffile = filename + ".csf";
         namefile = filename;
-        try {
-            FileMagic.validateMagic(csffile, FileMagic.CSF_MAGIC);
-            seqin = new ByteStreamTokenizer(csffile, gzipCompressed, FourBitEncoder.RECORD_SEPARATOR, FileMagic.CSF_MAGIC.length);
-            idx = new NMSIndex(namefile);
-        } catch (IOException ex) {
-            throw new SeqStoreException(ex.getMessage());
-        }
+        this.gzipCompressed = gzipCompressed;
+        FileMagic.validateMagic(csffile, FileMagic.CSF_MAGIC);
     }
 
     @Override
@@ -57,6 +53,11 @@ public class CSFReader implements SeqReaderI<DNASequenceI> {
          * read new element
          */
         try {
+            if (idx == null) {
+                idx = new NMSIndex(namefile);
+                seqin = new ByteStreamTokenizer(csffile, gzipCompressed, FourBitEncoder.RECORD_SEPARATOR, FileMagic.CSF_MAGIC.length);
+            }
+
             if (idx.read(record) != 16) {
                 return false;
             }
@@ -139,6 +140,10 @@ public class CSFReader implements SeqReaderI<DNASequenceI> {
             byte[] buf = new byte[200];
             int bytesRead;
             for (long id : ids) {
+                if (idx == null) {
+                    idx = new NMSIndex(namefile);
+                }
+
                 long offset = idx.getOffset(id);
                 if (offset == -1) {
                     throw new SeqStoreException("Sequence ID " + id + " not present in index.");

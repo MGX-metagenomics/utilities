@@ -12,13 +12,13 @@ import java.util.*;
  */
 public class CSQFReader implements SeqReaderI<DNAQualitySequenceI> {
 
-    private InputStream seqin;
+    //private InputStream seqin;
     private final String csqfile;
     private final String namefile;
     private DNAQualitySequenceI holder = null;
-    private final NMSIndex idx;
+    private NMSIndex idx = null;
     private BufferedRandomAccessFile raf = null;
-    private byte[] record = new byte[16];
+    private final byte[] record = new byte[16];
 
     public CSQFReader(String filename) throws SeqStoreException {
         this(filename, false);
@@ -32,16 +32,10 @@ public class CSQFReader implements SeqReaderI<DNAQualitySequenceI> {
         if (gzipCompressed) {
             throw new SeqStoreException("Compressed CSQ format unsupported.");
         }
-        
+
         csqfile = filename + ".csq";
         namefile = filename;
-        try {
-            FileMagic.validateMagic(csqfile, FileMagic.CSQ_MAGIC);
-            seqin = new BufferedInputStream(new FileInputStream(csqfile));
-            idx = new NMSIndex(namefile);
-        } catch (SeqStoreException | IOException ex) {
-            throw new SeqStoreException(ex.getMessage());
-        }
+        FileMagic.validateMagic(csqfile, FileMagic.CSQ_MAGIC);
     }
 
     @Override
@@ -75,6 +69,10 @@ public class CSQFReader implements SeqReaderI<DNAQualitySequenceI> {
 
         try {
             for (long id : ids) {
+                if (idx == null) {
+                    idx = new NMSIndex(namefile);
+                }
+
                 long offset = idx.getOffset(id);
                 if (offset == -1) {
                     throw new SeqStoreException("Sequence ID " + id + " not present in index.");
@@ -108,6 +106,10 @@ public class CSQFReader implements SeqReaderI<DNAQualitySequenceI> {
                 raf = new BufferedRandomAccessFile(csqfile, "r");
             }
 
+            if (idx == null) {
+                idx = new NMSIndex(namefile);
+            }
+
             /*
              * read new element
              */
@@ -134,10 +136,6 @@ public class CSQFReader implements SeqReaderI<DNAQualitySequenceI> {
     @Override
     public void close() {
         try {
-            if (seqin != null) {
-                seqin.close();
-                seqin = null;
-            }
             if (idx != null) {
                 idx.close();
             }
