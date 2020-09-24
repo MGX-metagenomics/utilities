@@ -91,36 +91,36 @@ public class PathwayAccess extends AccessBase {
             }
 
             try (BufferedReader bin = new BufferedReader(new InputStreamReader(in))) {
-                Connection conn = getMaster().getConnection();
-                try (PreparedStatement stmt = conn.prepareStatement("DELETE FROM coords")) {
-                    stmt.execute();
-                }
-                try (PreparedStatement stmt = conn.prepareStatement("DELETE FROM pathway")) {
-                    stmt.executeUpdate();
-                }
-
-                //conn.prepareStatement("DELETE FROM ecnumber").execute();
-                // save incoming data to a map first to avoid duplicate entries
-                // which sometimes seem to occur when accessing the REST service
-                Map<String, String> data = new HashMap<>();
-                String line;
-                while ((line = bin.readLine()) != null) {
-                    line = line.substring(5); // remove leading "path:"
-                    String[] split = line.split("\t");
-                    if (data.containsKey(split[0])) {
-                        Logger.getLogger(PathwayAccess.class.getName()).log(Level.INFO, "KEGG map {0} received more than once.", split[0]);
+                try (Connection conn = getMaster().getConnection()) {
+                    try (PreparedStatement stmt = conn.prepareStatement("DELETE FROM coords")) {
+                        stmt.execute();
                     }
-                    data.put(split[0], split[1]);
-                }
-
-                try (PreparedStatement stmt = conn.prepareStatement(INSERT_PW)) {
-                    for (Entry<String, String> e : data.entrySet()) {
-                        stmt.setString(1, e.getKey());
-                        stmt.setString(2, e.getValue());
-                        stmt.addBatch();
+                    try (PreparedStatement stmt = conn.prepareStatement("DELETE FROM pathway")) {
+                        stmt.executeUpdate();
                     }
-                    stmt.executeBatch();
 
+                    //conn.prepareStatement("DELETE FROM ecnumber").execute();
+                    // save incoming data to a map first to avoid duplicate entries
+                    // which sometimes seem to occur when accessing the REST service
+                    Map<String, String> data = new HashMap<>();
+                    String line;
+                    while ((line = bin.readLine()) != null) {
+                        line = line.substring(5); // remove leading "path:"
+                        String[] split = line.split("\t");
+                        if (data.containsKey(split[0])) {
+                            Logger.getLogger(PathwayAccess.class.getName()).log(Level.INFO, "KEGG map {0} received more than once.", split[0]);
+                        }
+                        data.put(split[0], split[1]);
+                    }
+
+                    try (PreparedStatement stmt = conn.prepareStatement(INSERT_PW)) {
+                        for (Entry<String, String> e : data.entrySet()) {
+                            stmt.setString(1, e.getKey());
+                            stmt.setString(2, e.getValue());
+                            stmt.addBatch();
+                        }
+                        stmt.executeBatch();
+                    }
                 }
 
                 setValid(PATHWAYS);
@@ -257,11 +257,17 @@ public class PathwayAccess extends AccessBase {
             Pattern ecNumber = Pattern.compile("\\d+[.](-|\\d+)[.](-|\\d+)[.](-|\\d+)");
             String line;
             while ((line = br.readLine()) != null) {
-                if (line.startsWith("<area shape=rect")) {
+                if (line.contains("<area") && line.contains("shape=\"rect\"") && line.contains("data-coords")) {
 
                     String[] split = splitSpaces.split(line);
-
-                    String coords = split[2].substring(7);
+                    String coordString = null;
+                    for (String s : split) {
+                        if (s.startsWith("data-coords")) {
+                            coordString = s;
+                        }
+                    }
+                    
+                    String coords = coordString.substring(12).replaceAll("\"", "");
                     String[] corners = coords.split(",");
                     if (corners.length != 4) {
                         throw new KEGGException("invalid line: " + line);
