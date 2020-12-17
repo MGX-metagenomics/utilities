@@ -12,10 +12,6 @@
         <url>https://github.com/mgx-metagenomics/utilities</url>
     </scm>
 
-    <prerequisites>
-        <maven>3.5.0</maven>
-    </prerequisites>
-    
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.src.version>1.8</java.src.version>
