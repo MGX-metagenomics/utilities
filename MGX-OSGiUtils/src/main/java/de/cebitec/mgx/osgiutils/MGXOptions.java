@@ -50,7 +50,7 @@ public class MGXOptions {
                 mavenBundle().groupId("javax.el").artifactId("javax.el-api").version("3.0.0"),
                 //mavenBundle().groupId("org.apache.geronimo.config").artifactId("geronimo-config-impl").version("1.0"),
                 mavenBundle().groupId("org.eclipse.microprofile.config").artifactId("microprofile-config-api").version("1.3"),
-                mavenBundle().groupId("com.google.protobuf").artifactId("protobuf-java").version("3.11.0"),
+                mavenBundle().groupId("com.google.protobuf").artifactId("protobuf-java").version("3.12.4"),
                 mavenBundle().groupId("com.google.guava").artifactId("failureaccess").version("1.0.1"),
                 mavenBundle().groupId("com.google.guava").artifactId("guava").version("28.1-jre"),
                 mavenBundle().groupId("de.cebitec.gpms").artifactId("GPMS-DTO").version("2.0"),
