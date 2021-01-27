@@ -22,11 +22,15 @@ public class QualityDNASequence extends DNASequence implements DNAQualitySequenc
 
     @Override
     public void setQuality(byte[] qual) throws SeqStoreException {
-        if (getSequence() != null && getSequence().length != qual.length) {
+        if (qual != null && getSequence() != null && getSequence().length != qual.length) {
             throw new SeqStoreException("Length of quality values does not match sequence length");
         }
-        quality = new byte[qual.length];
-        System.arraycopy(qual, 0, quality, 0, qual.length);
+        if (qual != null) {
+            quality = new byte[qual.length];
+            System.arraycopy(qual, 0, quality, 0, qual.length);
+        } else {
+            quality = new byte[0];
+        }
     }
 
     @Override

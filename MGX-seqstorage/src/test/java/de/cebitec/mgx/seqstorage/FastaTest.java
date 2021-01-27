@@ -104,7 +104,7 @@ public class FastaTest {
         assertEquals("S10_2", new String(seq2.getName()));
 
     }
-    
+
     @Test
     public void testEmptySeqs() throws Exception {
         System.out.println("testEmptySeqs");
@@ -113,8 +113,10 @@ public class FastaTest {
         try (FastaReader fr = new FastaReader(f.getAbsolutePath(), false)) {
             while (fr.hasMoreElements()) {
                 DNASequenceI seq = fr.nextElement();
+                assertNotNull("Sequence name should not be null", seq.getName());
+                assertNotNull("Sequence should not be null", seq.getSequence());
+                assertEquals(0, seq.getSequence().length);
                 seqCnt++;
-                assertNull("Sequence should be null", seq.getSequence());
             }
         } catch (SeqStoreException ex) {
             fail(ex.getMessage());
