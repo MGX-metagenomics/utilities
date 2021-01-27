@@ -17,8 +17,13 @@ public class QualityEncoder {
      * to sequence length)
      * @return Qualities in Sanger format
      */
-    public static byte[] decode(byte[] encodedQualities, int decodedQualityLength) {
-        if (encodedQualities.length == 2) {
+    public static byte[] decode(byte[] encodedQualities, int decodedQualityLength) throws SeqStoreException {
+        
+        if (encodedQualities == null || encodedQualities.length < 2) {
+            throw new SeqStoreException("Unable to decoded null or invalid data.");
+        }
+        
+        if (decodedQualityLength == 0 || encodedQualities.length == 2) {
             return new byte[0];
         }
         byte encodedSize = encodedQualities[0]; //bit size per quality
@@ -67,7 +72,7 @@ public class QualityEncoder {
      * (Qualities bigger than 93 or smaller than 0)
      */
     public static byte[] encode(byte[] quality) throws SeqStoreException {
-        if (quality.length == 0) {
+        if (quality == null || quality.length == 0) {
             return new byte[]{0, 0};
         }
         int max = quality[0];
