@@ -7,8 +7,8 @@ import static org.junit.Assert.*;
 
 /**
  *
- * @author Patrick
- * Blumenkamp<patrick.blumenkamp@computational.bio.uni-giessen.de>
+ * @author Patrick Blumenkamp
+ * <patrick.blumenkamp@computational.bio.uni-giessen.de>
  */
 public class QualityEncoderTest {
 
@@ -52,18 +52,40 @@ public class QualityEncoderTest {
         assertArrayEquals(quality, decoded);
     }
 
-    /**
-     * Test of decode and encode method on empty quality array
-     *
-     * @throws de.cebitec.mgx.sequence.SeqStoreException No valid Sanger format
-     */
     @Test
-    public void testEmptyDataset() throws SeqStoreException {
+    public void testEmptyQualityEncoding() throws SeqStoreException {
         byte[] quality = new byte[0];
         byte[] encoded = QualityEncoder.encode(quality);
         assertArrayEquals(new byte[]{0, 0}, encoded);
-        byte[] decoded = QualityEncoder.decode(encoded, quality.length);
-        assertArrayEquals(quality, decoded);
+    }
+
+    @Test
+    public void testNullQualityEncoding() throws SeqStoreException {
+        byte[] quality = null;
+        byte[] encoded = QualityEncoder.encode(quality);
+        assertArrayEquals(new byte[]{0, 0}, encoded);
+    }
+
+    @Test
+    public void testEmptyQualityDecoding() throws SeqStoreException {
+        byte[] encoded = new byte[]{0, 0};
+        byte[] decoded = QualityEncoder.decode(encoded, 0);
+        assertNotNull(decoded);
+        assertEquals(0, decoded.length);
+    }
+
+    @Test
+    public void testNullQualityDecoding() {
+        byte[] quality = null;
+        try {
+            byte[] decoded = QualityEncoder.decode(quality, 0);
+        } catch (SeqStoreException ex) {
+            if (ex.getMessage().contains("Unable to decoded null or invalid data.")) {
+                return;
+            }
+            fail(ex.getMessage());
+        }
+        fail();
     }
 
 }
