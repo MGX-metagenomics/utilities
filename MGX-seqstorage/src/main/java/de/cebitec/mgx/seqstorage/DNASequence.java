@@ -48,6 +48,11 @@ public class DNASequence implements DNASequenceI {
 
     @Override
     public void setSequence(byte[] sequence) throws SeqStoreException {
+        if (sequence == null || sequence.length == 0) {
+            // empty sequence
+            dnasequence = new byte[0];
+            return;
+        }
         dnasequence = new byte[sequence.length];
         System.arraycopy(sequence, 0, dnasequence, 0, sequence.length);
 
