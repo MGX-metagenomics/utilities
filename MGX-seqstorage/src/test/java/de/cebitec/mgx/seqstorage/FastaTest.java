@@ -104,5 +104,24 @@ public class FastaTest {
         assertEquals("S10_2", new String(seq2.getName()));
 
     }
+    
+    @Test
+    public void testEmptySeqs() throws Exception {
+        System.out.println("testEmptySeqs");
+        File f = TestInput.copyTestResource(getClass(), "de/cebitec/mgx/seqstorage/emptyseqs.fas");
+        int seqCnt = 0;
+        try (FastaReader fr = new FastaReader(f.getAbsolutePath(), false)) {
+            while (fr.hasMoreElements()) {
+                DNASequenceI seq = fr.nextElement();
+                seqCnt++;
+                assertNull("Sequence should be null", seq.getSequence());
+            }
+        } catch (SeqStoreException ex) {
+            fail(ex.getMessage());
+        }
+        f.delete();
+
+        assertEquals(5, seqCnt);
+    }
 
 }
