@@ -28,12 +28,12 @@
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-client</artifactId>
-            <version>4.5.6.Final</version>
+            <version>4.6.0.Final</version>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpcore-nio</artifactId>
-            <version>4.4.13</version>
+            <version>4.4.14</version>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
@@ -47,12 +47,12 @@
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
-            <version>4.5.12</version>
+            <version>4.5.13</version>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpcore</artifactId>
-            <version>4.4.13</version>
+            <version>4.4.14</version>
         </dependency>
     </dependencies>
 
@@ -71,6 +71,7 @@
                             org.jboss.resteasy.api.validation,
                             org.jboss.resteasy.core,
                             org.jboss.resteasy.client.jaxrs,
+                            org.jboss.resteasy.client.jaxrs.spi,
                             org.jboss.resteasy.client.jaxrs.engines,
                             org.jboss.resteasy.spi,
                             org.jboss.resteasy.client.jaxrs.internal, 
