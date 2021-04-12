@@ -224,7 +224,7 @@ message SeqRunDTOList {
 message SequenceDTO {
   sint64 id = 1;
   string name = 2;
-  string sequence = 3;
+  bytes sequence = 3;
   bytes quality = 4;
   int32 length = 5;
 }
