@@ -8,6 +8,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.zip.GZIPInputStream;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
@@ -29,10 +30,10 @@ public class PBReader implements MessageBodyReader<Message> {
     public final Message readFrom(Class<Message> type, Type genericType, Annotation[] annotations,
             MediaType mediaType, MultivaluedMap<String, String> httpHeaders,
             InputStream entityStream) throws IOException, WebApplicationException {
-        try {
+        try (GZIPInputStream gzi = new GZIPInputStream(entityStream, 65535)) {
             Method newBuilder = type.getMethod("newBuilder");
             GeneratedMessageV3.Builder builder = (GeneratedMessageV3.Builder) newBuilder.invoke(type);
-            return builder.mergeFrom(entityStream).build();
+            return builder.mergeFrom(gzi).build();
         } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | IOException e) {
             throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
         }

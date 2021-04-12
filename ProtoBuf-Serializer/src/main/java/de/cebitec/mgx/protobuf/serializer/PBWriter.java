@@ -8,6 +8,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.zip.GZIPOutputStream;
 import javax.net.ssl.SSLHandshakeException;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
@@ -27,18 +28,26 @@ public class PBWriter implements MessageBodyWriter<GeneratedMessageV3> {
 
     @Override
     public final long getSize(GeneratedMessageV3 m, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
-        return m.getSerializedSize();
+        return -1;
     }
 
     @Override
     public final void writeTo(GeneratedMessageV3 m, Class type, Type genericType, Annotation[] annotations,
             MediaType mediaType, MultivaluedMap httpHeaders,
             OutputStream entityStream) throws IOException, WebApplicationException {
+
+        PeekableBAOutputStream bao = new PeekableBAOutputStream(65535);
+        try (GZIPOutputStream gzo = new GZIPOutputStream(bao, 65535)) {
+            m.writeTo(gzo); 
+            gzo.flush();
+            bao.flush();
+        }
+
         try {
             int retries = 3;
             while (retries > 0) {
                 try {
-                    m.writeTo(entityStream);
+                    entityStream.write(bao.getArray());
                     return;
                 } catch (SSLHandshakeException ex) {
                     retries--;
@@ -54,7 +63,12 @@ public class PBWriter implements MessageBodyWriter<GeneratedMessageV3> {
      */
     private static class PeekableBAOutputStream extends ByteArrayOutputStream {
 
+        public PeekableBAOutputStream(int size) {
+            super(size);
+        }
+
         public byte[] getArray() {
+            // avoid copy
             return this.buf;
         }
     }
