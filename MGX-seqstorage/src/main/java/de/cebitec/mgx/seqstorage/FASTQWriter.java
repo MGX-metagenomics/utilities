@@ -1,5 +1,6 @@
 package de.cebitec.mgx.seqstorage;
 
+import de.cebitec.mgx.seqcompression.SequenceException;
 import static de.cebitec.mgx.seqstorage.encoding.FileMagic.lineSeparator;
 import de.cebitec.mgx.sequence.DNAQualitySequenceI;
 import de.cebitec.mgx.sequence.SeqStoreException;
@@ -17,7 +18,7 @@ public class FASTQWriter implements SeqWriterI<DNAQualitySequenceI> {
     private final BufferedOutputStream seqout;
     private int qualityOffset = 0;
 
-    public FASTQWriter(String filename, QualityEncoding qualityEncoding) throws SeqStoreException {
+    public FASTQWriter(String filename, QualityEncoding qualityEncoding) throws SequenceException {
         if (qualityEncoding == QualityEncoding.Unknown) {
             throw new SeqStoreException("Invalid quality encoding.");
         }
@@ -46,7 +47,7 @@ public class FASTQWriter implements SeqWriterI<DNAQualitySequenceI> {
     }
 
     @Override
-    public synchronized void addSequence(DNAQualitySequenceI seq) throws SeqStoreException {
+    public synchronized void addSequence(DNAQualitySequenceI seq) throws SequenceException {
         if (seqout == null) {
             throw new SeqStoreException("Writer has already been closed.");
         }
@@ -84,7 +85,7 @@ public class FASTQWriter implements SeqWriterI<DNAQualitySequenceI> {
         }
     }
 
-    private byte[] convertQuality(byte[] in) throws SeqStoreException {
+    private byte[] convertQuality(byte[] in) throws SequenceException {
         if (in == null) {
             throw new SeqStoreException("Cannot convert null quality string.");
         }

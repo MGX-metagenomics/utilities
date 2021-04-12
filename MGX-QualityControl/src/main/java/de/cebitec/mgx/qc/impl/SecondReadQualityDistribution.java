@@ -5,6 +5,7 @@
  */
 package de.cebitec.mgx.qc.impl;
 
+import de.cebitec.mgx.seqcompression.SequenceException;
 import de.cebitec.mgx.sequence.DNAQualitySequenceI;
 
 /**
@@ -23,7 +24,7 @@ public class SecondReadQualityDistribution extends QualityDistributionBase {
     }
     
     @Override
-    public void addPair(DNAQualitySequenceI seq1, DNAQualitySequenceI seq2) {
+    public void addPair(DNAQualitySequenceI seq1, DNAQualitySequenceI seq2) throws SequenceException {
         add(seq2);
     }
 

@@ -1,4 +1,4 @@
-package de.cebitec.mgx.seqstorage.encoding;
+package de.cebitec.mgx.seqcompression;
 
 /**
  *

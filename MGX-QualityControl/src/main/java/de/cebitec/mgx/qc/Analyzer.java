@@ -5,6 +5,7 @@
  */
 package de.cebitec.mgx.qc;
 
+import de.cebitec.mgx.seqcompression.SequenceException;
 import de.cebitec.mgx.sequence.DNASequenceI;
 
 /**
@@ -17,9 +18,9 @@ public interface Analyzer<T extends DNASequenceI> {
 
     public String getDescription();
 
-    public void add(T seq);
+    public void add(T seq) throws SequenceException;
 
-    public void addPair(T seq1, T seq2);
+    public void addPair(T seq1, T seq2) throws SequenceException;
 
     public QCResult get();
 

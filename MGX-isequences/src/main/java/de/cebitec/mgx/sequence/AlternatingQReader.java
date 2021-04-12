@@ -5,6 +5,7 @@
  */
 package de.cebitec.mgx.sequence;
 
+import de.cebitec.mgx.seqcompression.SequenceException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -29,7 +30,7 @@ public class AlternatingQReader implements SeqReaderI<DNAQualitySequenceI> {
     }
 
     @Override
-    public Set<DNAQualitySequenceI> fetch(long[] ids) throws SeqStoreException {
+    public Set<DNAQualitySequenceI> fetch(long[] ids) throws SequenceException {
         Set<DNAQualitySequenceI> ret = new HashSet<>();
         ret.addAll(reader1.fetch(ids));
         ret.addAll(reader2.fetch(ids));
@@ -53,7 +54,7 @@ public class AlternatingQReader implements SeqReaderI<DNAQualitySequenceI> {
     }
 
     @Override
-    public boolean hasMoreElements() throws SeqStoreException {
+    public boolean hasMoreElements() throws SequenceException {
         return useFirst ? reader1.hasMoreElements() : reader2.hasMoreElements();
     }
 

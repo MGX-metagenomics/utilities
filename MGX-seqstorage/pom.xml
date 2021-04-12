@@ -44,7 +44,9 @@
                 </executions>
                 <configuration>
                     <instructions>
-                        <Import-Package>org.osgi.framework,
+                        <Import-Package>
+                            org.osgi.framework,
+                            de.cebitec.mgx.seqcompression,
                             de.cebitec.mgx.sffreader,
                             de.cebitec.mgx.sequence,
                             de.cebitec.mgx.braf,
@@ -222,6 +224,11 @@
             <artifactId>osgi.core</artifactId>
             <version>7.0.0</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>MGX-seqcompression</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 </project>

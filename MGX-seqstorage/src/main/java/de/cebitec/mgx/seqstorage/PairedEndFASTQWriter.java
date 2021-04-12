@@ -1,5 +1,6 @@
 package de.cebitec.mgx.seqstorage;
 
+import de.cebitec.mgx.seqcompression.SequenceException;
 import de.cebitec.mgx.sequence.DNAQualitySequenceI;
 import de.cebitec.mgx.sequence.SeqStoreException;
 import de.cebitec.mgx.sequence.SeqWriterI;
@@ -15,7 +16,7 @@ public class PairedEndFASTQWriter implements SeqWriterI<DNAQualitySequenceI> {
     private final FASTQWriter second;
     private boolean useFirst = true;
 
-    public PairedEndFASTQWriter(String filename, QualityEncoding qualityEncoding) throws SeqStoreException {
+    public PairedEndFASTQWriter(String filename, QualityEncoding qualityEncoding) throws SequenceException {
         int idx = filename.lastIndexOf(".");
         String prefix = filename.substring(0, idx);
         String suffix = filename.substring(idx);
@@ -24,7 +25,7 @@ public class PairedEndFASTQWriter implements SeqWriterI<DNAQualitySequenceI> {
     }
 
     @Override
-    public synchronized void addSequence(DNAQualitySequenceI seq) throws SeqStoreException {
+    public synchronized void addSequence(DNAQualitySequenceI seq) throws SequenceException {
         if (useFirst) {
             useFirst = false;
             first.addSequence(seq);

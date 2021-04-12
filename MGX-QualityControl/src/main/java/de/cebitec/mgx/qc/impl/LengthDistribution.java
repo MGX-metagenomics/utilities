@@ -8,6 +8,7 @@ package de.cebitec.mgx.qc.impl;
 import de.cebitec.mgx.qc.Analyzer;
 import de.cebitec.mgx.qc.DataRow;
 import de.cebitec.mgx.qc.QCResult;
+import de.cebitec.mgx.seqcompression.SequenceException;
 import de.cebitec.mgx.sequence.DNASequenceI;
 import java.util.Arrays;
 
@@ -27,7 +28,7 @@ public class LengthDistribution implements Analyzer<DNASequenceI> {
     }
 
     @Override
-    public synchronized void add(DNASequenceI seq) {
+    public synchronized void add(DNASequenceI seq) throws SequenceException {
         int dnaLen = seq.getSequence().length;
         if (dnaLen > maxLen) {
             maxLen = dnaLen;
@@ -43,7 +44,7 @@ public class LengthDistribution implements Analyzer<DNASequenceI> {
     }
 
     @Override
-    public void addPair(DNASequenceI seq1, DNASequenceI seq2) {
+    public void addPair(DNASequenceI seq1, DNASequenceI seq2) throws SequenceException {
         add(seq1);
         add(seq2);
     }

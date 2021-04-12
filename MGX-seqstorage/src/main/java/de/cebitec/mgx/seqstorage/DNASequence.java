@@ -1,7 +1,7 @@
 package de.cebitec.mgx.seqstorage;
 
+import de.cebitec.mgx.seqcompression.SequenceException;
 import de.cebitec.mgx.sequence.DNASequenceI;
-import de.cebitec.mgx.sequence.SeqStoreException;
 
 /**
  *
@@ -42,12 +42,12 @@ public class DNASequence implements DNASequenceI {
     }
 
     @Override
-    public final byte[] getSequence() {
+    public byte[] getSequence() throws SequenceException {
         return dnasequence;
     }
 
     @Override
-    public void setSequence(byte[] sequence) throws SeqStoreException {
+    public void setSequence(byte[] sequence) throws SequenceException {
         if (sequence == null || sequence.length == 0) {
             // empty sequence
             dnasequence = new byte[0];
@@ -121,7 +121,7 @@ public class DNASequence implements DNASequenceI {
                     dnasequence[i] = 'N';
                     break;
                 default:
-                    throw new SeqStoreException("Illegal nucleotide " + dnasequence[i] + " at position " + i + " of sequence " + new String(getName()));
+                    throw new SequenceException("Illegal nucleotide " + dnasequence[i] + " at position " + i + " of sequence " + new String(getName()));
             }
         }
     }

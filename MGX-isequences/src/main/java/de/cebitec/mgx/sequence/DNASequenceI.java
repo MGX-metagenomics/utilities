@@ -1,5 +1,6 @@
-
 package de.cebitec.mgx.sequence;
+
+import de.cebitec.mgx.seqcompression.SequenceException;
 
 /**
  *
@@ -13,9 +14,9 @@ public interface DNASequenceI {
 
     byte[] getName();
 
-    byte[] getSequence();
+    byte[] getSequence() throws SequenceException;
 
     void setName(byte[] seqname);
 
-    void setSequence(byte[] dnaseq) throws SeqStoreException;
+    void setSequence(byte[] dnaseq) throws SequenceException;
 }

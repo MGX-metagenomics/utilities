@@ -1,6 +1,7 @@
 package de.cebitec.mgx.qc.impl;
 
 import de.cebitec.mgx.qc.*;
+import de.cebitec.mgx.seqcompression.SequenceException;
 import de.cebitec.mgx.sequence.DNAQualitySequenceI;
 import java.util.*;
 
@@ -37,7 +38,7 @@ public abstract class QualityDistributionBase implements Analyzer<DNAQualitySequ
 //    }
 
     @Override
-    public void add(DNAQualitySequenceI seq) {
+    public void add(DNAQualitySequenceI seq) throws SequenceException {
         byte[] qual = seq.getQuality();
         
         maxLength = Math.max(maxLength, qual.length);
@@ -70,7 +71,7 @@ public abstract class QualityDistributionBase implements Analyzer<DNAQualitySequ
     }
 
     @Override
-    public void addPair(DNAQualitySequenceI seq1, DNAQualitySequenceI seq2) {
+    public void addPair(DNAQualitySequenceI seq1, DNAQualitySequenceI seq2) throws SequenceException {
         add(seq1);
         add(seq2);
     }

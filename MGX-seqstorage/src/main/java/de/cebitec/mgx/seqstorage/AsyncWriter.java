@@ -5,6 +5,7 @@
  */
 package de.cebitec.mgx.seqstorage;
 
+import de.cebitec.mgx.seqcompression.SequenceException;
 import de.cebitec.mgx.sequence.DNASequenceI;
 import de.cebitec.mgx.sequence.SeqStoreException;
 import de.cebitec.mgx.sequence.SeqWriterI;
@@ -62,7 +63,7 @@ public class AsyncWriter<T extends DNASequenceI> implements SeqWriterI<T>, Runna
                     target.addSequence(cur);
                 }
             }
-        } catch (SeqStoreException | InterruptedException ex) {
+        } catch (SequenceException | InterruptedException ex) {
             Logger.getLogger(AsyncWriter.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             isDone.countDown();

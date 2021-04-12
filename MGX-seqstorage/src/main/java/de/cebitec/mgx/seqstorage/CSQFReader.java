@@ -1,6 +1,10 @@
 package de.cebitec.mgx.seqstorage;
 
+import de.cebitec.mgx.seqcompression.ByteUtils;
 import de.cebitec.mgx.braf.BufferedRandomAccessFile;
+import de.cebitec.mgx.seqcompression.FourBitEncoder;
+import de.cebitec.mgx.seqcompression.QualityEncoder;
+import de.cebitec.mgx.seqcompression.SequenceException;
 import de.cebitec.mgx.seqstorage.encoding.*;
 import de.cebitec.mgx.sequence.*;
 import java.io.*;
@@ -79,7 +83,7 @@ public class CSQFReader implements SeqReaderI<DNAQualitySequenceI> {
                 }
                 result.add(getEntry(id, offset));
             }
-        } catch (IOException ex) {
+        } catch (SequenceException | IOException ex) {
             throw new SeqStoreException("Internal error: " + ex.getMessage());
         }
 
@@ -121,7 +125,7 @@ public class CSQFReader implements SeqReaderI<DNAQualitySequenceI> {
             long sequence_id = ByteUtils.bytesToLong(record);
             holder = getEntry(sequence_id, ByteUtils.bytesToLong(record, 8));
             return true;
-        } catch (IOException ex) {
+        } catch (SequenceException | IOException ex) {
             return false;
         }
     }
@@ -147,7 +151,7 @@ public class CSQFReader implements SeqReaderI<DNAQualitySequenceI> {
         }
     }
 
-    private synchronized DNAQualitySequenceI getEntry(long id, long offset) throws IOException, SeqStoreException {
+    private synchronized DNAQualitySequenceI getEntry(long id, long offset) throws IOException, SequenceException, SeqStoreException {
         raf.seek(offset);
         byte[] buf = new byte[600];
         int bytesRead = raf.read(buf);

@@ -1,7 +1,7 @@
 package de.cebitec.mgx.seqstorage;
 
+import de.cebitec.mgx.seqcompression.SequenceException;
 import de.cebitec.mgx.sequence.DNAQualitySequenceI;
-import de.cebitec.mgx.sequence.SeqStoreException;
 
 public class QualityDNASequence extends DNASequence implements DNAQualitySequenceI {
 
@@ -21,9 +21,9 @@ public class QualityDNASequence extends DNASequence implements DNAQualitySequenc
     }
 
     @Override
-    public void setQuality(byte[] qual) throws SeqStoreException {
+    public void setQuality(byte[] qual) throws SequenceException {
         if (qual != null && getSequence() != null && getSequence().length != qual.length) {
-            throw new SeqStoreException("Length of quality values does not match sequence length");
+            throw new SequenceException("Length of quality values does not match sequence length");
         }
         if (qual != null) {
             quality = new byte[qual.length];
@@ -34,9 +34,9 @@ public class QualityDNASequence extends DNASequence implements DNAQualitySequenc
     }
 
     @Override
-    public void setSequence(byte[] dnasequence) throws SeqStoreException {
+    public void setSequence(byte[] dnasequence) throws SequenceException {
         if (getQuality() != null && getQuality().length != dnasequence.length) {
-            throw new SeqStoreException("Length of sequence does not match quality length");
+            throw new SequenceException("Length of sequence does not match quality length");
         }
         super.setSequence(dnasequence);
     }

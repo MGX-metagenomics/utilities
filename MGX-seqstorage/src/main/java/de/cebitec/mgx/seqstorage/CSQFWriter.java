@@ -1,5 +1,9 @@
 package de.cebitec.mgx.seqstorage;
 
+import de.cebitec.mgx.seqcompression.ByteUtils;
+import de.cebitec.mgx.seqcompression.FourBitEncoder;
+import de.cebitec.mgx.seqcompression.QualityEncoder;
+import de.cebitec.mgx.seqcompression.SequenceException;
 import de.cebitec.mgx.seqstorage.encoding.*;
 import de.cebitec.mgx.sequence.*;
 import java.io.*;
@@ -49,19 +53,29 @@ public class CSQFWriter implements SeqWriterI<DNAQualitySequenceI> {
             nameout.write(nmsRecord);
 
             // encode sequence and write to seqout
-            byte[] sequence = FourBitEncoder.encode(seq.getSequence());
+            byte[] sequence;
+            if (seq instanceof EncodedDNASequence) {
+                sequence = ((EncodedDNASequence) seq).getEncodedSequence();
+            } else {
+                sequence = FourBitEncoder.encode(seq.getSequence());
+            }
             seqout.write(sequence);
             seqout.write(FourBitEncoder.RECORD_SEPARATOR);
 
             //write quality to seqout
-            byte[] quality = QualityEncoder.encode(seq.getQuality());
+            byte[] quality;
+            if (seq instanceof EncodedQualityDNASequence) {
+                quality = ((EncodedQualityDNASequence) seq).getEncodedQuality();
+            } else {
+                quality = QualityEncoder.encode(seq.getQuality());
+            }
             seqout.write(quality);
 
             // update offset
             seqout_offset += sequence.length;
             seqout_offset++; // separator char
             seqout_offset += quality.length;
-        } catch (IOException ex) {
+        } catch (SequenceException | IOException ex) {
             throw new SeqStoreException(ex.getMessage());
         }
     }

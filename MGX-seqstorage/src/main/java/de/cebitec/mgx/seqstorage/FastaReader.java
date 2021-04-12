@@ -1,6 +1,7 @@
 package de.cebitec.mgx.seqstorage;
 
-import de.cebitec.mgx.seqstorage.encoding.ByteUtils;
+import de.cebitec.mgx.seqcompression.ByteUtils;
+import de.cebitec.mgx.seqcompression.SequenceException;
 import de.cebitec.mgx.sequence.DNASequenceI;
 import de.cebitec.mgx.sequence.SeqReaderI;
 import de.cebitec.mgx.sequence.SeqStoreException;
@@ -29,7 +30,7 @@ public class FastaReader implements SeqReaderI<DNASequenceI> {
     }
 
     @Override
-    public synchronized boolean hasMoreElements() throws SeqStoreException {
+    public synchronized boolean hasMoreElements() throws SequenceException {
         if (seq != null) {
             return true;
         }
@@ -133,7 +134,7 @@ public class FastaReader implements SeqReaderI<DNASequenceI> {
     }
 
     @Override
-    public Set<DNASequenceI> fetch(long[] ids) throws SeqStoreException {
+    public Set<DNASequenceI> fetch(long[] ids) throws SequenceException {
         Set<DNASequenceI> res = new HashSet<>(ids.length);
         Set<Long> idList = new HashSet<>(ids.length);
         for (int i = 0; i < ids.length; i++) {

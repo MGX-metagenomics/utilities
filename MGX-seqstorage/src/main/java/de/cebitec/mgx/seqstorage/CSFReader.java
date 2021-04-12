@@ -1,6 +1,9 @@
 package de.cebitec.mgx.seqstorage;
 
+import de.cebitec.mgx.seqcompression.ByteUtils;
 import de.cebitec.mgx.braf.BufferedRandomAccessFile;
+import de.cebitec.mgx.seqcompression.FourBitEncoder;
+import de.cebitec.mgx.seqcompression.SequenceException;
 import de.cebitec.mgx.seqstorage.encoding.*;
 import de.cebitec.mgx.sequence.DNASequenceI;
 import de.cebitec.mgx.sequence.SeqReaderI;
@@ -42,7 +45,7 @@ public class CSFReader implements SeqReaderI<DNASequenceI> {
     }
 
     @Override
-    public synchronized boolean hasMoreElements() throws SeqStoreException {
+    public synchronized boolean hasMoreElements() throws SequenceException {
 
         if (holder != null) {
             // element in holder not yet retrieved
@@ -121,7 +124,7 @@ public class CSFReader implements SeqReaderI<DNASequenceI> {
     }
 
     @Override
-    public Set<DNASequenceI> fetch(long[] ids) throws SeqStoreException {
+    public Set<DNASequenceI> fetch(long[] ids) throws SequenceException {
         Set<DNASequenceI> result = new HashSet<>(ids.length);
         if (ids.length == 0) {
             return result;

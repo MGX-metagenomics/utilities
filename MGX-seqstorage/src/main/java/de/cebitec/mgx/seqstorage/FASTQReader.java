@@ -1,5 +1,6 @@
 package de.cebitec.mgx.seqstorage;
 
+import de.cebitec.mgx.seqcompression.SequenceException;
 import de.cebitec.mgx.sequence.DNAQualitySequenceI;
 import de.cebitec.mgx.sequence.SeqReaderI;
 import de.cebitec.mgx.sequence.SeqStoreException;
@@ -32,7 +33,7 @@ public class FASTQReader implements SeqReaderI<DNAQualitySequenceI> {
     }
 
     @Override
-    public synchronized boolean hasMoreElements() throws SeqStoreException {
+    public synchronized boolean hasMoreElements() throws SequenceException {
         if (seq != null) {
             return true;
         }
@@ -126,7 +127,7 @@ public class FASTQReader implements SeqReaderI<DNAQualitySequenceI> {
     }
 
     @Override
-    public Set<DNAQualitySequenceI> fetch(long[] ids) throws SeqStoreException {
+    public Set<DNAQualitySequenceI> fetch(long[] ids) throws SequenceException {
         Set<DNAQualitySequenceI> res = new HashSet<>(ids.length);
         Set<Long> idList = new HashSet<>(ids.length);
         for (int i = 0; i < ids.length; i++) {

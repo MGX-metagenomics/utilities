@@ -5,8 +5,10 @@
  */
 package de.cebitec.mgx.seqstorage.encoding;
 
+import de.cebitec.mgx.seqcompression.ByteUtils;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *

@@ -1,6 +1,6 @@
 package de.cebitec.mgx.seqstorage;
 
-import de.cebitec.mgx.seqstorage.encoding.ByteUtils;
+import de.cebitec.mgx.seqcompression.ByteUtils;
 import de.cebitec.mgx.sequence.SeqStoreException;
 import java.io.FileInputStream;
 import java.io.IOException;

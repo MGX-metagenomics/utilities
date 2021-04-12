@@ -1,5 +1,8 @@
 package de.cebitec.mgx.seqstorage;
 
+import de.cebitec.mgx.seqcompression.ByteUtils;
+import de.cebitec.mgx.seqcompression.FourBitEncoder;
+import de.cebitec.mgx.seqcompression.SequenceException;
 import de.cebitec.mgx.seqstorage.encoding.*;
 import de.cebitec.mgx.sequence.DNASequenceI;
 import de.cebitec.mgx.sequence.SeqStoreException;
@@ -59,7 +62,7 @@ public class CSFWriter implements SeqWriterI<DNASequenceI> {
     }
 
     @Override
-    public synchronized void addSequence(DNASequenceI seq) throws SeqStoreException {
+    public synchronized void addSequence(DNASequenceI seq) throws SequenceException {
         if (seqout == null || nameout == null) {
             throw new SeqStoreException("Writer has already been closed.");
         }

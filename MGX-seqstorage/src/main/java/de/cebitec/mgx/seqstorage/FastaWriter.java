@@ -1,5 +1,6 @@
 package de.cebitec.mgx.seqstorage;
 
+import de.cebitec.mgx.seqcompression.SequenceException;
 import static de.cebitec.mgx.seqstorage.encoding.FileMagic.lineSeparator;
 import de.cebitec.mgx.sequence.DNASequenceI;
 import de.cebitec.mgx.sequence.SeqStoreException;
@@ -25,7 +26,7 @@ public class FastaWriter implements SeqWriterI<DNASequenceI> {
     }
 
     @Override
-    public synchronized void addSequence(DNASequenceI seq) throws SeqStoreException {
+    public synchronized void addSequence(DNASequenceI seq) throws SequenceException {
         if (seqout == null) {
             throw new SeqStoreException("Writer has already been closed.");
         }

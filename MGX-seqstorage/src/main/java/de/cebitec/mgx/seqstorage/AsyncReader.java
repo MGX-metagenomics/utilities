@@ -5,6 +5,7 @@
  */
 package de.cebitec.mgx.seqstorage;
 
+import de.cebitec.mgx.seqcompression.SequenceException;
 import de.cebitec.mgx.sequence.DNASequenceI;
 import de.cebitec.mgx.sequence.SeqReaderI;
 import de.cebitec.mgx.sequence.SeqStoreException;
@@ -29,7 +30,7 @@ public class AsyncReader<T extends DNASequenceI> implements SeqReaderI<T>, Runna
     private T elem = null;
     private volatile boolean mayExit = false;
 
-    public AsyncReader(ExecutorService exec, SeqReaderI<T> source) throws InterruptedException, SeqStoreException {
+    public AsyncReader(ExecutorService exec, SeqReaderI<T> source) throws InterruptedException, SequenceException {
         this.source = source;
         if (source.hasMoreElements()) {
             elem = source.nextElement();
@@ -58,7 +59,7 @@ public class AsyncReader<T extends DNASequenceI> implements SeqReaderI<T>, Runna
     }
 
     @Override
-    public boolean hasMoreElements() throws SeqStoreException {
+    public boolean hasMoreElements() throws SequenceException {
         return elem != null || !queue.isEmpty() || source.hasMoreElements();
     }
 
@@ -73,7 +74,7 @@ public class AsyncReader<T extends DNASequenceI> implements SeqReaderI<T>, Runna
             } else {
                 return; // input is empty
             }
-        } catch (SeqStoreException | InterruptedException ex) {
+        } catch (SequenceException | InterruptedException ex) {
             Logger.getLogger(AsyncReader.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             isUp.countDown();
@@ -85,7 +86,7 @@ public class AsyncReader<T extends DNASequenceI> implements SeqReaderI<T>, Runna
                 queue.put(cur);
                 mayExit = !source.hasMoreElements();
             }
-        } catch (SeqStoreException | InterruptedException ex) {
+        } catch (SequenceException | InterruptedException ex) {
             Logger.getLogger(AsyncReader.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

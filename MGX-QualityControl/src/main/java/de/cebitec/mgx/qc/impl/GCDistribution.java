@@ -8,6 +8,7 @@ package de.cebitec.mgx.qc.impl;
 import de.cebitec.mgx.qc.Analyzer;
 import de.cebitec.mgx.qc.DataRow;
 import de.cebitec.mgx.qc.QCResult;
+import de.cebitec.mgx.seqcompression.SequenceException;
 import de.cebitec.mgx.sequence.DNASequenceI;
 import java.util.Arrays;
 
@@ -26,7 +27,7 @@ public class GCDistribution implements Analyzer<DNASequenceI> {
     }
 
     @Override
-    public synchronized void add(DNASequenceI seq) {
+    public synchronized void add(DNASequenceI seq) throws SequenceException {
         byte[] dna = seq.getSequence();
 
         float at = 0;
@@ -58,7 +59,7 @@ public class GCDistribution implements Analyzer<DNASequenceI> {
     }
 
     @Override
-    public void addPair(DNASequenceI seq1, DNASequenceI seq2) {
+    public void addPair(DNASequenceI seq1, DNASequenceI seq2) throws SequenceException {
          byte[] dna = seq1.getSequence();
 
         float at = 0;

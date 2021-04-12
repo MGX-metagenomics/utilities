@@ -1,6 +1,5 @@
-package de.cebitec.mgx.seqstorage.encoding;
+package de.cebitec.mgx.seqcompression;
 
-import de.cebitec.mgx.sequence.SeqStoreException;
 import org.apache.commons.math3.util.FastMath;
 
 /**
@@ -17,10 +16,10 @@ public class QualityEncoder {
      * to sequence length)
      * @return Qualities in Sanger format
      */
-    public static byte[] decode(byte[] encodedQualities, int decodedQualityLength) throws SeqStoreException {
+    public static byte[] decode(byte[] encodedQualities, int decodedQualityLength) throws SequenceException {
         
         if (encodedQualities == null || encodedQualities.length < 2) {
-            throw new SeqStoreException("Unable to decoded null or invalid data.");
+            throw new SequenceException("Unable to decoded null or invalid data.");
         }
         
         if (decodedQualityLength == 0 || encodedQualities.length == 2) {
@@ -71,7 +70,7 @@ public class QualityEncoder {
      * @throws SeqStoreException Is thrown if qualities are not in Sanger format
      * (Qualities bigger than 93 or smaller than 0)
      */
-    public static byte[] encode(byte[] quality) throws SeqStoreException {
+    public static byte[] encode(byte[] quality) throws SequenceException {
         if (quality == null || quality.length == 0) {
             return new byte[]{0, 0};
         }
@@ -87,7 +86,7 @@ public class QualityEncoder {
 
         if (max > 93 || min < 0) //biggest possible phred values in sanger format
         {
-            throw new SeqStoreException("Qualities in no valid Sanger format");
+            throw new SequenceException("Qualities in no valid Sanger format");
         }
 
         min--;              //value 0 is used for padding

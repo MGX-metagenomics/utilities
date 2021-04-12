@@ -35,6 +35,7 @@ public class CSFWriterTest {
         return options(
                 junitBundles(),
                 mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-isequences").versionAsInProject(),
+                mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-seqcompression").versionAsInProject(),
                 mavenBundle().groupId("de.cebitec.mgx").artifactId("Trove-OSGi").versionAsInProject(),
                 mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-BufferedRandomAccessFile").versionAsInProject(),
                 mavenBundle().groupId("de.cebitec.mgx").artifactId("SFFReader").versionAsInProject(),

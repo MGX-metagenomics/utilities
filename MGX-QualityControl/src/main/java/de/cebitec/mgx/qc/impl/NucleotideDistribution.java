@@ -8,6 +8,7 @@ package de.cebitec.mgx.qc.impl;
 import de.cebitec.mgx.qc.Analyzer;
 import de.cebitec.mgx.qc.DataRow;
 import de.cebitec.mgx.qc.QCResult;
+import de.cebitec.mgx.seqcompression.SequenceException;
 import de.cebitec.mgx.sequence.DNASequenceI;
 import java.util.Arrays;
 
@@ -35,13 +36,13 @@ public class NucleotideDistribution implements Analyzer<DNASequenceI> {
     }
 
     @Override
-    public void addPair(DNASequenceI seq1, DNASequenceI seq2) {
+    public void addPair(DNASequenceI seq1, DNASequenceI seq2) throws SequenceException {
         // nucleotide histogram is only computed for the first 100 bp
         add(seq1);
     }
 
     @Override
-    public synchronized void add(DNASequenceI seq) {
+    public synchronized void add(DNASequenceI seq) throws SequenceException {
         byte[] dna = seq.getSequence();
         if (dna.length > maxLen) {
             maxLen = dna.length;

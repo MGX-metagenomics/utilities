@@ -1,11 +1,10 @@
 package de.cebitec.mgx.seqstorage;
 
+import de.cebitec.mgx.seqcompression.SequenceException;
 import de.cebitec.mgx.sequence.DNAQualitySequenceI;
 import de.cebitec.mgx.sequence.SeqStoreException;
 import de.cebitec.mgx.testutils.TestInput;
 import java.io.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.junit.*;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -207,7 +206,7 @@ public class FastqTest {
                 assertEquals(seqCnt, qseq.getQuality().length);
                 fw.addSequence(qseq);
             }
-        } catch (SeqStoreException | IOException ex) {
+        } catch (SequenceException | IOException ex) {
             fail(ex.getMessage());
         }
 
@@ -219,7 +218,7 @@ public class FastqTest {
                 assertEquals(seqCnt, qseq.getQuality().length);
                 seqCnt++;
             }
-        } catch (SeqStoreException ex) {
+        } catch (SequenceException ex) {
             fail(ex.getMessage());
         }
         target.delete();
@@ -260,7 +259,7 @@ public class FastqTest {
         assertEquals(1, cnt);
     }
 
-    private static DNAQualitySequenceI genSequence(int len) throws SeqStoreException {
+    private static DNAQualitySequenceI genSequence(int len) throws SequenceException {
         DNAQualitySequenceI seq = new QualityDNASequence();
         byte[] seqName = String.valueOf(len).getBytes();
         seq.setName(seqName);

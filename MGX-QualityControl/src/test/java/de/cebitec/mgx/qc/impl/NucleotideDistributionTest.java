@@ -7,14 +7,12 @@ package de.cebitec.mgx.qc.impl;
 
 import de.cebitec.mgx.qc.DataRowI;
 import de.cebitec.mgx.qc.QCResult;
+import de.cebitec.mgx.seqcompression.SequenceException;
 import de.cebitec.mgx.seqstorage.FastaReader;
-import de.cebitec.mgx.sequence.SeqStoreException;
-import java.io.File;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import org.junit.Assume;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -65,7 +63,7 @@ public class NucleotideDistributionTest {
     }
 
     @Test
-    public void testAdd() throws SeqStoreException {
+    public void testAdd() throws SequenceException {
         System.out.println("add");
         FastaReader r = new FastaReader("src/test/resources/de/cebitec/mgx/qc/testdata.fas", false);
         NucleotideDistribution ld = new NucleotideDistribution();

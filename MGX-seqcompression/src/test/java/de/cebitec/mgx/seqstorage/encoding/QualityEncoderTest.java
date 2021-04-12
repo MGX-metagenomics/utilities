@@ -1,9 +1,13 @@
 package de.cebitec.mgx.seqstorage.encoding;
 
-import de.cebitec.mgx.sequence.SeqStoreException;
+import de.cebitec.mgx.seqcompression.QualityEncoder;
+import de.cebitec.mgx.seqcompression.SequenceException;
 import java.util.Random;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -20,7 +24,7 @@ public class QualityEncoderTest {
      * @throws de.cebitec.mgx.sequence.SeqStoreException No valid Sanger format
      */
     @Test
-    public void testEncodeAndDecode_BigDataset() throws SeqStoreException {
+    public void testEncodeAndDecode_BigDataset() throws SequenceException {
         int seed = rnd.nextInt();
         rnd.setSeed(seed);
         System.out.println("Random seed: " + seed);
@@ -43,7 +47,7 @@ public class QualityEncoderTest {
      * @throws de.cebitec.mgx.sequence.SeqStoreException No valid Sanger format
      */
     @Test
-    public void testEncodeAndDecode_SmallDataset() throws SeqStoreException {
+    public void testEncodeAndDecode_SmallDataset() throws SequenceException {
         byte[] quality = new byte[]{10, 12, 15, 13, 14, 17, 15, 20, 40};
         byte[] expResult = new byte[]{5, 9, 8, -52, 66, -96, -53, -8};
         byte[] encoded = QualityEncoder.encode(quality);
@@ -53,21 +57,21 @@ public class QualityEncoderTest {
     }
 
     @Test
-    public void testEmptyQualityEncoding() throws SeqStoreException {
+    public void testEmptyQualityEncoding() throws SequenceException {
         byte[] quality = new byte[0];
         byte[] encoded = QualityEncoder.encode(quality);
         assertArrayEquals(new byte[]{0, 0}, encoded);
     }
 
     @Test
-    public void testNullQualityEncoding() throws SeqStoreException {
+    public void testNullQualityEncoding() throws SequenceException {
         byte[] quality = null;
         byte[] encoded = QualityEncoder.encode(quality);
         assertArrayEquals(new byte[]{0, 0}, encoded);
     }
 
     @Test
-    public void testEmptyQualityDecoding() throws SeqStoreException {
+    public void testEmptyQualityDecoding() throws SequenceException {
         byte[] encoded = new byte[]{0, 0};
         byte[] decoded = QualityEncoder.decode(encoded, 0);
         assertNotNull(decoded);
@@ -79,7 +83,7 @@ public class QualityEncoderTest {
         byte[] quality = null;
         try {
             byte[] decoded = QualityEncoder.decode(quality, 0);
-        } catch (SeqStoreException ex) {
+        } catch (SequenceException ex) {
             if (ex.getMessage().contains("Unable to decoded null or invalid data.")) {
                 return;
             }
