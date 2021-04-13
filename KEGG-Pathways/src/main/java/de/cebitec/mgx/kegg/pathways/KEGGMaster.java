@@ -6,6 +6,7 @@ import de.cebitec.mgx.kegg.pathways.access.PathwayAccess;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -22,7 +23,6 @@ import java.util.logging.Logger;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
-import org.h2.jdbcx.JdbcConnectionPool;
 
 /**
  *
@@ -39,7 +39,6 @@ public class KEGGMaster implements AutoCloseable {
     private final long timeout = 1000L * 60L * 60L * 24L * 7L * 24L; // 24 weeks
     private PathwayAccess pwacc = null;
     private ECNumberAccess ecacc = null;
-    private JdbcConnectionPool pool = null;
 
     //private Connection conn;
     //
@@ -81,10 +80,9 @@ public class KEGGMaster implements AutoCloseable {
             }
         }
         try {
-            Class.forName("org.h2.Driver");
+            Class.forName("org.sqlite.JDBC");
             //conn = DriverManager.getConnection("jdbc:h2:" + cacheDir + File.separator + "kegg" + ";DEFAULT_TABLE_ENGINE=org.h2.mvstore.db.MVTableEngine;USER=sa;PASSWORD=sa");
-            pool = JdbcConnectionPool.create("jdbc:h2:" + cacheDir + File.separator + "kegg" + ";DEFAULT_TABLE_ENGINE=org.h2.mvstore.db.MVTableEngine", "sa", "sa");
-            checkDBH2();
+            checkDB();
         } catch (ClassNotFoundException | SQLException ex) {
             throw new KEGGException(ex);
         }
@@ -123,10 +121,10 @@ public class KEGGMaster implements AutoCloseable {
     }
 
     public final Connection getConnection() throws SQLException {
-        return pool.getConnection();
+        return DriverManager.getConnection("jdbc:sqlite:" + cacheDir + File.separator + "kegg.db");
     }
 
-    private void checkDBH2() throws SQLException {
+    private void checkDB() throws SQLException {
         try (Connection c = getConnection()) {
             DatabaseMetaData dbm = c.getMetaData();
             try (ResultSet rs = dbm.getTables(null, null, "pathway", null)) {
@@ -199,12 +197,12 @@ public class KEGGMaster implements AutoCloseable {
     public void setValid(final String type) {
         //System.err.println("now valid: "+ type);
         try (Connection c = getConnection()) {
-            try (PreparedStatement stmt = c.prepareStatement("UPDATE timestamps SET time=CURRENT_DATE() WHERE type=?")) {
+            try (PreparedStatement stmt = c.prepareStatement("UPDATE timestamps SET time=date('now') WHERE type=?")) {
                 stmt.setString(1, type);
                 stmt.execute();
                 int updateCnt = stmt.getUpdateCount();
                 if (updateCnt != 1) {
-                    try (PreparedStatement pstmt = c.prepareStatement("INSERT INTO timestamps (type, time) VALUES (?, CURRENT_DATE)")) {
+                    try (PreparedStatement pstmt = c.prepareStatement("INSERT INTO timestamps (type, time) VALUES (?, date('now'))")) {
                         pstmt.setString(1, type);
                         pstmt.executeUpdate();
                     }
@@ -217,6 +215,7 @@ public class KEGGMaster implements AutoCloseable {
 
     @Override
     public void close() throws Exception {
-        pool.dispose();
+        restclient.close();
+        keggclient.close();
     }
 }

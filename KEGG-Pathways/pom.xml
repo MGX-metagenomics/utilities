@@ -30,9 +30,7 @@
                 <configuration>
                     <instructions>
                         <Import-Package>
-                            org.osgi.service.jdbc,
-                            org.h2,
-                            org.h2.jdbcx,
+                            org.sqlite,
                             javax.swing,
                             javax.imageio,
                             javax.ws.rs.client,
@@ -102,9 +100,9 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>1.4.200</version>
+            <groupId>org.xerial</groupId>
+            <artifactId>sqlite-jdbc</artifactId>
+            <version>3.34.0</version>
         </dependency>
         <dependency>
             <groupId>de.cebitec.mgx</groupId>
