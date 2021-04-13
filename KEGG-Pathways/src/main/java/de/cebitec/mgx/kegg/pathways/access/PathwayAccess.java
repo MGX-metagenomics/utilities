@@ -287,7 +287,7 @@ public class PathwayAccess extends AccessBase {
                 .path("kegg-bin").path("show_pathway")
                 .queryParam("org_name", "map")
                 .queryParam("mapno", pw.getMapNumber().substring(3));
-//        System.err.println("GET: "+wr.getURI().toASCIIString());
+        System.err.println("GET: "+wr.getURI().toASCIIString());
 
         ClientResponse cr = wr.header("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.1").get(ClientResponse.class);
         catchException(cr);
@@ -298,11 +298,21 @@ public class PathwayAccess extends AccessBase {
             Pattern ecNumber = Pattern.compile("\\d+[.](-|\\d+)[.](-|\\d+)[.](-|\\d+)");
             String line;
             while ((line = br.readLine()) != null) {
-                if (line.startsWith("<area shape=rect")) {
+                if (line.contains("<area ") && line.contains("shape=\"rect\"")) {
 
+                    //System.out.println("line: "+line);
+                    
                     String[] split = splitSpaces.split(line);
+                    String coords = null;
+                    
+                    for (String s : split) {
+                        if (s.startsWith("coords=")) {
+                            coords = s.substring(8, s.length()-1);
+                            break;
+                        }
+                    }
+                    //System.out.println("coords: "+ coords);
 
-                    String coords = split[2].substring(7);
                     String[] corners = coords.split(",");
                     if (corners.length != 4) {
                         throw new KEGGException("invalid line: " + line);
@@ -372,6 +382,8 @@ public class PathwayAccess extends AccessBase {
             if (isValid(pw)) {
                 return;
             }
+            
+            System.out.println("saving " + data.size() +" ec numbers for " + pw.getMapNumber());
             
             for (Entry<ECNumberI, Set<Rectangle>> e : data.entrySet()) {
                 try (PreparedStatement stmt = conn.prepareStatement(INSERT_COORD)) {
