@@ -40,15 +40,15 @@ after_success: |
     # fetch KEGG data
     cd KEGG-Pathways/target && java -jar KEGG-Pathways-1.0.jar
     git clone git://${TARGET_REPO}
-    SRC=/tmp/kegg/kegg.mv.db
-    TRG="MGX-gui/MGX-KeggViewer/src/main/resources/de/cebitec/mgx/gui/keggviewer/kegg.mv.db"
+    SRC=/tmp/kegg/kegg.db
+    TRG="MGX-gui/MGX-KeggViewer/src/main/resources/de/cebitec/mgx/gui/keggviewer/kegg.db"
     if [ ! $(cmp -s ${SRC} ${TRG} ) ]; then
       MESSAGE="Automatic KEGG database update via Travis CI build #${TRAVIS_BUILD_NUMBER}."
       git config --global user.name "Travis CI"
       git config --global user.email "travis@travis-ci.org"
       cp ${SRC} ${TRG}
       cd MGX-gui
-      git commit -m "${MESSAGE}" MGX-KeggViewer/src/main/resources/de/cebitec/mgx/gui/keggviewer/kegg.mv.db
+      git commit -m "${MESSAGE}" MGX-KeggViewer/src/main/resources/de/cebitec/mgx/gui/keggviewer/kegg.db
       git push -q "https://${GITHUB_API_KEY}@${TARGET_REPO}" master || echo "Git push failed."
     else
       echo "KEGG database unchanged."
