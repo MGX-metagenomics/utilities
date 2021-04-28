@@ -10,6 +10,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.Shape;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.BufferedWriter;
@@ -21,8 +22,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ExecutionException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.JComponent;
 import javax.swing.SwingWorker;
@@ -37,7 +36,7 @@ public class KEGGPanel extends JComponent {
 
     private transient BufferedImage image = null;
     private final transient KEGGMaster master;
-    private final Map<Rectangle, String> toolTips;
+    private final Map<Shape, String> toolTips;
     private int numDatasets = -1;
     private transient Map<ECNumberI, Collection<Rectangle>> coords = null;
 
@@ -63,7 +62,10 @@ public class KEGGPanel extends JComponent {
         try {
             image = worker.get();
         } catch (InterruptedException | ExecutionException ex) {
-            Logger.getLogger(KEGGPanel.class.getName()).log(Level.SEVERE, null, ex);
+            //Logger.getLogger(KEGGPanel.class.getName()).log(Level.SEVERE, null, ex);
+            if (ex.getCause() instanceof KEGGException) {
+                throw (KEGGException) ex.getCause();
+            }
             throw new KEGGException(ex);
         }
         int width = image.getWidth();
@@ -88,13 +90,13 @@ public class KEGGPanel extends JComponent {
         }
 
         for (Rectangle r : coords.get(ecNum)) {
-            int colRectWidth = r.width / numDatasets;
-            int colRectX = r.x + datasetIdx * colRectWidth;
+            float colRectWidth = 1f * r.width / numDatasets;
+            float colRectX = r.x + datasetIdx * colRectWidth;
             int colRectHeight = r.height;
-            Rectangle cr = new Rectangle(colRectX, r.y + r.height - colRectHeight, colRectWidth, colRectHeight);
+            Rectangle.Float cr = new Rectangle.Float(colRectX, r.y + r.height - colRectHeight, colRectWidth, colRectHeight);
 
-            for (int x = cr.x; x <= cr.x + cr.width; x++) {
-                for (int y = cr.y; y <= cr.y + cr.height; y++) {
+            for (int x = (int) cr.x; x <= cr.x + cr.width; x++) {
+                for (int y = (int) cr.y; y <= cr.y + cr.height; y++) {
                     int orig = image.getRGB(x, y);
                     image.setRGB(x, y, orig & color.getRGB());
                 }
@@ -155,7 +157,7 @@ public class KEGGPanel extends JComponent {
 
     @Override
     public String getToolTipText(MouseEvent event) {
-        for (Entry<? extends Rectangle, String> e : toolTips.entrySet()) {
+        for (Entry<? extends Shape, String> e : toolTips.entrySet()) {
             if (e.getKey().contains(event.getX(), event.getY())) {
                 return e.getValue();
             }

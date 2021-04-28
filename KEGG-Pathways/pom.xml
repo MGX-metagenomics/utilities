@@ -4,7 +4,6 @@
 
     <groupId>de.cebitec.mgx</groupId>
     <artifactId>KEGG-Pathways</artifactId>
-    <version>1.0</version>
     <packaging>bundle</packaging>
     
     <parent>
@@ -34,11 +33,17 @@
                             org.sqlite,
                             javax.swing,
                             javax.imageio,
-                            com.sun.jersey.api.client.config,
-                            com.sun.jersey.api.client,
+                            javax.ws.rs.client,
+                            javax.ws.rs.core,
+                            javax.ws.rs,
                             org.jfree.graphics2d.svg
                         </Import-Package>
-                        <Export-Package>de.cebitec.mgx.kegg.pathways,de.cebitec.mgx.kegg.pathways.access,de.cebitec.mgx.kegg.pathways.api,de.cebitec.mgx.kegg.pathways.model,de.cebitec.mgx.kegg.pathways.paint</Export-Package>
+                        <Export-Package>
+                            de.cebitec.mgx.kegg.pathways,
+                            de.cebitec.mgx.kegg.pathways.access,
+                            de.cebitec.mgx.kegg.pathways.api,
+                            de.cebitec.mgx.kegg.pathways.model,
+                            de.cebitec.mgx.kegg.pathways.paint</Export-Package>
                         <Private-Package>de.cebitec.mgx.kegg.pathways.*</Private-Package>
                     </instructions>
                 </configuration>
@@ -54,7 +59,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>3.0.2</version>
+                <version>3.1.1</version>
                 <configuration>
                     <archive>
                         <manifest>
@@ -91,13 +96,8 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.12</version>
+            <version>4.13.1</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.jersey</groupId>
-            <artifactId>jersey-client</artifactId>
-            <version>1.18.2</version>
         </dependency>
         <dependency>
             <groupId>org.xerial</groupId>
@@ -106,8 +106,18 @@
         </dependency>
         <dependency>
             <groupId>de.cebitec.mgx</groupId>
+            <artifactId>RESTEasy-OSGi</artifactId>
+            <version>2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>de.cebitec.mgx</groupId>
             <artifactId>JFreeSVG-OSGi</artifactId>
             <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.service.jdbc</artifactId>
+            <version>1.0.0</version>
         </dependency>
     </dependencies>
 </project>
