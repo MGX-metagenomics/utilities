@@ -16,6 +16,13 @@ public class EncodedDNASequence extends DNASequence {
 
     private byte[] encodedDNA;
 
+    public EncodedDNASequence() {
+    }
+    
+    public EncodedDNASequence(long seqid) {
+        super(seqid);
+    }
+    
     public byte[] getEncodedSequence() {
         return encodedDNA;
     }

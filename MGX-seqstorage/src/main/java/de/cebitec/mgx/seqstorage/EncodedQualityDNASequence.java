@@ -18,6 +18,13 @@ public class EncodedQualityDNASequence extends EncodedDNASequence implements DNA
 
     private byte[] encQual;
 
+    public EncodedQualityDNASequence() {
+    }
+    
+    public EncodedQualityDNASequence(long seqid) {
+        super(seqid);
+    }
+
     public byte[] getEncodedQuality() {
         return encQual;
     }
@@ -36,5 +43,6 @@ public class EncodedQualityDNASequence extends EncodedDNASequence implements DNA
     public void setQuality(byte[] qual) throws SequenceException {
         encQual = QualityEncoder.encode(qual);
     }
+    
 
 }

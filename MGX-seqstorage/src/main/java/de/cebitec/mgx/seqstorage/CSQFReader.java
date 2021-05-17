@@ -171,11 +171,11 @@ public class CSQFReader implements SeqReaderI<DNAQualitySequenceI> {
 
         if (sepPos > 0) {
             byte[] encodedSeq = ByteUtils.substring(buf, 0, sepPos - 1);
-            byte[] decodedSeq = FourBitEncoder.decode(encodedSeq);
+            long decodedLen = FourBitEncoder.decodeLength(encodedSeq);
 
             // bytes needed to store quality; two initial bytes are used to store 
             // bits per value and an offset to be added to all encoded values
-            int encodedQualLen = (int) Math.ceil(decodedSeq.length * buf[sepPos + 1] / 8.0 + 2);
+            int encodedQualLen = (int) Math.ceil(decodedLen * buf[sepPos + 1] / 8.0 + 2);
 
             // quality exceeds beyond buffer end; enlarge buffer and read 
             // missing bytes from file
@@ -191,15 +191,14 @@ public class CSQFReader implements SeqReaderI<DNAQualitySequenceI> {
             }
 
             byte[] encodedQual = ByteUtils.substring(buf, sepPos + 1, sepPos + encodedQualLen);
-            byte[] decodedQual = QualityEncoder.decode(encodedQual, decodedSeq.length);
-
-            QualityDNASequence seq = new QualityDNASequence(id);
-            seq.setSequence(decodedSeq);
-            seq.setQuality(decodedQual);
+            
+            EncodedQualityDNASequence seq = new EncodedQualityDNASequence(id);
+            seq.setEncodedSequence(encodedSeq);
+            seq.setEncodedQuality(encodedQual);
             return seq;
         } else if (sepPos == 0) {
             // empty sequence
-            QualityDNASequence seq = new QualityDNASequence(id);
+            EncodedQualityDNASequence seq = new EncodedQualityDNASequence(id);
             seq.setSequence(new byte[0]);
             seq.setQuality(new byte[0]);
             return seq;
