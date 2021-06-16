@@ -179,6 +179,9 @@ public class CSQFWriterTest {
                     writer.add(holder);
                 }
             }
+            
+            assertEquals(4, writer.size());
+            
             List<DNAQualitySequenceI> reader = new ArrayList<>();
             try (CSQFReader r = new CSQFReader(target.getAbsolutePath(), false)) {
                 int i = 0;
@@ -192,6 +195,9 @@ public class CSQFWriterTest {
                 }
                 r.delete();
             }
+            
+            assertEquals(4, reader.size());
+            
             for (int i = 0; i < writer.size(); i++) {
                 Assert.assertArrayEquals(writer.get(i).getSequence(), reader.get(i).getSequence());
                 Assert.assertArrayEquals(writer.get(i).getQuality(), reader.get(i).getQuality());
