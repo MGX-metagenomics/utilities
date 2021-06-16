@@ -92,9 +92,10 @@ public class FourBitEncoder {
 
         int dec_len = enc.length * 2;
         // decoded sequence length is odd
-        if ((enc[enc.length - 1] & 0x0F) == 0x0) {
+        if (dec_len != 0 && (enc[enc.length - 1] & 0x0F) == 0x0) {
             dec_len--;
         }
+
         byte[] decoded = new byte[dec_len];
 
         for (int dec_pos = 0; dec_pos < dec_len; dec_pos++) {
