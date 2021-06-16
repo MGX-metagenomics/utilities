@@ -1,4 +1,4 @@
-package de.cebitec.mgx.seqstorage.encoding;
+package de.cebitec.mgx.seqcompression;
 
 import de.cebitec.mgx.seqcompression.QualityEncoder;
 import de.cebitec.mgx.seqcompression.SequenceException;

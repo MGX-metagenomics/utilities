@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package de.cebitec.mgx.seqstorage.encoding;
+package de.cebitec.mgx.seqcompression;
 
 import de.cebitec.mgx.seqcompression.ByteUtils;
 import static org.junit.Assert.assertArrayEquals;
