@@ -33,9 +33,9 @@
                             org.sqlite,
                             javax.swing,
                             javax.imageio,
-                            javax.ws.rs.client,
-                            javax.ws.rs.core,
-                            javax.ws.rs,
+                            jakarta.ws.rs.client,
+                            jakarta.ws.rs.core,
+                            jakarta.ws.rs,
                             org.jfree.graphics2d.svg
                         </Import-Package>
                         <Export-Package>

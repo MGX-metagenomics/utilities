@@ -23,7 +23,7 @@ public class MGXOptions {
                 testUtils(),
                 gpmsBundles(),
                 seqIOBundles(),
-//                serviceLoaderBundles(),
+                //                serviceLoaderBundles(),
                 mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-parallelPropChange").version("2.0"),
                 mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-common").version("2.0"),
                 mavenBundle().groupId("de.cebitec.mgx").artifactId("Trove-OSGi").version("2.0"),
@@ -35,24 +35,29 @@ public class MGXOptions {
     public static CompositeOption testUtils() {
         return new DefaultCompositeOption(
                 mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-TestUtils").version("2.0")
+                //mavenBundle().groupId("org.slf4j").artifactId("slf4j-api").version("1.7.35"),
+                //mavenBundle().groupId("org.slf4j").artifactId("slf4j-simple").version("1.7.35")
         );
     }
 
     public static CompositeOption gpmsBundles() {
         return new DefaultCompositeOption(
-                mavenBundle().groupId("javax.annotation").artifactId("javax.annotation-api").version("1.3.2"),
-                mavenBundle().groupId("javax.validation").artifactId("validation-api").version("2.0.1.Final"),
-                mavenBundle().groupId("javax.interceptor").artifactId("javax.interceptor-api").version("1.2"),
+                mavenBundle().groupId("jakarta.annotation").artifactId("jakarta.annotation-api").version("2.0.0"),
+                mavenBundle().groupId("jakarta.validation").artifactId("jakarta.validation-api").version("3.0.0"),
+                mavenBundle().groupId("jakarta.activation").artifactId("jakarta.activation-api").version("2.0.0"),
+                mavenBundle().groupId("jakarta.xml.bind").artifactId("jakarta.xml.bind-api").version("3.0.1"),
+                mavenBundle().groupId("jakarta.interceptor").artifactId("jakarta.interceptor-api").version("2.0.1"),
+                mavenBundle().groupId("jakarta.inject").artifactId("jakarta.inject-api").version("2.0.1"),
                 mavenBundle().groupId("de.cebitec.mgx").artifactId("RESTEasy-OSGi").version("2.0"),
-                mavenBundle().groupId("org.jboss.spec.javax.xml.bind").artifactId("jboss-jaxb-api_2.3_spec").version("1.0.1.Final"),
-                mavenBundle().groupId("org.jboss.spec.javax.ws.rs").artifactId("jboss-jaxrs-api_2.1_spec").version("1.0.2.Final"),
-                mavenBundle().groupId("javax.enterprise").artifactId("cdi-api").version("1.2"),
-                mavenBundle().groupId("javax.el").artifactId("javax.el-api").version("3.0.0"),
+                //mavenBundle().groupId("org.jboss.spec.javax.xml.bind").artifactId("jboss-jaxb-api_2.3_spec").version("1.0.1.Final"),
+                mavenBundle().groupId("org.jboss.spec.javax.ws.rs").artifactId("jboss-jaxrs-api_3.0_spec").version("1.0.0.Final"),
+                mavenBundle().groupId("jakarta.enterprise").artifactId("jakarta.enterprise.cdi-api").version("3.0.1"),
+                mavenBundle().groupId("jakarta.el").artifactId("jakarta.el-api").version("4.0.0"),
                 //mavenBundle().groupId("org.apache.geronimo.config").artifactId("geronimo-config-impl").version("1.0"),
-                mavenBundle().groupId("org.eclipse.microprofile.config").artifactId("microprofile-config-api").version("1.3"),
-                mavenBundle().groupId("com.google.protobuf").artifactId("protobuf-java").version("3.12.4"),
+                mavenBundle().groupId("org.eclipse.microprofile.config").artifactId("microprofile-config-api").version("3.0.1"),
+                mavenBundle().groupId("com.google.protobuf").artifactId("protobuf-java").version("3.19.2"),
                 mavenBundle().groupId("com.google.guava").artifactId("failureaccess").version("1.0.1"),
-                mavenBundle().groupId("com.google.guava").artifactId("guava").version("28.1-jre"),
+                mavenBundle().groupId("com.google.guava").artifactId("guava").version("31.0.1-jre"),
                 mavenBundle().groupId("de.cebitec.gpms").artifactId("GPMS-DTO").version("2.0"),
                 mavenBundle().groupId("de.cebitec.gpms").artifactId("GPMS-core-api").version("2.0"),
                 mavenBundle().groupId("de.cebitec.gpms").artifactId("GPMS-rest-api").version("2.0"),
@@ -66,6 +71,7 @@ public class MGXOptions {
         return new DefaultCompositeOption(
                 mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-BufferedRandomAccessFile").version("2.0"),
                 mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-isequences").version("2.0"),
+                mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-seqcompression").version("2.0"),
                 mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-seqstorage").version("2.0"),
                 mavenBundle().groupId("de.cebitec.mgx").artifactId("SFFReader").version("2.0"),
                 mavenBundle().groupId("de.cebitec.mgx").artifactId("Trove-OSGi").version("2.0"),
@@ -79,5 +85,4 @@ public class MGXOptions {
 //                mavenBundle().groupId("org.apache.aries").artifactId("org.apache.aries.util").version("1.0.0"),
 //                mavenBundle().groupId("org.ow2.asm").artifactId("asm-debug-all").version("5.0.3"));
 //    }
-
 }

@@ -24,9 +24,9 @@
                         <Export-Package>de.cebitec.mgx.protobuf.serializer</Export-Package>
                         <Import-Package>
                             javax.net.ssl,
-                            javax.ws.rs,
-                            javax.ws.rs.core,
-                            javax.ws.rs.ext,
+                            jakarta.ws.rs,
+                            jakarta.ws.rs.core,
+                            jakarta.ws.rs.ext,
                             com.google.protobuf
                         </Import-Package>
                     </instructions>
@@ -56,11 +56,31 @@
             <artifactId>protobuf-java</artifactId>
             <version>3.19.2</version>
         </dependency>
+        
         <dependency>
-            <groupId>javax</groupId>
-            <artifactId>javaee-web-api</artifactId>
-            <version>8.0.1</version>
+            <groupId>jakarta.ws.rs</groupId>
+            <artifactId>jakarta.ws.rs-api</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+
+        
+        
+        <!--
+        <dependency>
+            <groupId>org.jboss.spec.javax.ws.rs</groupId>
+            <artifactId>jboss-jaxrs-api_3.0_spec</artifactId>
+            <version>1.0.0.Final</version>
             <scope>provided</scope>
         </dependency>
+        -->
+        
+        <!--
+<dependency>
+    <groupId>javax</groupId>
+    <artifactId>javaee-web-api</artifactId>
+    <version>8.0.1</version>
+    <scope>provided</scope>
+</dependency>
+        -->
     </dependencies>
 </project>

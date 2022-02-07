@@ -1,7 +1,7 @@
 package de.cebitec.mgx.resteasy;
 
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.ext.RuntimeDelegate;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.ext.RuntimeDelegate;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 

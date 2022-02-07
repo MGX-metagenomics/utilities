@@ -19,9 +19,9 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <java.src.version>1.8</java.src.version>
     <java.trg.version>1.8</java.trg.version>
-    <exam.version>4.13.1</exam.version>
-    <url.version>2.6.1</url.version>
-    <logback.version>1.1.3</logback.version>
+    <exam.version>4.13.5</exam.version>
+    <url.version>2.6.10</url.version>
+    <logback.version>1.2.10</logback.version>
   </properties>
     
     
@@ -134,5 +134,13 @@
       <url>https://maven.pkg.github.com/mgx-metagenomics/utilities</url>
     </repository>
   </distributionManagement>
+  
+  <repositories>
+      <repository>
+          <id>42</id>
+          <name>maven.apache.org</name>
+          <url>https://repo.maven.apache.org/maven2/</url>
+      </repository>
+  </repositories>
   
 </project>

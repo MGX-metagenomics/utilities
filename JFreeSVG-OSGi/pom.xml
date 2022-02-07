@@ -32,7 +32,7 @@
                         <Export-Package />
                         <Private-Package/>
                         <Import-Package>
-                            javax.xml.bind,
+                            jakarta.xml.bind,
                             javax.imageio,
                             javax.swing,
                             javax.servlet;resolution:=optional</Import-Package>

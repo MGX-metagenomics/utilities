@@ -28,17 +28,28 @@
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-client</artifactId>
-            <version>4.6.0.Final</version>
+            <version>6.0.0.Final</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.jboss.spec.javax.ws.rs</groupId>
+                    <artifactId>jboss-jaxrs-api_3.0_spec</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpcore-nio</artifactId>
-            <version>4.4.14</version>
+            <version>4.4.15</version>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpasyncclient</artifactId>
-            <version>4.1.4</version>
+            <version>4.1.5</version>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.ws.rs</groupId>
+            <artifactId>jakarta.ws.rs-api</artifactId>
+            <version>3.0.0</version>
         </dependency>
         
         <!-- httpclient and httpcore are transitive dependencies of resteasy-client;
@@ -52,8 +63,10 @@
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpcore</artifactId>
-            <version>4.4.14</version>
+            <version>4.4.15</version>
         </dependency>
+        
+        
     </dependencies>
 
     <build>
@@ -70,6 +83,7 @@
                         <_exportcontents>  
                             org.jboss.resteasy.api.validation,
                             org.jboss.resteasy.core,
+                            org.jboss.resteasy.concurrent,
                             org.jboss.resteasy.client.jaxrs,
                             org.jboss.resteasy.client.jaxrs.spi,
                             org.jboss.resteasy.client.jaxrs.engines,
@@ -81,6 +95,7 @@
                             org.jboss.resteasy.core.providerfactory, 
                             org.jboss.resteasy.core.registry, 
                             org.jboss.resteasy.mock, 
+                            org.jboss.resteasy.spi.concurrent,
                             org.jboss.resteasy.spi.interception, 
                             org.jboss.resteasy.spi.metadata, 
                             org.jboss.resteasy.spi.validation,
@@ -142,14 +157,14 @@
                             javax.imageio.plugins.jpeg,
                             javax.net.ssl,
                             javax.net,
-                            javax.ws.rs,
-                            javax.ws.rs.core,
-                            javax.ws.rs.client,
-                            javax.ws.rs.container, 
-                            javax.ws.rs.ext,
-                            javax.validation,
+                            jakarta.ws.rs,
+                            jakarta.ws.rs.core,
+                            jakarta.ws.rs.client,
+                            jakarta.ws.rs.container, 
+                            jakarta.ws.rs.ext,
+                            jakarta.validation,
                             javax.naming,
-                            javax.xml.bind.annotation,
+                            jakarta.xml.bind.annotation,
                             javax.xml.transform,
                             javax.xml.parsers,
                             org.w3c.dom,
