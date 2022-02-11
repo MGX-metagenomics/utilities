@@ -50,6 +50,7 @@
     <module>JOGL-OSGi</module>
     <module>Prefuse-OSGi</module>
     <module>jCharts-OSGi</module>
+    <module>xchart-OSGi</module>
     <module>MGX-StreamLogger</module>
     <module>MGX-dispatcher-common-api</module>
     <module>MGX-dispatcher-common</module>
