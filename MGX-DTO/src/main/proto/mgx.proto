@@ -326,6 +326,15 @@ message JobsAndAttributeTypesDTO {
 
 // reference mapping data types
 
+ enum RegionType {
+    CDS = 0;
+    RRNA = 1;
+    TRNA = 2;
+    TMRNA = 3;
+    NCRNA = 4;
+    MISC = 5;
+ }
+
 // reference
 message ReferenceDTO {
     sint64 id = 1;
@@ -337,17 +346,19 @@ message ReferenceDTOList  {
   repeated ReferenceDTO reference = 1;
 }
 
-message RegionDTO {
+// annotated subregion of a reference genome
+message ReferenceRegionDTO {
     sint64 id = 1;
     string name = 2;
     string description = 3;
     int32 start = 4;
     int32 stop = 5;
-    string type = 6;
+    RegionType type = 6;
+    sint64 parent_id = 7;
 }
 
-message RegionDTOList  {
-  repeated RegionDTO region = 1;
+message ReferenceRegionDTOList  {
+  repeated ReferenceRegionDTO region = 1;
 }
 
 message MappingDTO {
@@ -521,7 +532,7 @@ message ContigDTO {
     float gc = 4;
     int32 coverage = 5;
     sint64 bin_id = 6;
-    int32 number_cDS = 7;
+    int32 number_subregions = 7;
 }
 
 message ContigDTOList {
@@ -542,20 +553,21 @@ message AssemblyJobDTOList {
     repeated AssemblyJobDTO job = 1;
 }
 
-message GeneDTO {
+message AssembledRegionDTO {
     sint64 id = 1;
     int32 start = 2;
     int32 stop = 3;
     sint64 contig_id = 4;
-    int32 coverage = 5;
+    RegionType type = 5;
+    int32 coverage = 6;
 }
 
-message GeneDTOList {
-    repeated GeneDTO gene = 1;
+message AssembledRegionDTOList {
+    repeated AssembledRegionDTO region = 1;
 }
 
 message GeneCoverageDTO {
-    sint64 gene_id = 1;
+    sint64 region_id = 1;
     sint64 run_id = 2;
     int32 coverage = 3;
 }
