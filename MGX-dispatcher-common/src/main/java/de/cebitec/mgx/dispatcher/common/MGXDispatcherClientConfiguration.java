@@ -7,9 +7,9 @@ import java.io.IOException;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.ejb.Singleton;
-import javax.ejb.Startup;
 import de.cebitec.mgx.dispatcher.common.api.DispatcherClientConfigurationI;
+import jakarta.ejb.Singleton;
+import jakarta.ejb.Startup;
 
 /**
  *

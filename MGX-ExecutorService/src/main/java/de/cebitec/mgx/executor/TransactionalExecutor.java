@@ -10,9 +10,9 @@ package de.cebitec.mgx.executor;
  * @author
  * http://www.adam-bien.com/roller/abien/entry/conveniently_transactionally_and_legally_starting
  */
+import jakarta.ejb.Asynchronous;
+import jakarta.ejb.Stateless;
 import java.util.concurrent.Executor;
-import javax.ejb.Asynchronous;
-import javax.ejb.Stateless;
 
 @Stateless
 public class TransactionalExecutor implements Executor {
