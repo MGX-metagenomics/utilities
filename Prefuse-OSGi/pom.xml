@@ -19,14 +19,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.prefuse</groupId>
-            <artifactId>prefuse</artifactId>
-            <version>beta-20071021</version>
-        </dependency>
-        <dependency>
-            <groupId>lucene</groupId>
-            <artifactId>lucene</artifactId>
-            <version>1.4.3</version>
+            <groupId>de.sciss</groupId>
+            <artifactId>prefuse-core</artifactId>
+            <version>1.0.3</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -43,7 +38,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Embed-Dependency>prefuse,lucene;scope=compile|runtime</Embed-Dependency>
+                        <Embed-Dependency>prefuse-core,lucene;scope=compile|runtime</Embed-Dependency>
                         <Embed-Transitive>true</Embed-Transitive>
                         <_exportcontents>prefuse,prefuse.action.*,prefuse.activity,prefuse.controls,prefuse.data,prefuse.data.column,prefuse.data.event,prefuse.data.parser,prefuse.data.expression,prefuse.data.search,prefuse.data.tuple,prefuse.data.util,prefuse.render,prefuse.util,prefuse.util.force,prefuse.util.collections,prefuse.util.display,prefuse.util.ui,prefuse.visual.*,org.apache.lucene.index,org.apache.lucene.document,org.apache.lucene.store,org.apache.lucene.queryParser,org.apache.lucene.search,org.apache.lucene.analysis</_exportcontents>
                         <Export-Package>prefuse.svg</Export-Package>
