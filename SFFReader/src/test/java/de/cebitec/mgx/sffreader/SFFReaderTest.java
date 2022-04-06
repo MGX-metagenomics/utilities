@@ -15,47 +15,18 @@ import java.util.logging.Logger;
 import org.junit.*;
 import static org.junit.Assert.*;
 import org.junit.rules.TemporaryFolder;
-import org.junit.runner.RunWith;
-import org.ops4j.pax.exam.Configuration;
-import static org.ops4j.pax.exam.CoreOptions.bundle;
-import static org.ops4j.pax.exam.CoreOptions.junitBundles;
-import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
-import static org.ops4j.pax.exam.CoreOptions.options;
-import static org.ops4j.pax.exam.CoreOptions.systemProperty;
-import org.ops4j.pax.exam.Option;
-import org.ops4j.pax.exam.junit.PaxExam;
 
 /**
  *
  * @author sj
  */
-@RunWith(PaxExam.class)
 public class SFFReaderTest {
 
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
     private File fileWithIndex, fileWithoutIndex;
 
-    @Configuration
-    public static Option[] configuration() {
-        return options(
-                junitBundles(),
-                mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-BufferedRandomAccessFile").versionAsInProject(),
-                mavenBundle().groupId("de.cebitec.mgx").artifactId("Trove-OSGi").versionAsInProject(),
-                systemProperty("org.ops4j.pax.logging.DefaultServiceLog.level").value("WARN"),
-                bundle("reference:file:target/classes")
-        );
-    }
-
     public SFFReaderTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
     }
 
     @Before
@@ -159,6 +130,7 @@ public class SFFReaderTest {
 
         while (r.hasMoreElements()) {
             SFFRead read = r.nextElement();
+            assertNotNull(read);
         }
     }
 
