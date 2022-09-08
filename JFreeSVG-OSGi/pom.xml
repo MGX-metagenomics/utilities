@@ -28,12 +28,12 @@
                         <Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
                         <Embed-Transitive>true</Embed-Transitive>
                         <_exportcontents>
-                            org.jfree.graphics2d.svg
+                            org.jfree.svg
                         </_exportcontents>
                         <Export-Package />
                         <Private-Package/>
                         <Import-Package>
-                            javax.xml.bind,
+                            jakarta.xml.bind,
                             javax.imageio,
                             javax.swing,
                             javax.servlet;resolution:=optional</Import-Package>
@@ -55,8 +55,8 @@
     <dependencies>
         <dependency>
             <groupId>org.jfree</groupId>
-            <artifactId>jfreesvg</artifactId>
-            <version>3.3</version>
+            <artifactId>org.jfree.svg</artifactId>
+            <version>5.0.3</version>
         </dependency>
     </dependencies>
 </project>

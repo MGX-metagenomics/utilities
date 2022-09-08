@@ -26,7 +26,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JComponent;
 import javax.swing.SwingWorker;
 import javax.swing.ToolTipManager;
-import org.jfree.graphics2d.svg.SVGGraphics2D;
+import org.jfree.svg.SVGGraphics2D;
 
 /**
  *

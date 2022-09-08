@@ -64,7 +64,7 @@
                             javax.imageio,
                             javax.swing,
                             javax.swing.*,
-                            org.jfree.graphics2d.svg
+                            org.jfree.svg
                         </Import-Package>
                     </instructions>
                 </configuration>
