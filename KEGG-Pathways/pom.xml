@@ -36,7 +36,7 @@
                             jakarta.ws.rs.client,
                             jakarta.ws.rs.core,
                             jakarta.ws.rs,
-                            org.jfree.graphics2d.svg
+                            org.jfree.svg
                         </Import-Package>
                         <Export-Package>
                             de.cebitec.mgx.kegg.pathways,
