@@ -20,8 +20,8 @@
     <java.src.version>1.8</java.src.version>
     <java.trg.version>1.8</java.trg.version>
     <exam.version>4.13.5</exam.version>
-    <url.version>2.6.10</url.version>
-    <logback.version>1.2.10</logback.version>
+    <url.version>2.6.11</url.version>
+    <logback.version>1.4.4</logback.version>
   </properties>
     
     
