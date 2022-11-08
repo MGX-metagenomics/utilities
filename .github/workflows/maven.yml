@@ -30,7 +30,7 @@ jobs:
     - name: Install protoc
       run: sudo apt-get install -qq protobuf-compiler
     - name: Create protoc-3 symlink
-      run sudo ln -s /usr/bin/protoc /usr/bin/protoc-3
+      run: sudo ln -s /usr/bin/protoc /usr/bin/protoc-3
     - name: Build with Maven
       run: mvn -B package --file pom.xml
 
