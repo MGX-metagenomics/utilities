@@ -96,6 +96,7 @@
                             org.jboss.resteasy.core.registry, 
                             org.jboss.resteasy.mock, 
                             org.jboss.resteasy.spi.concurrent,
+                            org.jboss.resteasy.spi.config,
                             org.jboss.resteasy.spi.interception, 
                             org.jboss.resteasy.spi.metadata, 
                             org.jboss.resteasy.spi.validation,
