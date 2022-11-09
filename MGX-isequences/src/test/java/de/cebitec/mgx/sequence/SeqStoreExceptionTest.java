@@ -6,14 +6,11 @@
 package de.cebitec.mgx.sequence;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.ops4j.pax.exam.junit.PaxExam;
 
 /**
  *
  * @author sj
  */
-@RunWith(PaxExam.class)
 public class SeqStoreExceptionTest {
     
     
