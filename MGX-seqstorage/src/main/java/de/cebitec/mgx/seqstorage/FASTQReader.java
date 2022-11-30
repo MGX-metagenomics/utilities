@@ -149,11 +149,7 @@ public class FASTQReader implements SeqReaderI<DNAQualitySequenceI> {
         return res;
     }
 
-    private void convertQuality(byte[] in) throws SeqStoreException {
-        if (in == null) {
-            throw new SeqStoreException("Cannot convert null quality string.");
-        }
-
+    private void convertQuality(byte[] in) {
         for (int i = 0; i < in.length; i++) {
             in[i] = (byte) (in[i] - qualityEncoding.getOffset());
         }
