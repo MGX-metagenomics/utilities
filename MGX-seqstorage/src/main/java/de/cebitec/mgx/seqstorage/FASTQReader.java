@@ -20,7 +20,7 @@ public class FASTQReader implements SeqReaderI<DNAQualitySequenceI> {
     private final String fastqfile;
     private final boolean gzipCompressed;
     private QualityEncoding qualityEncoding = null;
-    private int qualityOffset = 0;
+    //private int qualityOffset = 0;
     public static final byte LINEBREAK = '\n';
 
     public FASTQReader(String filename) throws SeqStoreException {
@@ -93,7 +93,7 @@ public class FASTQReader implements SeqReaderI<DNAQualitySequenceI> {
         byte[] qseq = new byte[qLen];
         System.arraycopy(l4, 0, qseq, 0, qLen);
         if (qualityEncoding == null) {
-            setQualityOffset(qseq);
+            detectQualityOffset(qseq);
         }
         if (qualityEncoding == QualityEncoding.Unknown) {
             throw new SeqStoreException("Error in FASTQ file: unknown quality encoding");
@@ -154,7 +154,7 @@ public class FASTQReader implements SeqReaderI<DNAQualitySequenceI> {
 
         byte[] out = new byte[in.length];
         for (int i = 0; i < in.length; i++) {
-            out[i] = (byte) (in[i] - qualityOffset);
+            out[i] = (byte) (in[i] - qualityEncoding.getOffset());
         }
 
         return out;
@@ -165,7 +165,7 @@ public class FASTQReader implements SeqReaderI<DNAQualitySequenceI> {
         return true;
     }
 
-    private void setQualityOffset(byte[] in) {
+    private void detectQualityOffset(byte[] in) {
         byte min = 100;
         byte max = 0;
 
@@ -180,16 +180,12 @@ public class FASTQReader implements SeqReaderI<DNAQualitySequenceI> {
 
         if (min >= 33 && max <= 88) {
             qualityEncoding = QualityEncoding.Sanger;
-            qualityOffset = 33;
         } else if (min >= 67 && max <= 104) {
             qualityEncoding = QualityEncoding.Illumina5;
-            qualityOffset = 64;
         } else if (min >= 54 && max <= 104) {
             qualityEncoding = QualityEncoding.Illumina3;
-            qualityOffset = 64;
         } else if (min >= 59 && max <= 104) {
             qualityEncoding = QualityEncoding.Solexa;
-            qualityOffset = 64;
         } else {
             qualityEncoding = QualityEncoding.Unknown;
         }

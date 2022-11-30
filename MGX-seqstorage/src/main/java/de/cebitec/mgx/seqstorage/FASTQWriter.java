@@ -16,29 +16,15 @@ import java.io.IOException;
 public class FASTQWriter implements SeqWriterI<DNAQualitySequenceI> {
 
     private final BufferedOutputStream seqout;
-    private int qualityOffset = 0;
+    private final QualityEncoding encoding;
 
     public FASTQWriter(String filename, QualityEncoding qualityEncoding) throws SequenceException {
         if (qualityEncoding == QualityEncoding.Unknown) {
             throw new SeqStoreException("Invalid quality encoding.");
         }
-
-        switch (qualityEncoding) {
-            case Illumina3:
-                qualityOffset = 64;
-                break;
-            case Illumina5:
-                qualityOffset = 64;
-                break;
-            case Sanger:
-                qualityOffset = 33;
-                break;
-            case Solexa:
-                qualityOffset = 64;
-                break;
-            default:
-                throw new SeqStoreException("Unhandled quality encoding " + qualityEncoding);
-        }
+        
+        encoding = qualityEncoding;
+        
         try {
             seqout = new BufferedOutputStream(new FileOutputStream(filename));
         } catch (IOException ex) {
@@ -89,6 +75,8 @@ public class FASTQWriter implements SeqWriterI<DNAQualitySequenceI> {
         if (in == null) {
             throw new SeqStoreException("Cannot convert null quality string.");
         }
+        
+        int qualityOffset = encoding.getOffset();
 
         byte[] out = new byte[in.length];
         for (int i = 0; i < in.length; i++) {
