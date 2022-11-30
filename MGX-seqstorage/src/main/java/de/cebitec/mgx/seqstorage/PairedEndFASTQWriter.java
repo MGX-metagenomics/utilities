@@ -2,7 +2,6 @@ package de.cebitec.mgx.seqstorage;
 
 import de.cebitec.mgx.seqcompression.SequenceException;
 import de.cebitec.mgx.sequence.DNAQualitySequenceI;
-import de.cebitec.mgx.sequence.SeqStoreException;
 import de.cebitec.mgx.sequence.SeqWriterI;
 import java.io.IOException;
 
