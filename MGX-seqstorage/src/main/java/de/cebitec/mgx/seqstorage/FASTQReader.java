@@ -96,7 +96,7 @@ public class FASTQReader implements SeqReaderI<DNAQualitySequenceI> {
             setQualityOffset(qseq);
         }
         if (qualityEncoding == QualityEncoding.Unknown) {
-            throw new SeqStoreException("Error in FASTQ file: unknwon quality encoding");
+            throw new SeqStoreException("Error in FASTQ file: unknown quality encoding");
         }
         seq.setQuality(convertQuality(qseq));     //quality as phred scores
 
