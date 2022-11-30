@@ -98,7 +98,9 @@ public class FASTQReader implements SeqReaderI<DNAQualitySequenceI> {
         if (qualityEncoding == QualityEncoding.Unknown) {
             throw new SeqStoreException("Error in FASTQ file: unknown quality encoding");
         }
-        seq.setQuality(convertQuality(qseq));     //quality as phred scores
+        
+        convertQuality(qseq);
+        seq.setQuality(qseq);     //quality as phred scores
 
         return true;
     }
@@ -147,17 +149,14 @@ public class FASTQReader implements SeqReaderI<DNAQualitySequenceI> {
         return res;
     }
 
-    private byte[] convertQuality(byte[] in) throws SeqStoreException {
+    private void convertQuality(byte[] in) throws SeqStoreException {
         if (in == null) {
             throw new SeqStoreException("Cannot convert null quality string.");
         }
 
-        byte[] out = new byte[in.length];
         for (int i = 0; i < in.length; i++) {
-            out[i] = (byte) (in[i] - qualityEncoding.getOffset());
+            in[i] = (byte) (in[i] - qualityEncoding.getOffset());
         }
-
-        return out;
     }
 
     @Override
