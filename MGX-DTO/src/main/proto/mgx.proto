@@ -599,3 +599,14 @@ message GeneAnnotationDTOList {
     repeated GeneAnnotationDTO annotation = 1;
 }
 
+message BinSearchResultDTO {
+    sint64 contig_id = 1;
+    string contig_name = 2;
+    sint64 region_id = 3;
+    string attribute_name = 4;
+    string attribute_type_value = 5;
+}
+
+message BinSearchResultDTOList {
+    repeated BinSearchResultDTO result = 1;
+}
