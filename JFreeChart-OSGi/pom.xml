@@ -31,7 +31,6 @@
                             org.jfree.base,
                             org.jfree.base.config,
                             org.jfree.base.modules,
-                            org.jfree.util,
                             org.jfree.chart,
                             org.jfree.chart.annotations,
                             org.jfree.chart.axis,
@@ -56,6 +55,7 @@
                             org.jfree.data,
                             org.jfree.data.category,
                             org.jfree.data.contour,
+                            org.jfree.data.flow,
                             org.jfree.data.function,
                             org.jfree.data.gantt,
                             org.jfree.data.general,
@@ -63,8 +63,6 @@
                             org.jfree.data.time,
                             org.jfree.data.xy,
                             org.jfree.text,
-                            org.jfree.ui,
-                            org.jfree.ui.about,
                             org.jfree.renderer
                         </_exportcontents>
                         <Export-Package />
@@ -94,7 +92,7 @@
         <dependency>
             <groupId>org.jfree</groupId>
             <artifactId>jfreechart</artifactId>
-            <version>1.0.19</version>
+            <version>1.5.3</version>
         </dependency>
     </dependencies>
 </project>
