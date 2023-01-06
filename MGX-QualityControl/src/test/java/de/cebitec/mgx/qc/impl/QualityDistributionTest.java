@@ -5,8 +5,9 @@ import de.cebitec.mgx.seqcompression.SequenceException;
 import de.cebitec.mgx.seqstorage.QualityDNASequence;
 import de.cebitec.mgx.sequence.DNAQualitySequenceI;
 import java.util.Arrays;
-import org.junit.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -19,12 +20,11 @@ public class QualityDistributionTest {
     public QualityDistributionTest() {
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
         distribution = new FirstReadQualityDistribution();
     }
 
-//    @Ignore("Test can take several minutes")
     @Test
     public void testUpperBorder() throws SequenceException {
         System.out.println("testUpperBorder");

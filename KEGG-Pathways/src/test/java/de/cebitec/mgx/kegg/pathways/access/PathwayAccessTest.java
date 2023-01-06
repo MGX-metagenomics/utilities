@@ -7,15 +7,21 @@ import de.cebitec.mgx.kegg.pathways.api.PathwayI;
 import de.cebitec.mgx.kegg.pathways.model.ECNumberFactory;
 import java.awt.Rectangle;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.junit.*;
-import static org.junit.Assert.*;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.AfterEach;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 /**
  *
@@ -23,22 +29,11 @@ import org.junit.rules.TemporaryFolder;
  */
 public class PathwayAccessTest {
 
-    @Rule
-    public TemporaryFolder folder = new TemporaryFolder();
+    @TempDir
+    Path folder;
+    
 
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
+    @AfterEach
     public void tearDown() {
         if (m != null) {
             try {
@@ -120,9 +115,9 @@ public class PathwayAccessTest {
             return m;
         }
         try {
-            m = KEGGMaster.getInstance(folder.newFolder().getAbsolutePath());
+            m = KEGGMaster.getInstance(folder.toAbsolutePath().toString());
             return m;
-        } catch (IOException | KEGGException ex) {
+        } catch (KEGGException ex) {
             fail();
             return null;
         }

@@ -5,10 +5,10 @@
  */
 package de.cebitec.mgx.seqstorage;
 
-import de.cebitec.mgx.testutils.TestInput;
 import java.io.File;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import org.junit.jupiter.api.Test;
 
 /**
  *

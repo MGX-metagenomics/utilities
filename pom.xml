@@ -21,6 +21,27 @@
         <java.trg.version>1.8</java.trg.version>
     </properties>
     
+    <dependencies>
+        <!-- junit 5 -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.6.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+            <version>5.6.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.6.0</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
     
     <modules>
         <module>MGX-parallelPropChange</module>
@@ -38,7 +59,6 @@
         <module>MGX-seqstorage</module>
         <module>MGX-QualityControl</module>
         <module>MGX-ExecutorService</module>
-        <module>MGX-TestUtils</module>
         <module>MGX-ParallelSortedProcessing</module>
         <module>Trove-OSGi</module>
         <module>JFreeChart-OSGi</module>

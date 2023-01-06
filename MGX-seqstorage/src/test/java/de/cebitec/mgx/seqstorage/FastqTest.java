@@ -3,13 +3,12 @@ package de.cebitec.mgx.seqstorage;
 import de.cebitec.mgx.seqcompression.SequenceException;
 import de.cebitec.mgx.sequence.DNAQualitySequenceI;
 import de.cebitec.mgx.sequence.SeqStoreException;
-import de.cebitec.mgx.testutils.TestInput;
 import java.io.*;
-import org.junit.*;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -104,8 +103,8 @@ public class FastqTest {
         try (FASTQReader fr = new FASTQReader(f.getAbsolutePath(), false)) {
             fr.hasMoreElements();
             DNAQualitySequenceI entry = fr.nextElement();
-            Assert.assertArrayEquals("IRIS:7:1:17:394#0/1".getBytes(), entry.getName());
-            Assert.assertArrayEquals("GTCAGGACAAGAAAGACAANTCCAATTNACATTATG".getBytes(), entry.getSequence());
+            assertArrayEquals("IRIS:7:1:17:394#0/1".getBytes(), entry.getName());
+            assertArrayEquals("GTCAGGACAAGAAAGACAANTCCAATTNACATTATG".getBytes(), entry.getSequence());
             byte[] quality = "aaabaa`]baaaaa_aab]D^^`b`aYDW]abaa`^".getBytes();
             for (int i = 0; i < quality.length; i++) {
                 quality[i] -= 64;
@@ -166,7 +165,7 @@ public class FastqTest {
         try (FASTQReader fr = new FASTQReader(f.getAbsolutePath(), false)) {
             fr.hasMoreElements();
             DNAQualitySequenceI entry = fr.nextElement();
-            Assert.assertEquals("TCGGT", new String(entry.getSequence()));
+            assertEquals("TCGGT", new String(entry.getSequence()));
         } catch (SeqStoreException ex) {
             fail(ex.getMessage());
         }

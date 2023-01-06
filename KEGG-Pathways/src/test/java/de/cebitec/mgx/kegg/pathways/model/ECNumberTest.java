@@ -7,9 +7,12 @@ package de.cebitec.mgx.kegg.pathways.model;
 
 import de.cebitec.mgx.kegg.pathways.KEGGException;
 import de.cebitec.mgx.kegg.pathways.api.ECNumberI;
-import org.junit.Assert;
-import static org.junit.Assert.fail;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.fail;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -26,8 +29,8 @@ public class ECNumberTest {
         ECNumberI ec1 = new ECNumber("1.1.1.1");
         ECNumberI ec2 = new ECNumber("1.1.1.1");
         ECNumberI ec3 = new ECNumber("1.1.1.2");
-        Assert.assertEquals(ec1, ec2);
-        Assert.assertNotEquals(ec1, ec3);
+        assertEquals(ec1, ec2);
+        assertNotEquals(ec1, ec3);
     }
 
     @Test
@@ -37,12 +40,12 @@ public class ECNumberTest {
             ECNumberI ec1 = ECNumberFactory.fromString("1.1.1.1");
             ECNumberI ec2 = ECNumberFactory.fromString("1.1.1.1");
             ECNumberI ec3 = ECNumberFactory.fromString("1.1.1.2");
-            Assert.assertNotNull(ec1);
-            Assert.assertNotNull(ec2);
-            Assert.assertNotNull(ec3);
-            Assert.assertEquals(ec1, ec2);
-            Assert.assertSame(ec1, ec2);
-            Assert.assertNotEquals(ec1, ec3);
+            assertNotNull(ec1);
+            assertNotNull(ec2);
+            assertNotNull(ec3);
+            assertEquals(ec1, ec2);
+            assertSame(ec1, ec2);
+            assertNotEquals(ec1, ec3);
         } catch (KEGGException ex) {
             fail(ex.getMessage());
         }

@@ -1,13 +1,11 @@
 package de.cebitec.mgx.seqcompression;
 
-import de.cebitec.mgx.seqcompression.QualityEncoder;
-import de.cebitec.mgx.seqcompression.SequenceException;
 import java.util.Random;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -36,7 +34,7 @@ public class QualityEncoderTest {
             quality[i] = (byte) (rnd.nextInt(14) + 30);
         }
         byte[] encoded = QualityEncoder.encode(quality);
-        assertEquals("each quality should be 4 bits large", 2 + 50_000, encoded.length);
+        assertEquals(2 + 50_000, encoded.length, "each quality should be 4 bits large");
         byte[] result = QualityEncoder.decode(encoded, quality.length);
         assertArrayEquals(quality, result);
     }

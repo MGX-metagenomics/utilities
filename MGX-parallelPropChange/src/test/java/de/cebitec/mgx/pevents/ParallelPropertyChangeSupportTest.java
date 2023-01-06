@@ -13,12 +13,10 @@ import java.beans.PropertyChangeSupport;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.After;
-import org.junit.AfterClass;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
 /**
  *
@@ -29,23 +27,8 @@ public class ParallelPropertyChangeSupportTest {
     public ParallelPropertyChangeSupportTest() {
     }
 
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
-
-    @Test(timeout = 60000)
+    @Test
+    @Timeout(60)
     public void testDeadLock() {
         System.err.println("testRegressionDeadLock");
         Sender s = new Sender("testRegressionDeadLock");
@@ -68,7 +51,8 @@ public class ParallelPropertyChangeSupportTest {
         assertEquals(1, fw.getCount());
     }
 
-    @Test(timeout = 60000)
+    @Test
+    @Timeout(60)
     public void testTiming() throws IOException {
         System.err.println("testTiming");
 
@@ -102,7 +86,8 @@ public class ParallelPropertyChangeSupportTest {
         }
     }
 
-    @Test(timeout = 60000)
+    @Test
+    @Timeout(60)
     public void testListenerCount() {
         System.err.println("listenerCount");
         ParallelPropertyChangeSupport apcs = new ParallelPropertyChangeSupport("listenerCount");
@@ -126,7 +111,8 @@ public class ParallelPropertyChangeSupportTest {
         assertEquals(0, apcs.getPropertyChangeListeners().length);
     }
 
-    @Test(timeout = 60000)
+    @Test
+    @Timeout(60)
     public void testAllEventsReceived() {
         System.err.println("AllEventsReceived");
         ParallelPropertyChangeSupport apcs = new ParallelPropertyChangeSupport("AllEventsReceived");
@@ -157,7 +143,8 @@ public class ParallelPropertyChangeSupportTest {
 
     }
 
-    @Test(timeout = 60000)
+    @Test
+    @Timeout(60)
     public void testRemove() {
         System.err.println("testRemove");
         Sender s = new Sender("testRemove");
@@ -176,7 +163,8 @@ public class ParallelPropertyChangeSupportTest {
         assertEquals(0, listeners.length);
     }
 
-    @Test(timeout = 60000)
+    @Test
+    @Timeout(60)
     public void testRemoveAfterSend() {
         System.err.println("testRemoveAfterSend");
         Sender s = new Sender("testRemoveAfterSend");
@@ -197,7 +185,8 @@ public class ParallelPropertyChangeSupportTest {
         assertEquals(0, listeners.length);
     }
 
-    @Test(timeout = 60000)
+    @Test
+    @Timeout(60)
     public void testTwoEvents() {
         System.err.println("twoEvents");
         Sender s = new Sender("twoEvents");
@@ -226,7 +215,8 @@ public class ParallelPropertyChangeSupportTest {
         }
     }
 
-    @Test(timeout = 60000)
+    @Test
+    @Timeout(60)
     public void testDestinations() {
         System.err.println("Destinations");
         Sender s1 = new Sender("Destinations1");
@@ -247,7 +237,8 @@ public class ParallelPropertyChangeSupportTest {
         assertEquals(2, r2.getCount());
     }
 
-    @Test(timeout = 60000)
+    @Test
+    @Timeout(60)
     public void testMultiple() {
         System.err.println("multipleEvents");
         Sender s1 = new Sender("multipleEvents");
@@ -273,7 +264,8 @@ public class ParallelPropertyChangeSupportTest {
 //            testCompareToPCS();
 //        }
 //    }
-    @Test(timeout = 60000)
+    @Test
+    @Timeout(60)
     public void testCompareToPCS() {
         System.err.println("compareToPCS");
 
@@ -298,7 +290,8 @@ public class ParallelPropertyChangeSupportTest {
         assertEquals(2, r2.getCount());
     }
 
-    @Test(timeout = 60000)
+    @Test
+    @Timeout(60)
     public void testCompareToPCS2() {
         System.err.println("compareToPCS2");
 
@@ -325,7 +318,8 @@ public class ParallelPropertyChangeSupportTest {
         assertEquals(1, r2.getCount());
     }
 
-    @Test(timeout = 60000)
+    @Test
+    @Timeout(60)
     public void testCompareToPCSNullSource() {
         System.err.println("compareToPCSNullSource");
 

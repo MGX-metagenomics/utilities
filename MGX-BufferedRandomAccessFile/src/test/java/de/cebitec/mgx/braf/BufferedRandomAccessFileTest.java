@@ -10,16 +10,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
+import java.nio.file.Path;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.Rule;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.AfterEach;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 /**
  *
@@ -27,25 +25,18 @@ import org.junit.rules.TemporaryFolder;
  */
 public class BufferedRandomAccessFileTest {
 
-    @Rule
-    public TemporaryFolder folder = new TemporaryFolder();
+    @TempDir
+    public Path folder;
+    
     private File f;
 
     public BufferedRandomAccessFileTest() {
     }
 
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Before
+    @BeforeEach
     public void setUp() {
         try {
-            f = folder.newFile();
+            f = folder.resolve("oneread.sff").toFile();
             InputStream is = getClass().getClassLoader().getResourceAsStream("de/cebitec/mgx/oneread.sff");
             FileOutputStream fos = new FileOutputStream(f);
             int i;
@@ -58,10 +49,9 @@ public class BufferedRandomAccessFileTest {
         }
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         f.delete();
-        folder.delete();
     }
 
     @Test
@@ -76,12 +66,12 @@ public class BufferedRandomAccessFileTest {
 
         while ((d1 = raf.read()) != -1) {
             d2 = raf2.read();
-            Assert.assertEquals(d1, d2);
-            Assert.assertEquals(raf.getFilePointer(), raf2.getFilePointer());
+            assertEquals(d1, d2);
+            assertEquals(raf.getFilePointer(), raf2.getFilePointer());
             read2++;
             read++;
         }
-        Assert.assertEquals(read, read2);
+        assertEquals(read, read2);
     }
 
     @Test
@@ -96,15 +86,15 @@ public class BufferedRandomAccessFileTest {
 
         raf.seek(7);
         raf2.seek(7);
-        Assert.assertEquals(raf.getFilePointer(), raf2.getFilePointer());
+        assertEquals(raf.getFilePointer(), raf2.getFilePointer());
 
         while ((d1 = raf.read()) != -1) {
             d2 = raf2.read();
-            Assert.assertEquals(d1, d2);
-            Assert.assertEquals(raf.getFilePointer(), raf2.getFilePointer());
+            assertEquals(d1, d2);
+            assertEquals(raf.getFilePointer(), raf2.getFilePointer());
             read2++;
             read++;
         }
-        Assert.assertEquals(read, read2);
+        assertEquals(read, read2);
     }
 }

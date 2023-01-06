@@ -2,12 +2,11 @@ package de.cebitec.mgx.seqstorage;
 
 import de.cebitec.mgx.sequence.DNAQualitySequenceI;
 import de.cebitec.mgx.sequence.SeqStoreException;
-import de.cebitec.mgx.testutils.TestInput;
 import java.io.*;
-import org.junit.*;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -39,8 +38,8 @@ public class SFFReaderTest {
         try (SFFReader sr = new SFFReader(f.getAbsolutePath())) {
             while (sr.hasMoreElements()) {
                 DNAQualitySequenceI entry = sr.nextElement();
-                Assert.assertArrayEquals("EM7RWTF01EXJBZ".getBytes(), entry.getName());
-                Assert.assertArrayEquals("GATCGCGCGCCGAGGCATTCGCCGCCGTACCCTGGCCAACGCTCGAGCCCAGCGGTCAGTCGCGTCGGATGGTCAGACACGACAACGAGGGAGTAGGACGAAGGCAACACGGAGGGGAGTAGG".getBytes(), entry.getSequence());
+                assertArrayEquals("EM7RWTF01EXJBZ".getBytes(), entry.getName());
+                assertArrayEquals("GATCGCGCGCCGAGGCATTCGCCGCCGTACCCTGGCCAACGCTCGAGCCCAGCGGTCAGTCGCGTCGGATGGTCAGACACGACAACGAGGGAGTAGGACGAAGGCAACACGGAGGGGAGTAGG".getBytes(), entry.getSequence());
                 byte[] quality = "+-,<<717<<70:7/;;=:+-<70;9<;1?>1;:3=:@<100<:3<4><*<3081<:<3<86:9<8:401;59<2<2062<.7@;408?>10)<;<789,?<>903*00<930=<2\"0)<<=7".getBytes();
                 for (int i = 0; i < quality.length; i++) {
                     quality[i] -= 33;

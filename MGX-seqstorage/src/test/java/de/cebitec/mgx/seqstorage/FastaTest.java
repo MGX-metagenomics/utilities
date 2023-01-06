@@ -2,10 +2,12 @@ package de.cebitec.mgx.seqstorage;
 
 import de.cebitec.mgx.sequence.DNASequenceI;
 import de.cebitec.mgx.sequence.SeqStoreException;
-import de.cebitec.mgx.testutils.TestInput;
 import java.io.File;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -37,7 +39,7 @@ public class FastaTest {
         System.out.println("readFasta");
         File f = TestInput.copyTestResource(getClass(), "de/cebitec/mgx/seqstorage/test.fas");
         int seqCnt = 0;
-        try (FastaReader fr = new FastaReader(f.getAbsolutePath(), false)) {
+        try ( FastaReader fr = new FastaReader(f.getAbsolutePath(), false)) {
             while (fr.hasMoreElements()) {
                 fr.nextElement();
                 seqCnt++;
@@ -54,7 +56,7 @@ public class FastaTest {
     public void testLowerCaseInput() throws Exception {
         System.out.println("testLowerCaseInput");
         File f = TestInput.copyTestResource(getClass(), "de/cebitec/mgx/seqstorage/lowercase.fas");
-        try (FastaReader fr = new FastaReader(f.getAbsolutePath(), false)) {
+        try ( FastaReader fr = new FastaReader(f.getAbsolutePath(), false)) {
             fr.hasMoreElements();
             DNASequenceI entry = fr.nextElement();
             assertEquals("TCGGT", new String(entry.getSequence()));
@@ -68,7 +70,7 @@ public class FastaTest {
     public void testSeqName() throws Exception {
         System.out.println("testSeqName");
         File f = TestInput.copyTestResource(getClass(), "de/cebitec/mgx/seqstorage/lowercase.fas");
-        try (FastaReader fr = new FastaReader(f.getAbsolutePath(), false)) {
+        try ( FastaReader fr = new FastaReader(f.getAbsolutePath(), false)) {
             fr.hasMoreElements();
             DNASequenceI entry = fr.nextElement();
             assertEquals("MISEQ:99:000000000-A736Y:1:1101:16109:1484 1:N:0:", new String(entry.getName()));
@@ -86,7 +88,7 @@ public class FastaTest {
         DNASequenceI seq1 = null;
         DNASequenceI seq2 = null;
 
-        try (FastaReader fr = new FastaReader(f.getAbsolutePath(), false)) {
+        try ( FastaReader fr = new FastaReader(f.getAbsolutePath(), false)) {
             assertTrue(fr.hasMoreElements());
             seq1 = fr.nextElement();
             assertTrue(fr.hasMoreElements());
@@ -97,8 +99,8 @@ public class FastaTest {
         }
         f.delete();
 
-        assertNotNull(seq1);
-        assertNotNull(seq2);
+        assertTrue(seq1 != null);
+        assertTrue(seq2 != null);
 
         assertEquals("S10_1", new String(seq1.getName()));
         assertEquals("S10_2", new String(seq2.getName()));
@@ -110,11 +112,11 @@ public class FastaTest {
         System.out.println("testEmptySeqs");
         File f = TestInput.copyTestResource(getClass(), "de/cebitec/mgx/seqstorage/emptyseqs.fas");
         int seqCnt = 0;
-        try (FastaReader fr = new FastaReader(f.getAbsolutePath(), false)) {
+        try ( FastaReader fr = new FastaReader(f.getAbsolutePath(), false)) {
             while (fr.hasMoreElements()) {
                 DNASequenceI seq = fr.nextElement();
-                assertNotNull("Sequence name should not be null", seq.getName());
-                assertNotNull("Sequence should not be null", seq.getSequence());
+                assertTrue(seq.getName() != null, "Sequence name should not be null");
+                assertTrue(seq.getSequence() != null, "Sequence should not be null");
                 assertEquals(0, seq.getSequence().length);
                 seqCnt++;
             }

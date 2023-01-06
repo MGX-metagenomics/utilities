@@ -10,29 +10,38 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.junit.*;
-import static org.junit.Assert.*;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.AfterAll;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.io.TempDir;
 
 /**
  *
  * @author sj
  */
+@TestInstance(Lifecycle.PER_CLASS)
 public class SFFReaderTest {
 
-    @Rule
-    public TemporaryFolder folder = new TemporaryFolder();
+    @TempDir
+    public Path folder;
+    
     private File fileWithIndex, fileWithoutIndex;
 
     public SFFReaderTest() {
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
         try {
-            fileWithIndex = folder.newFile();
+            fileWithIndex = folder.resolve("oneread.sff").toFile();
             InputStream is = getClass().getClassLoader().getResourceAsStream("de/cebitec/mgx/oneread.sff");
             FileOutputStream fos = new FileOutputStream(fileWithIndex);
             int i;
@@ -40,7 +49,7 @@ public class SFFReaderTest {
                 fos.write(i);
             }
             fos.close();
-            fileWithoutIndex = folder.newFile();
+            fileWithoutIndex = folder.resolve("multipleRead.sff").toFile();
             is = getClass().getClassLoader().getResourceAsStream("de/cebitec/mgx/multipleRead.sff");
             fos = new FileOutputStream(fileWithoutIndex);
             while ((i = is.read()) != -1) {
@@ -52,11 +61,10 @@ public class SFFReaderTest {
         }
     }
 
-    @After
+    @AfterAll
     public void tearDown() {
         fileWithIndex.delete();
         fileWithoutIndex.delete();
-        folder.delete();
     }
 
 //    Index is optional
@@ -71,7 +79,7 @@ public class SFFReaderTest {
 //        long offset = r.getOffset("FI5LW4G01DZDXZ");
 //        assertEquals(840, offset);
 //    }
-    @org.junit.Test
+    @Test
     public void testInvalidName() throws IOException {
         System.err.println("testInvalidName");
 //        System.err.println("With index:");
@@ -86,7 +94,7 @@ public class SFFReaderTest {
         assertEquals(null, read);
     }
 
-    @org.junit.Test
+    @Test
     public void testReadOneRead() throws IOException {
         System.err.println("testReadOneRead");
         SFFReader r = new SFFReader(fileWithIndex.getAbsolutePath());
@@ -101,7 +109,7 @@ public class SFFReaderTest {
         }
     }
 
-    @org.junit.Test
+    @Test
     public void testReadOneQuality() throws IOException {
         System.err.println("testReadOneQuality");
         SFFReader r = new SFFReader(fileWithIndex.getAbsolutePath());
@@ -120,7 +128,7 @@ public class SFFReaderTest {
         }
     }
 
-    @org.junit.Test
+    @Test
     public void testReadAll() throws IOException {
         System.err.println("testReadAll");
         SFFReader r = new SFFReader(fileWithIndex.getAbsolutePath());
@@ -134,7 +142,7 @@ public class SFFReaderTest {
         }
     }
 
-    @org.junit.Test
+    @Test
     public void testGetSpecificRead() throws IOException {
         System.err.println("testGetSpecificRead");
 //        System.err.println("With index:");

@@ -6,12 +6,12 @@
 package de.cebitec.mgx.parallel.internal;
 
 import java.util.Iterator;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -22,23 +22,7 @@ public class RingBufferTest {
     public RingBufferTest() {
     }
 
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
-
-    @org.junit.Test
+    @Test
     public void testCapacity() {
         RingBuffer<String> rb = new RingBuffer<>(2);
         rb.add("foo");
@@ -51,7 +35,7 @@ public class RingBufferTest {
         fail();
     }
 
-    @org.junit.Test
+    @Test
     public void testWrapAround() {
         RingBuffer<String> rb = new RingBuffer<>(2);
         rb.add("foo");
@@ -67,7 +51,7 @@ public class RingBufferTest {
         assertEquals("foo", third);
     }
 
-    @org.junit.Test
+    @Test
     public void testMulti() {
         RingBuffer<String> rb = new RingBuffer<>(2);
         rb.add("foo");
@@ -82,7 +66,7 @@ public class RingBufferTest {
         }
     }
 
-    @org.junit.Test
+    @Test
     public void testIterator() {
         RingBuffer<String> rb = new RingBuffer<>(2);
         rb.add("foo");
@@ -101,7 +85,7 @@ public class RingBufferTest {
         }
     }
 
-    @org.junit.Test
+    @Test
     public void testIterator2() {
         RingBuffer<Integer> rb = new RingBuffer<>(100);
         for (int i = 0; i < 100; i++) {
@@ -118,7 +102,7 @@ public class RingBufferTest {
             if (j >= 100) {
                 j %= 100;
             }
-            assertTrue("expected " + j + ", got " + ii, j == ii.intValue());
+            assertTrue(j == ii.intValue(), "expected " + j + ", got " + ii);
         }
     }
 }

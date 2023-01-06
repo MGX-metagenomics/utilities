@@ -5,47 +5,39 @@
  */
 package de.cebitec.mgx.sffreader.datatypes;
 
+import com.sun.tools.javac.util.Assert;
 import de.cebitec.mgx.braf.BufferedRandomAccessFile;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
+import java.nio.file.Path;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.AfterEach;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 /**
  *
  * @author sj
  */
 public class BrafTest {
- @Rule
-    public TemporaryFolder folder = new TemporaryFolder();
+
+    @TempDir
+    public Path folder;
     private File f;
 
     public BrafTest() {
     }
 
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-   @Before
+    @BeforeEach
     public void setUp() {
         try {
-            f = folder.newFile();
+            f = folder.resolve("oneread.sff").toFile();
             InputStream is = getClass().getClassLoader().getResourceAsStream("de/cebitec/mgx/oneread.sff");
             FileOutputStream fos = new FileOutputStream(f);
             int i;
@@ -58,10 +50,9 @@ public class BrafTest {
         }
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         f.delete();
-        folder.delete();
     }
 
     @Test
@@ -76,12 +67,12 @@ public class BrafTest {
 
         while ((d1 = Util.readUint8(raf)) != 255) {
             d2 = Util.readUint8(raf2);
-            Assert.assertEquals(d1, d2);
-            Assert.assertEquals(raf.getFilePointer(), raf2.getFilePointer());
+            assertEquals(d1, d2);
+            assertEquals(raf.getFilePointer(), raf2.getFilePointer());
             read2++;
             read++;
         }
-        Assert.assertEquals(read, read2);
+        assertEquals(read, read2);
     }
 
     @Test
@@ -96,12 +87,12 @@ public class BrafTest {
 
         while ((d1 = Util.readUint16(raf)) != 65535) {
             d2 = Util.readUint16(raf2);
-            Assert.assertEquals(d1, d2);
-            Assert.assertEquals(raf.getFilePointer(), raf2.getFilePointer());
+            assertEquals(d1, d2);
+            assertEquals(raf.getFilePointer(), raf2.getFilePointer());
             read2++;
             read++;
         }
-        Assert.assertEquals(read, read2);
+        assertEquals(read, read2);
     }
 
     @Test
@@ -116,12 +107,12 @@ public class BrafTest {
 
         while ((d1 = Util.readUint32(raf)) != 4294967295l) {
             d2 = Util.readUint32(raf2);
-            Assert.assertEquals(d1, d2);
-            Assert.assertEquals(raf.getFilePointer(), raf2.getFilePointer());
+            assertEquals(d1, d2);
+            assertEquals(raf.getFilePointer(), raf2.getFilePointer());
             read2++;
             read++;
         }
-        Assert.assertEquals(read, read2);
+        assertEquals(read, read2);
     }
 
     @Test
@@ -136,11 +127,11 @@ public class BrafTest {
 
         while ((d1 = Util.readUint64(raf)) != -1) {
             d2 = Util.readUint64(raf2);
-            Assert.assertEquals(d1, d2);
-            Assert.assertEquals(raf.getFilePointer(), raf2.getFilePointer());
+            assertEquals(d1, d2);
+            assertEquals(raf.getFilePointer(), raf2.getFilePointer());
             read2++;
             read++;
         }
-        Assert.assertEquals(read, read2);
+        assertEquals(read, read2);
     }
 }
