@@ -108,12 +108,5 @@
             <artifactId>JFreeSVG-OSGi</artifactId>
             <version>2.0</version>
         </dependency>
-        
-        <!-- TODO: is this needed? -->
-        <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.service.jdbc</artifactId>
-            <version>1.0.1</version>
-        </dependency>
     </dependencies>
 </project>
