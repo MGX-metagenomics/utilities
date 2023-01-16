@@ -12,7 +12,7 @@ public class PhredUtil {
 
     static {
         for (int i = 0; i < phred_to_prob.length; i++) {
-            phred_to_prob[i] = FastMath.pow(10, -i / 10);
+            phred_to_prob[i] = FastMath.pow(10d, -1d * i / 10d);
         }
     }
 
@@ -57,7 +57,7 @@ public class PhredUtil {
     }
 
     public static double rawToPhred(double prob) {
-        return -10 * FastMath.log10(prob);
+        return -10d * FastMath.log10(prob);
     }
 
 }

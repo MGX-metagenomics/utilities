@@ -37,4 +37,15 @@ public class PhredUtilTest {
         assertEquals(30, phred);
     }
 
+    @Test
+    public void testIdempotencyAll() {
+        System.out.println("idempotencyAll");
+
+        for (int p = 0; p < 49; p++) {
+            double errprob = PhredUtil.phredToRaw(p);
+            double phred = PhredUtil.rawToPhred(errprob);
+            assertEquals(p, phred, 0.000001, "Broken conversion for Phred score " + p);
+        }
+    }
+
 }
