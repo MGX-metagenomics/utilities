@@ -26,14 +26,14 @@ public class PhredUtilTest {
     @Test
     public void testRawToPhred20() {
         System.out.println("rawToPhred20");
-        int phred = PhredUtil.rawToPhred(0.01); // 1%
+        double phred = PhredUtil.rawToPhred(0.01); // 1%
         assertEquals(20, phred);
     }
 
     @Test
     public void testRawToPhred30() {
         System.out.println("rawToPhred30");
-        int phred = PhredUtil.rawToPhred(0.001); // 0.1%
+        double phred = PhredUtil.rawToPhred(0.001); // 0.1%
         assertEquals(30, phred);
     }
 

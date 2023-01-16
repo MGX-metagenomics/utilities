@@ -45,19 +45,19 @@ public class PhredUtil {
         return phred_to_prob[phredScore];
     }
 
-    public static int[] rawToPhred(double[] probs) {
+    public static double[] rawToPhred(double[] probs) {
         if (probs == null) {
             return null;
         }
-        int[] ret = new int[probs.length];
+        double[] ret = new double[probs.length];
         for (int i = 0; i < ret.length; i++) {
             ret[i] = rawToPhred(probs[i]);
         }
         return ret;
     }
 
-    public static int rawToPhred(double prob) {
-        return (int) (-10 * FastMath.round(FastMath.log10(prob)));
+    public static double rawToPhred(double prob) {
+        return -10 * FastMath.log10(prob);
     }
 
 }
