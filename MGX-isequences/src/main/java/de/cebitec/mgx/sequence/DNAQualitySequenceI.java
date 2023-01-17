@@ -10,5 +10,4 @@ public interface DNAQualitySequenceI extends DNASequenceI {
 
     public byte[] getQuality() throws SequenceException;
 
-    public void setQuality(byte[] qual) throws SequenceException;
 }
