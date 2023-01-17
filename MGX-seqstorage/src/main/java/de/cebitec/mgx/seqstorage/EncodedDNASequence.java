@@ -7,42 +7,53 @@ package de.cebitec.mgx.seqstorage;
 
 import de.cebitec.mgx.seqcompression.FourBitEncoder;
 import de.cebitec.mgx.seqcompression.SequenceException;
+import de.cebitec.mgx.seqstorage.internal.DNASequenceValidator;
+import de.cebitec.mgx.sequence.DNASequenceI;
+import java.util.Arrays;
 
 /**
  *
  * @author sj
  */
-public class EncodedDNASequence extends DNASequence {
+public class EncodedDNASequence implements DNASequenceI {
 
-    private byte[] encodedDNA;
+    private long id;
+    private byte[] name = null;
+    private final byte[] encodedDNA;
 
-    public EncodedDNASequence() {
-    }
-    
-    public EncodedDNASequence(long seqid) {
-        super(seqid);
-    }
-    
-    public byte[] getEncodedSequence() {
-        return encodedDNA;
-    }
-
-    public void setEncodedSequence(byte[] enc) {
-        this.encodedDNA = enc;
+    public EncodedDNASequence(long seqid, byte[] encseq) throws SequenceException {
+        id = seqid;
+        encodedDNA = Arrays.copyOf(encseq, encseq.length);
+        DNASequenceValidator.validateSequence(FourBitEncoder.decode(encseq));
     }
 
     @Override
-    public void setSequence(byte[] sequence) throws SequenceException {
-        encodedDNA = FourBitEncoder.encode(sequence);
+    public long getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    @Override
+    public byte[] getName() {
+        return name;
+    }
+
+    @Override
+    public void setName(byte[] seqname) {
+        name = Arrays.copyOf(seqname, seqname.length);
+    }
+
+    public byte[] getEncodedSequence() {
+        return Arrays.copyOf(encodedDNA, encodedDNA.length);
     }
 
     @Override
     public final byte[] getSequence() throws SequenceException {
-        byte[] decoded = super.getSequence();
-        if (decoded == null) {
-            super.setSequence(FourBitEncoder.decode(encodedDNA));
-        }
-        return super.getSequence();
+        return FourBitEncoder.decode(encodedDNA);
     }
 
 }

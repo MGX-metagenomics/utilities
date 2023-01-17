@@ -1,44 +1,36 @@
 package de.cebitec.mgx.seqstorage;
 
 import de.cebitec.mgx.seqcompression.SequenceException;
+import de.cebitec.mgx.seqstorage.internal.DNASequenceValidator;
 import de.cebitec.mgx.sequence.DNAQualitySequenceI;
+import java.util.Arrays;
 
 public class QualityDNASequence extends DNASequence implements DNAQualitySequenceI {
 
-    private byte[] quality = null;
+    private final byte[] quality;
 
-    public QualityDNASequence() {
-        super();
+    public QualityDNASequence(byte[] dnasequence, byte[] qual) throws SequenceException {
+        super(dnasequence);
+        quality = Arrays.copyOf(qual, qual.length);
+        DNASequenceValidator.validateQuality(qual);
+
+        if (dnasequence.length != qual.length) {
+            throw new SequenceException("DNA sequence and quality score length mismatch");
+        }
     }
 
-    public QualityDNASequence(long seqid) {
-        super(seqid);
+    public QualityDNASequence(long seqid, byte[] dnasequence, byte[] qual) throws SequenceException {
+        super(seqid, dnasequence);
+        quality = Arrays.copyOf(qual, qual.length);
+        DNASequenceValidator.validateQuality(qual);
+
+        if (dnasequence.length != qual.length) {
+            throw new SequenceException("DNA sequence and quality score length mismatch");
+        }
     }
 
     @Override
     public final byte[] getQuality() {
-        return quality;
+        return Arrays.copyOf(quality, quality.length);
     }
-
-    @Override
-    public void setQuality(byte[] qual) throws SequenceException {
-        if (qual != null && getSequence() != null && getSequence().length != qual.length) {
-            throw new SequenceException("Length of quality values does not match sequence length");
-        }
-        if (qual != null) {
-            quality = new byte[qual.length];
-            System.arraycopy(qual, 0, quality, 0, qual.length);
-        } else {
-            quality = new byte[0];
-        }
-    }
-
-    @Override
-    public void setSequence(byte[] dnasequence) throws SequenceException {
-        if (getQuality() != null && getQuality().length != dnasequence.length) {
-            throw new SequenceException("Length of sequence does not match quality length");
-        }
-        super.setSequence(dnasequence);
-    }
-
 }

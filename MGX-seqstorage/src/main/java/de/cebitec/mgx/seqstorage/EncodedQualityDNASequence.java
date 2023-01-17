@@ -8,7 +8,9 @@ package de.cebitec.mgx.seqstorage;
 import de.cebitec.mgx.seqcompression.FourBitEncoder;
 import de.cebitec.mgx.seqcompression.QualityEncoder;
 import de.cebitec.mgx.seqcompression.SequenceException;
+import de.cebitec.mgx.seqstorage.internal.DNASequenceValidator;
 import de.cebitec.mgx.sequence.DNAQualitySequenceI;
+import java.util.Arrays;
 
 /**
  *
@@ -16,33 +18,37 @@ import de.cebitec.mgx.sequence.DNAQualitySequenceI;
  */
 public class EncodedQualityDNASequence extends EncodedDNASequence implements DNAQualitySequenceI {
 
-    private byte[] encQual;
+    private final byte[] encQual;
 
-    public EncodedQualityDNASequence() {
-    }
-    
-    public EncodedQualityDNASequence(long seqid) {
-        super(seqid);
+    public EncodedQualityDNASequence(long seqid, byte[] encodeddna, byte[] encodedqual) throws SequenceException {
+        super(seqid, encodeddna);
+
+        if (encodedqual == null || encodedqual.length < 2) {
+            throw new SequenceException("Invalid quality string");
+        }
+
+        encQual = Arrays.copyOf(encodedqual, encodedqual.length);
+
+        // need to decode for validation
+        long seqlen = FourBitEncoder.decodeLength(getEncodedSequence());
+        byte[] decodedQual = QualityEncoder.decode(encodedqual, (int) seqlen);
+        DNASequenceValidator.validateQuality(decodedQual);
+
+        if (seqlen != decodedQual.length) {
+            throw new SequenceException("DNA sequence and quality score length mismatch");
+        }
     }
 
     public byte[] getEncodedQuality() {
-        return encQual;
-    }
-
-    public void setEncodedQuality(byte[] encoded) {
-        this.encQual = encoded;
+        return Arrays.copyOf(encQual, encQual.length);
     }
 
     @Override
     public byte[] getQuality() throws SequenceException {
         long len = FourBitEncoder.decodeLength(getEncodedSequence());
-        return QualityEncoder.decode(encQual, (int)len);
+        if (len > 0) {
+            return QualityEncoder.decode(encQual, (int) len);
+        }
+        return new byte[]{};
     }
-
-    @Override
-    public void setQuality(byte[] qual) throws SequenceException {
-        encQual = QualityEncoder.encode(qual);
-    }
-    
-
 }
