@@ -53,28 +53,28 @@ public class CSQFWriter implements SeqWriterI<DNAQualitySequenceI> {
             nameout.write(nmsRecord);
 
             // encode sequence and write to seqout
-            byte[] sequence;
+            byte[] encodedSeq;
             if (seq instanceof EncodedDNASequence) {
-                sequence = ((EncodedDNASequence) seq).getEncodedSequence();
+                encodedSeq = ((EncodedDNASequence) seq).getEncodedSequence();
             } else {
-                sequence = FourBitEncoder.encode(seq.getSequence());
+                encodedSeq = FourBitEncoder.encode(seq.getSequence());
             }
-            seqout.write(sequence);
+            seqout.write(encodedSeq);
             seqout.write(FourBitEncoder.RECORD_SEPARATOR);
 
             //write quality to seqout
-            byte[] quality;
+            byte[] encodedQual;
             if (seq instanceof EncodedQualityDNASequence) {
-                quality = ((EncodedQualityDNASequence) seq).getEncodedQuality();
+                encodedQual = ((EncodedQualityDNASequence) seq).getEncodedQuality();
             } else {
-                quality = QualityEncoder.encode(seq.getQuality());
+                encodedQual = QualityEncoder.encode(seq.getQuality());
             }
-            seqout.write(quality);
+            seqout.write(encodedQual);
 
             // update offset
-            seqout_offset += sequence.length;
+            seqout_offset += encodedSeq.length;
             seqout_offset++; // separator char
-            seqout_offset += quality.length;
+            seqout_offset += encodedQual.length;
         } catch (SequenceException | IOException ex) {
             throw new SeqStoreException(ex.getMessage());
         }

@@ -199,7 +199,7 @@ public class FastqTest {
         try (FASTQWriter fw = new FASTQWriter(target.getAbsolutePath(), QualityEncoding.Sanger)) {
             assertNotNull(fw);
             for (int seqCnt = 1; seqCnt <= 2000; seqCnt++) {
-                DNAQualitySequenceI qseq = genSequence(seqCnt);
+                DNAQualitySequenceI qseq = generateSequence(seqCnt);
                 assertNotNull(qseq);
                 assertEquals(seqCnt, qseq.getSequence().length);
                 assertEquals(seqCnt, qseq.getQuality().length);
@@ -258,19 +258,18 @@ public class FastqTest {
         assertEquals(1, cnt);
     }
 
-    private static DNAQualitySequenceI genSequence(int len) throws SequenceException {
-        DNAQualitySequenceI seq = new QualityDNASequence();
+    private static DNAQualitySequenceI generateSequence(int len) throws SequenceException {
         byte[] seqName = String.valueOf(len).getBytes();
-        seq.setName(seqName);
         byte[] s = new byte[len];
         byte[] q = new byte[len];
+        int quality = 2;
 
         for (int i = 0; i < len; i++) {
             s[i] = 'A';
-            q[i] = '2';
+            q[i] = (byte)quality;
         }
-        seq.setSequence(s);
-        seq.setQuality(q);
+        DNAQualitySequenceI seq = new QualityDNASequence(s, q);
+        seq.setName(seqName);
         return seq;
     }
 }

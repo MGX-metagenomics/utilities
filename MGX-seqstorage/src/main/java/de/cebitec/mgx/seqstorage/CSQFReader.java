@@ -3,7 +3,6 @@ package de.cebitec.mgx.seqstorage;
 import de.cebitec.mgx.seqcompression.ByteUtils;
 import de.cebitec.mgx.braf.BufferedRandomAccessFile;
 import de.cebitec.mgx.seqcompression.FourBitEncoder;
-import de.cebitec.mgx.seqcompression.QualityEncoder;
 import de.cebitec.mgx.seqcompression.SequenceException;
 import de.cebitec.mgx.seqstorage.encoding.*;
 import de.cebitec.mgx.sequence.*;
@@ -123,9 +122,11 @@ public class CSQFReader implements SeqReaderI<DNAQualitySequenceI> {
 
             // extract sequence id and convert
             long sequence_id = ByteUtils.bytesToLong(record);
+
             holder = getEntry(sequence_id, ByteUtils.bytesToLong(record, 8));
             return true;
         } catch (SequenceException | IOException ex) {
+            System.err.println(ex);
             return false;
         }
     }
@@ -152,6 +153,7 @@ public class CSQFReader implements SeqReaderI<DNAQualitySequenceI> {
     }
 
     private synchronized DNAQualitySequenceI getEntry(long id, long offset) throws IOException, SequenceException, SeqStoreException {
+
         raf.seek(offset);
         byte[] buf = new byte[600];
         int bytesRead = raf.read(buf);
@@ -191,16 +193,12 @@ public class CSQFReader implements SeqReaderI<DNAQualitySequenceI> {
             }
 
             byte[] encodedQual = ByteUtils.substring(buf, sepPos + 1, sepPos + encodedQualLen);
-            
-            EncodedQualityDNASequence seq = new EncodedQualityDNASequence(id);
-            seq.setEncodedSequence(encodedSeq);
-            seq.setEncodedQuality(encodedQual);
+
+            EncodedQualityDNASequence seq = new EncodedQualityDNASequence(id, encodedSeq, encodedQual);
             return seq;
         } else if (sepPos == 0) {
             // empty sequence
-            EncodedQualityDNASequence seq = new EncodedQualityDNASequence(id);
-            seq.setSequence(new byte[0]);
-            seq.setQuality(new byte[0]);
+            EncodedQualityDNASequence seq = new EncodedQualityDNASequence(id, new byte[]{}, new byte[]{0, 0});
             return seq;
         } else { // sepPos == -1
             assert false;

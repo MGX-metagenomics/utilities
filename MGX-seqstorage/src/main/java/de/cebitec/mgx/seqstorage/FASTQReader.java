@@ -44,7 +44,7 @@ public class FASTQReader implements SeqReaderI<DNAQualitySequenceI> {
             if (stream == null) {
                 stream = new ByteStreamTokenizer(fastqfile, gzipCompressed, LINEBREAK, 0);
             }
-            
+
             l1 = stream.hasNext() ? stream.next() : null; // header
             l2 = stream.hasNext() ? stream.next() : null; // dna sequence
             l3 = stream.hasNext() ? stream.next() : null; // quality header
@@ -80,14 +80,10 @@ public class FASTQReader implements SeqReaderI<DNAQualitySequenceI> {
             throw new SeqStoreException("Error in FASTQ file: length differs between sequence and quality for " + new String(seqname));
         }
 
-        seq = new QualityDNASequence();
-        seq.setName(seqname);
-
         //check and trim remainder of DOS line breaks
         int targetLen = l2.length > 0 && l2[l2.length - 1] == '\r' ? l2.length - 1 : l2.length;
         byte[] dnasequence = new byte[targetLen];
         System.arraycopy(l2, 0, dnasequence, 0, targetLen);
-        seq.setSequence(dnasequence);
 
         int qLen = l4.length > 0 && l4[l4.length - 1] == '\r' ? l4.length - 1 : l4.length;
         byte[] qseq = new byte[qLen];
@@ -98,9 +94,11 @@ public class FASTQReader implements SeqReaderI<DNAQualitySequenceI> {
         if (qualityEncoding == QualityEncoding.Unknown) {
             throw new SeqStoreException("Error in FASTQ file: unknown quality encoding");
         }
-        
+
         convertQuality(qseq);
-        seq.setQuality(qseq);     //quality as phred scores
+
+        seq = new QualityDNASequence(dnasequence, qseq);
+        seq.setName(seqname);
 
         return true;
     }

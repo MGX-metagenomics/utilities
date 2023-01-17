@@ -132,22 +132,28 @@ public class CSQFWriterTest {
         target.delete();
         List<DNAQualitySequenceI> writer = new ArrayList<>();
         try ( FASTQReader fr = new FASTQReader(f.getAbsolutePath(), false)) {
+            //
+            // write sequences to csqf format
+            //
             try ( CSQFWriter csq = new CSQFWriter(target)) {
+                int seqCount = 0;
                 while (fr.hasMoreElements()) {
-                    DNAQualitySequenceI holder = fr.nextElement();
-                    assertNotNull(holder);
-                    assertNotNull(holder.getSequence());
-                    csq.addSequence(holder);
-                    writer.add(holder);
+                    DNAQualitySequenceI qseq = fr.nextElement();
+                    assertNotNull(qseq);
+                    assertNotNull(qseq.getSequence());
+                    csq.addSequence(qseq);
+                    writer.add(qseq);
+                    seqCount++;
                 }
+                assertEquals(20, seqCount);
             }
-            List<DNAQualitySequenceI> reader = new ArrayList<>();
+
+            List<DNAQualitySequenceI> store = new ArrayList<>();
             try ( CSQFReader r = new CSQFReader(target.getAbsolutePath(), false)) {
-                int i = 0;
                 while (r.hasMoreElements()) {
                     DNAQualitySequenceI s = r.nextElement();
-                    reader.add(s);
                     assertNotNull(s);
+                    store.add(s);
                     String seq = new String(s.getSequence());
                     // all sequences have to be uppercase
                     assertEquals(seq.toUpperCase(), seq);
@@ -155,8 +161,8 @@ public class CSQFWriterTest {
                 r.delete();
             }
             for (int i = 0; i < writer.size(); i++) {
-                assertArrayEquals(writer.get(i).getSequence(), reader.get(i).getSequence());
-                assertArrayEquals(writer.get(i).getQuality(), reader.get(i).getQuality());
+                assertArrayEquals(writer.get(i).getSequence(), store.get(i).getSequence());
+                assertArrayEquals(writer.get(i).getQuality(), store.get(i).getQuality());
             }
 
         } catch (SeqStoreException ex) {
@@ -186,25 +192,26 @@ public class CSQFWriterTest {
 
             assertEquals(4, writer.size());
 
-            List<DNAQualitySequenceI> reader = new ArrayList<>();
+            List<DNAQualitySequenceI> store = new ArrayList<>();
             try ( CSQFReader r = new CSQFReader(target.getAbsolutePath(), false)) {
-                int i = 0;
                 while (r.hasMoreElements()) {
                     DNAQualitySequenceI s = r.nextElement();
-                    reader.add(s);
+                    store.add(s);
                     assertNotNull(s);
                     String seq = new String(s.getSequence());
                     // all sequences have to be uppercase
                     assertEquals(seq.toUpperCase(), seq);
+                    
+                    assertEquals(s.getSequence().length, s.getQuality().length);
                 }
                 r.delete();
             }
 
-            assertEquals(4, reader.size());
+            assertEquals(4, store.size(), "Expected to read back four sequences from CSQF file");
 
             for (int i = 0; i < writer.size(); i++) {
-                assertArrayEquals(writer.get(i).getSequence(), reader.get(i).getSequence());
-                assertArrayEquals(writer.get(i).getQuality(), reader.get(i).getQuality());
+                assertArrayEquals(writer.get(i).getSequence(), store.get(i).getSequence());
+                assertArrayEquals(writer.get(i).getQuality(), store.get(i).getQuality());
             }
 
         } catch (SeqStoreException ex) {

@@ -75,11 +75,10 @@ public class CSFReader implements SeqReaderI<DNASequenceI> {
             return false;
         }
 
-        byte[] dnasequence = seqin.next();
+        byte[] encodeddnasequence = seqin.next();
 
-        if (dnasequence != null) {
-            DNASequenceI seq = new DNASequence(sequence_id);
-            seq.setSequence(FourBitEncoder.decode(dnasequence));
+        if (encodeddnasequence != null) {
+            DNASequenceI seq = new EncodedDNASequence(sequence_id, encodeddnasequence);
             holder = seq;
             return true;
         }
@@ -162,8 +161,7 @@ public class CSFReader implements SeqReaderI<DNASequenceI> {
                 int sepPos = ByteUtils.indexOf(buf, FourBitEncoder.RECORD_SEPARATOR);
                 byte[] encoded = ByteUtils.substring(buf, 0, sepPos - 1);
 
-                DNASequenceI seq = new DNASequence(id);
-                seq.setSequence(FourBitEncoder.decode(encoded));
+                DNASequenceI seq = new DNASequence(id, FourBitEncoder.decode(encoded));
                 result.add(seq);
             }
         } catch (IOException ex) {

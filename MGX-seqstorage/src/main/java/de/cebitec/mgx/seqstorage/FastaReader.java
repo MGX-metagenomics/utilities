@@ -76,8 +76,6 @@ public class FastaReader implements SeqReaderI<DNASequenceI> {
 //            System.arraycopy(seqname, 0, tmp, 0, trimPos);
 //            seqname = tmp;
 //        }
-        seq = new DNASequence();
-        seq.setName(seqname);
 
         byte[] dnasequence = null;
 
@@ -86,7 +84,8 @@ public class FastaReader implements SeqReaderI<DNASequenceI> {
 
             if (buf.length > 0 && buf[0] == '>') {
                 // we have reached the next sequence
-                seq.setSequence(dnasequence);
+                seq = new DNASequence(dnasequence == null ? new byte[0] : dnasequence);
+                seq.setName(seqname);
                 return true;
             }
 
@@ -105,7 +104,8 @@ public class FastaReader implements SeqReaderI<DNASequenceI> {
             }
         }
 
-        seq.setSequence(dnasequence);
+        seq = new DNASequence(dnasequence == null ? new byte[0] : dnasequence);
+        seq.setName(seqname);
         return true;
     }
 
