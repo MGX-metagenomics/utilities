@@ -3,18 +3,18 @@ package de.cebitec.mgx.qc.impl;
 import de.cebitec.mgx.qc.*;
 import de.cebitec.mgx.seqcompression.SequenceException;
 import de.cebitec.mgx.sequence.DNAQualitySequenceI;
-import java.util.*;
+import de.cebitec.mgx.sequence.PhredUtil;
+import java.util.Arrays;
+import org.apache.commons.math3.util.FastMath;
 
 /**
  *
  * @author Patrick Blumenkamp
  */
-public abstract class QualityDistributionBase implements Analyzer<DNAQualitySequenceI>{
+public abstract class QualityDistributionBase implements Analyzer<DNAQualitySequenceI> {
 
     private static final int STARTLENGTH = 2_000;
-    
-    //public static final String NAME = "Sequence quality";
-    
+
     private long[] count = new long[STARTLENGTH];
     private double[] mean = new double[STARTLENGTH];
     private double[] mk = new double[STARTLENGTH];
@@ -31,42 +31,43 @@ public abstract class QualityDistributionBase implements Analyzer<DNAQualitySequ
         Arrays.fill(sk, 0);
         Arrays.fill(skOld, 0);
     }
-    
-//    @Override
-//    public String getName() {
-//        return NAME;
-//    }
 
     @Override
     public void add(DNAQualitySequenceI seq) throws SequenceException {
-        byte[] qual = seq.getQuality();
         
-        maxLength = Math.max(maxLength, qual.length);
-        
-        if (qual.length > count.length){
-            count = Arrays.copyOf(count, qual.length+100);
-            mean = Arrays.copyOf(mean, qual.length+100);
-            mk = Arrays.copyOf(mk, qual.length+100);
-            mkOld = Arrays.copyOf(mkOld, qual.length+100);
-            sk = Arrays.copyOf(sk, qual.length+100);
-            skOld = Arrays.copyOf(skOld, qual.length+100);
+        // since phred scores are log-scaled, we need to convert them
+        // back to raw probabilities first before we're able to compute
+        // averages
+        //
+        double[] rawProbs = PhredUtil.phredToRaw(seq.getQuality());
+
+        maxLength = FastMath.max(maxLength, rawProbs.length);
+
+        // resize buffers, if needed
+        if (rawProbs.length > count.length) {
+            count = Arrays.copyOf(count, rawProbs.length + 100);
+            mean = Arrays.copyOf(mean, rawProbs.length + 100);
+            mk = Arrays.copyOf(mk, rawProbs.length + 100);
+            mkOld = Arrays.copyOf(mkOld, rawProbs.length + 100);
+            sk = Arrays.copyOf(sk, rawProbs.length + 100);
+            skOld = Arrays.copyOf(skOld, rawProbs.length + 100);
         }
-        
-        for (int i=0; i<qual.length; i++){  
+
+        for (int i = 0; i < rawProbs.length; i++) {
             count[i]++;
-            
+
             //standard deviation
-            if (count[i] == 1){             //first entry
-                mk[i] = (double)qual[i];
+            if (count[i] == 1) {             //first entry
+                mk[i] = rawProbs[i];
             } else {
                 mkOld[i] = mk[i];
                 skOld[i] = sk[i];
-                mk[i] = mkOld[i] + (qual[i] - mkOld[i])/count[i];
-                sk[i] = skOld[i] + (qual[i] - mkOld[i]) * (qual[i] - mk[i]);
+                mk[i] = mkOld[i] + (rawProbs[i] - mkOld[i]) / count[i];
+                sk[i] = skOld[i] + (rawProbs[i] - mkOld[i]) * (rawProbs[i] - mk[i]);
             }
-            
+
             //average
-            mean[i] = ((count[i]-1) * mean[i] + qual[i]) / count[i];
+            mean[i] = ((count[i] - 1) * mean[i] + rawProbs[i]) / count[i];
         }
     }
 
@@ -81,15 +82,18 @@ public abstract class QualityDistributionBase implements Analyzer<DNAQualitySequ
         float[] meanList = new float[maxLength];
         float[] stdDevList = new float[maxLength];
         
-        for(int i=0; i<maxLength; i++){
-            meanList[i] = (float)mean[i];
-            if (count[i] < 2){
+        // convert back to log scale
+        mean = PhredUtil.rawToPhred(mean);
+
+        for (int i = 0; i < maxLength; i++) {
+            meanList[i] = (float) mean[i];
+            if (count[i] < 2) {
                 stdDevList[i] = 0;
             } else {
-                stdDevList[i] = (float) Math.sqrt(sk[i]/(count[i]-1));
+                stdDevList[i] = (float) FastMath.sqrt(sk[i] / (count[i] - 1));
             }
         }
-        
+
         DataRow[] dr = new DataRow[]{
             new DataRow("mean", meanList),
             new DataRow("standard deviation", stdDevList)};
@@ -101,9 +105,9 @@ public abstract class QualityDistributionBase implements Analyzer<DNAQualitySequ
         return count[0];
     }
 
-    @Override
-    public String getDescription() {
-        return "Phred quality score distribution";
-    }
-    
+//    @Override
+//    public String getDescription() {
+//        return "Phred quality score distribution";
+//    }
+
 }
