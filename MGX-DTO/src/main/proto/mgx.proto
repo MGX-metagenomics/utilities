@@ -224,8 +224,8 @@ message SeqRunDTOList {
 message SequenceDTO {
   sint64 id = 1;
   string name = 2;
-  bytes sequence = 3;
-  bytes quality = 4;
+  bytes sequence = 3; // 4bit-encoded DNA sequence
+  bytes quality = 4; // encoded quality values
   int32 length = 5;
 }
 
