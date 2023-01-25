@@ -18,10 +18,14 @@
     </properties>
 
     <dependencies>
+        
+        <!-- https://github.com/MGX-metagenomics/MGX-gui/issues/150 
+             1.0.3 breaks the treeview interactive node expansion
+        -->
         <dependency>
             <groupId>de.sciss</groupId>
             <artifactId>prefuse-core</artifactId>
-            <version>1.0.3</version>
+            <version>1.0.2</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
