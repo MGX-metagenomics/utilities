@@ -25,25 +25,22 @@ public class SVGDisplaySaver {
     }
 
     public static boolean saveSVG(Display dis, OutputStream out, double scale) {
-        try {
 
-            Dimension d = new Dimension((int) (scale * dis.getWidth()),
-                    (int) (scale * dis.getHeight()));
-            
-            SVGGraphics2D svgG = new SVGGraphics2D((int)d.getWidth(), (int)d.getHeight());
+        Dimension d = new Dimension((int) (scale * dis.getWidth()),
+                (int) (scale * dis.getHeight()));
 
-            Point2D p = new Point2D.Double(0, 0);
-            dis.zoom(p, scale); 
-            boolean q = dis.isHighQuality();
-            dis.setHighQuality(true);
-            dis.paintDisplay(svgG, d);
-            dis.setHighQuality(q);
-            dis.zoom(p, 1 / scale);
+        SVGGraphics2D svgG = new SVGGraphics2D((int) d.getWidth(), (int) d.getHeight());
 
-            try (Writer wr = new OutputStreamWriter(out, "UTF-8")) {
-                wr.write(svgG.getSVGDocument());
-            }
+        Point2D p = new Point2D.Double(0, 0);
+        dis.zoom(p, scale);
+        boolean q = dis.isHighQuality();
+        dis.setHighQuality(true);
+        dis.paintDisplay(svgG, d);
+        dis.setHighQuality(q);
+        dis.zoom(p, 1 / scale);
 
+        try ( Writer wr = new OutputStreamWriter(out, "UTF-8")) {
+            wr.write(svgG.getSVGDocument());
             return true;
         } catch (IOException e) {
             return false;
