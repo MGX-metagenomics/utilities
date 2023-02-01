@@ -5,6 +5,7 @@ import de.cebitec.mgx.kegg.pathways.KEGGMaster;
 import de.cebitec.mgx.kegg.pathways.api.ECNumberI;
 import de.cebitec.mgx.kegg.pathways.api.PathwayI;
 import de.cebitec.mgx.kegg.pathways.model.ECNumberFactory;
+import de.cebitec.mgx.kegg.pathways.model.Pathway;
 import java.awt.Rectangle;
 import java.nio.file.Path;
 import java.util.Collection;
@@ -69,19 +70,10 @@ public class PathwayAccessTest {
     @Test
     public void testGetCoords() throws Exception {
         System.out.println("getCoords");
-        Set<PathwayI> fetchall = getMaster().Pathways().fetchall();
-        assertNotNull(fetchall);
-        PathwayI pw = null;
-        for (PathwayI p : fetchall) {
-            if (p.getMapNumber().equals("map00010")) {
-                pw = p;
-                break;
-            }
-        }
-        assertNotNull(pw);
+        PathwayI pw = new Pathway("map00010", "xxxx");
         Map<ECNumberI, Collection<Rectangle>> coords = getMaster().Pathways().getCoords(pw);
         assertNotNull(coords);
-        assertTrue(coords.size() > 45);
+        assertEquals(50, coords.size());
         assertTrue(coords.containsKey(ECNumberFactory.fromString("5.4.2.2")));
     }
 
