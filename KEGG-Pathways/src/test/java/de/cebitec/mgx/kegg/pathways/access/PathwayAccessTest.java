@@ -6,7 +6,6 @@ import de.cebitec.mgx.kegg.pathways.api.ECNumberI;
 import de.cebitec.mgx.kegg.pathways.api.PathwayI;
 import de.cebitec.mgx.kegg.pathways.model.ECNumberFactory;
 import java.awt.Rectangle;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashSet;
