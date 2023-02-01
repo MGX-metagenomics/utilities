@@ -268,7 +268,7 @@ public class FastqTest {
             s[i] = 'A';
             q[i] = (byte)quality;
         }
-        DNAQualitySequenceI seq = new QualityDNASequence(s, q);
+        DNAQualitySequenceI seq = new QualityDNASequence(s, q, true);
         seq.setName(seqName);
         return seq;
     }

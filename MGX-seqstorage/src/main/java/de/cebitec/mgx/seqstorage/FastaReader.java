@@ -84,7 +84,7 @@ public class FastaReader implements SeqReaderI<DNASequenceI> {
 
             if (buf.length > 0 && buf[0] == '>') {
                 // we have reached the next sequence
-                seq = new DNASequence(dnasequence == null ? new byte[0] : dnasequence);
+                seq = new DNASequence(dnasequence == null ? new byte[0] : dnasequence, true);
                 seq.setName(seqname);
                 return true;
             }
@@ -104,7 +104,7 @@ public class FastaReader implements SeqReaderI<DNASequenceI> {
             }
         }
 
-        seq = new DNASequence(dnasequence == null ? new byte[0] : dnasequence);
+        seq = new DNASequence(dnasequence == null ? new byte[0] : dnasequence, true);
         seq.setName(seqname);
         return true;
     }

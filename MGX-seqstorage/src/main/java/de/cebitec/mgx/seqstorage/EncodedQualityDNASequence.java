@@ -21,21 +21,27 @@ public class EncodedQualityDNASequence extends EncodedDNASequence implements DNA
     private final byte[] encQual;
 
     public EncodedQualityDNASequence(long seqid, byte[] encodeddna, byte[] encodedqual) throws SequenceException {
-        super(seqid, encodeddna);
+        this(seqid, encodeddna, encodedqual, true);
+    }
 
-        if (encodedqual == null || encodedqual.length < 2) {
-            throw new SequenceException("Invalid quality string");
-        }
+    public EncodedQualityDNASequence(long seqid, byte[] encodeddna, byte[] encodedqual, boolean enableValidation) throws SequenceException {
+        super(seqid, encodeddna, enableValidation);
 
-        encQual = Arrays.copyOf(encodedqual, encodedqual.length);
+        encQual = Arrays.copyOf(encodedqual, encodedqual == null ? 0 : encodedqual.length);
 
-        // need to decode for validation
-        long seqlen = FourBitEncoder.decodeLength(getEncodedSequence());
-        byte[] decodedQual = QualityEncoder.decode(encodedqual, (int) seqlen);
-        DNASequenceValidator.validateQuality(decodedQual);
+        if (enableValidation) {
 
-        if (seqlen != decodedQual.length) {
-            throw new SequenceException("DNA sequence and quality score length mismatch");
+            if (encodedqual == null || encodedqual.length < 2) {
+                throw new SequenceException("Invalid quality string");
+            }
+            // need to decode for validation
+            long seqlen = FourBitEncoder.decodeLength(getEncodedSequence());
+            byte[] decodedQual = QualityEncoder.decode(encodedqual, (int) seqlen);
+            DNASequenceValidator.validateQuality(decodedQual);
+
+            if (seqlen != decodedQual.length) {
+                throw new SequenceException("DNA sequence and quality score length mismatch");
+            }
         }
     }
 

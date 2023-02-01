@@ -161,7 +161,7 @@ public class CSFReader implements SeqReaderI<DNASequenceI> {
                 int sepPos = ByteUtils.indexOf(buf, FourBitEncoder.RECORD_SEPARATOR);
                 byte[] encoded = ByteUtils.substring(buf, 0, sepPos - 1);
 
-                DNASequenceI seq = new DNASequence(id, FourBitEncoder.decode(encoded));
+                DNASequenceI seq = new DNASequence(id, FourBitEncoder.decode(encoded), false);
                 result.add(seq);
             }
         } catch (IOException ex) {

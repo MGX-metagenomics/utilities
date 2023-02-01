@@ -8,21 +8,31 @@ import java.util.Arrays;
 public class QualityDNASequence extends DNASequence implements DNAQualitySequenceI {
 
     private final byte[] quality;
-
+    
     public QualityDNASequence(byte[] dnasequence, byte[] qual) throws SequenceException {
-        super(dnasequence);
+        this(dnasequence, qual, true);
+    }
+
+    public QualityDNASequence(byte[] dnasequence, byte[] qual, boolean enableValidation) throws SequenceException {
+        super(dnasequence, enableValidation);
         quality = Arrays.copyOf(qual, qual.length);
-        DNASequenceValidator.validateQuality(qual);
+
+        if (enableValidation) {
+            DNASequenceValidator.validateQuality(qual);
+        }
 
         if (dnasequence.length != qual.length) {
             throw new SequenceException("DNA sequence and quality score length mismatch");
         }
     }
 
-    public QualityDNASequence(long seqid, byte[] dnasequence, byte[] qual) throws SequenceException {
-        super(seqid, dnasequence);
+    public QualityDNASequence(long seqid, byte[] dnasequence, byte[] qual, boolean enableValidation) throws SequenceException {
+        super(seqid, dnasequence, enableValidation);
         quality = Arrays.copyOf(qual, qual.length);
-        DNASequenceValidator.validateQuality(qual);
+
+        if (enableValidation) {
+            DNASequenceValidator.validateQuality(qual);
+        }
 
         if (dnasequence.length != qual.length) {
             throw new SequenceException("DNA sequence and quality score length mismatch");

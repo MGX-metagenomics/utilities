@@ -81,7 +81,7 @@ public class SFFReader implements SeqReaderI<DNAQualitySequenceI> {
         if (reader.hasMoreElements()) {
             SFFRead read = reader.nextElement();
 
-            QualityDNASequence seq = new QualityDNASequence(read.getBases().getBytes(), read.getQuality());
+            QualityDNASequence seq = new QualityDNASequence(read.getBases().getBytes(), read.getQuality(), true);
             seq.setName(read.getName().getBytes());
 
             holder = seq;

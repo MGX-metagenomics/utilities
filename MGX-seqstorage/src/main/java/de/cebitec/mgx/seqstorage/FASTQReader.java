@@ -97,7 +97,7 @@ public class FASTQReader implements SeqReaderI<DNAQualitySequenceI> {
 
         convertQuality(qseq);
 
-        seq = new QualityDNASequence(dnasequence, qseq);
+        seq = new QualityDNASequence(dnasequence, qseq, true);
         seq.setName(seqname);
 
         return true;

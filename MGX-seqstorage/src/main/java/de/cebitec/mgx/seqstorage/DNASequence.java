@@ -14,16 +14,26 @@ public class DNASequence implements DNASequenceI {
     private long id;
     private byte[] name = null;
     private final byte[] dnasequence;
-
+    
     public DNASequence(byte[] sequence) throws SequenceException {
-        dnasequence = Arrays.copyOf(sequence, sequence.length);
-        DNASequenceValidator.validateSequence(dnasequence);
+        this(sequence, true);
     }
 
-    public DNASequence(long seqid, byte[] sequence) throws SequenceException {
+    public DNASequence(byte[] sequence, boolean enableValidation) throws SequenceException {
+        dnasequence = Arrays.copyOf(sequence, sequence.length);
+
+        if (enableValidation) {
+            DNASequenceValidator.validateSequence(dnasequence);
+        }
+    }
+
+    public DNASequence(long seqid, byte[] sequence, boolean enableValidation) throws SequenceException {
         id = seqid;
         dnasequence = Arrays.copyOf(sequence, sequence.length);
-        DNASequenceValidator.validateSequence(dnasequence);
+
+        if (enableValidation) {
+            DNASequenceValidator.validateSequence(dnasequence);
+        }
     }
 
     @Override

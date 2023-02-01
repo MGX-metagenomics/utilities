@@ -22,9 +22,15 @@ public class EncodedDNASequence implements DNASequenceI {
     private final byte[] encodedDNA;
 
     public EncodedDNASequence(long seqid, byte[] encseq) throws SequenceException {
+        this(seqid, encseq, true);
+    }
+
+    public EncodedDNASequence(long seqid, byte[] encseq, boolean enableValidation) throws SequenceException {
         id = seqid;
         encodedDNA = Arrays.copyOf(encseq, encseq.length);
-        DNASequenceValidator.validateSequence(FourBitEncoder.decode(encseq));
+        if (enableValidation) {
+            DNASequenceValidator.validateSequence(FourBitEncoder.decode(encseq));
+        }
     }
 
     @Override
