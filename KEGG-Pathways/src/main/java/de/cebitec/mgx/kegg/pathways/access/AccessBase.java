@@ -33,7 +33,7 @@ public class AccessBase {
 
     public AccessBase(KEGGMaster master) {
         this.master = master;
-        pool = Executors.newFixedThreadPool(5);
+        pool = Executors.newFixedThreadPool(1);
     }
 
     ExecutorService getPool() {
@@ -52,7 +52,7 @@ public class AccessBase {
 
     protected void catchException(final Response res) throws KEGGException {
         if (Response.Status.fromStatusCode(res.getStatus()) != Response.Status.OK) {
-            StringBuilder msg = new StringBuilder();
+            StringBuilder msg = new StringBuilder(res.getStatus() + " ");
             try ( BufferedReader r = new BufferedReader(new InputStreamReader(res.readEntity(InputStream.class)))) {
                 String buf;
                 while ((buf = r.readLine()) != null) {
@@ -104,10 +104,6 @@ public class AccessBase {
 
     protected WebTarget getRESTResource() {
         return master.getRESTResource();
-    }
-
-    protected WebTarget getKEGGResource() {
-        return master.getKEGGResource();
     }
 
     protected KEGGMaster getMaster() {
