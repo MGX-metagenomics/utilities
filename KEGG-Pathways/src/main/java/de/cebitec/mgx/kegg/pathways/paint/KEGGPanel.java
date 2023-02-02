@@ -70,7 +70,7 @@ public class KEGGPanel extends JComponent {
         }
         int width = image.getWidth();
         int height = image.getHeight();
-        setPreferredSize(new Dimension(width, height));
+        super.setPreferredSize(new Dimension(width, height));
         coords = master.Pathways().getCoords(pathway);
         numDatasets = numSets;
         toolTips.clear();
@@ -171,5 +171,10 @@ public class KEGGPanel extends JComponent {
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         super.paintComponent(g2);
         g2.drawImage(image, 0, 0, null);
+    }
+
+    @Override
+    public void setPreferredSize(Dimension preferredSize) {
+        // ignore
     }
 }
