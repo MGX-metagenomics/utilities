@@ -7,6 +7,7 @@ import de.cebitec.mgx.kegg.pathways.api.PathwayI;
 import de.cebitec.mgx.kegg.pathways.model.ECNumberFactory;
 import de.cebitec.mgx.kegg.pathways.model.Pathway;
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashSet;
@@ -31,7 +32,6 @@ public class PathwayAccessTest {
 
     @TempDir
     Path folder;
-    
 
     @AfterEach
     public void tearDown() {
@@ -75,6 +75,14 @@ public class PathwayAccessTest {
         assertNotNull(coords);
         assertEquals(50, coords.size());
         assertTrue(coords.containsKey(ECNumberFactory.fromString("5.4.2.2")));
+    }
+
+    @Test
+    public void testGetImage() throws Exception {
+        System.out.println("getImage");
+        PathwayI pw = new Pathway("map00010", "xxxx");
+        BufferedImage image = getMaster().Pathways().getImage(pw);
+        assertNotNull(image);
     }
 
     @Test
