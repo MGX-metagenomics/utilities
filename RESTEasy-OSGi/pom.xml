@@ -61,7 +61,11 @@
             <version>4.4.16</version>
         </dependency>
         
-        
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>3.1.0</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -153,6 +157,7 @@
                             javax.imageio.plugins.jpeg,
                             javax.net.ssl,
                             javax.net,
+                            javax.servlet,
                             javax.ws.rs,
                             javax.ws.rs.core,
                             javax.ws.rs.client,
