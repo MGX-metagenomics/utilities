@@ -34,7 +34,7 @@ jobs:
         tar xzf protobuf-2.6.1.tar.gz
         cd protobuf-2.6.1
         ./configure --prefix=/usr
-        make
+        make -j `nproc`
         sudo make install
         cd ..
         rm -rf protobuf-2.6.1.tar.gz protobuf-2.6.1
