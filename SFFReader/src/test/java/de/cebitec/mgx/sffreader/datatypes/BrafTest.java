@@ -27,7 +27,8 @@ import org.junit.rules.TemporaryFolder;
  * @author sj
  */
 public class BrafTest {
- @Rule
+
+    @Rule
     public TemporaryFolder folder = new TemporaryFolder();
     private File f;
 
@@ -42,7 +43,7 @@ public class BrafTest {
     public static void tearDownClass() {
     }
 
-   @Before
+    @Before
     public void setUp() {
         try {
             f = folder.newFile();
