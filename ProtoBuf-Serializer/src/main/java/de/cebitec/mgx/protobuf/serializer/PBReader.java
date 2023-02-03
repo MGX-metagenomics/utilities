@@ -2,19 +2,19 @@ package de.cebitec.mgx.protobuf.serializer;
 
 import com.google.protobuf.GeneratedMessage;
 import com.google.protobuf.Message;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.WebApplicationException;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.MultivaluedMap;
-import jakarta.ws.rs.core.Response.Status;
-import jakarta.ws.rs.ext.MessageBodyReader;
-import jakarta.ws.rs.ext.Provider;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.ext.MessageBodyReader;
+import javax.ws.rs.ext.Provider;
 
 @Provider
 @Consumes("application/x-protobuf")

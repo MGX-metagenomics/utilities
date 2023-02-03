@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import org.jfree.svg.SVGGraphics2D;
+import org.jfree.graphics2d.svg.SVGGraphics2D;
 import prefuse.Display;
 
 /*

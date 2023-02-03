@@ -19,6 +19,7 @@
   
     <modules>
         <module>MGX-parallelPropChange</module>
+        <module>RESTEasy-OSGi</module>
         <module>NewickParser</module>
         <module>KEGG-Pathways</module>
         <module>ProtoBuf-Serializer</module>

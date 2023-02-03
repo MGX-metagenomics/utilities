@@ -55,8 +55,8 @@
     <dependencies>
         <dependency>
             <groupId>org.jfree</groupId>
-            <artifactId>org.jfree.svg</artifactId>
-            <version>5.0.3</version>
+            <artifactId>jfreesvg</artifactId>
+            <version>3.3</version>
         </dependency>
     </dependencies>
 </project>
