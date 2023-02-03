@@ -33,7 +33,7 @@ public class AccessBase {
 
     public AccessBase(KEGGMaster master) {
         this.master = master;
-        pool = Executors.newFixedThreadPool(5);
+        pool = Executors.newFixedThreadPool(1);
     }
 
     ExecutorService getPool() {
@@ -104,10 +104,6 @@ public class AccessBase {
 
     protected WebTarget getRESTResource() {
         return master.getRESTResource();
-    }
-
-    protected WebTarget getKEGGResource() {
-        return master.getKEGGResource();
     }
 
     protected KEGGMaster getMaster() {
