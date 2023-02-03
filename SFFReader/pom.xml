@@ -59,8 +59,16 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Import-Package>de.cebitec.mgx.braf,gnu.trove,gnu.trove.map,gnu.trove.map.hash</Import-Package>
-                        <Export-Package>de.cebitec.mgx.sffreader,de.cebitec.mgx.sffreader.datatypes</Export-Package>
+                        <Import-Package>
+                            de.cebitec.mgx.braf,
+                            gnu.trove,
+                            gnu.trove.map,
+                            gnu.trove.map.hash
+                        </Import-Package>
+                        <Export-Package>
+                            de.cebitec.mgx.sffreader,
+                            de.cebitec.mgx.sffreader.datatypes
+                        </Export-Package>
                     </instructions>
                 </configuration>
                 <executions>
