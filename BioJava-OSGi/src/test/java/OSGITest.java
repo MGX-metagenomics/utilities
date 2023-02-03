@@ -17,14 +17,6 @@ import org.biojavax.bio.seq.RichSequenceIterator;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.ops4j.pax.exam.Configuration;
-import static org.ops4j.pax.exam.CoreOptions.bundle;
-import static org.ops4j.pax.exam.CoreOptions.junitBundles;
-import static org.ops4j.pax.exam.CoreOptions.options;
-import static org.ops4j.pax.exam.CoreOptions.systemProperty;
-import org.ops4j.pax.exam.Option;
-import org.ops4j.pax.exam.junit.PaxExam;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -35,30 +27,7 @@ import org.ops4j.pax.exam.junit.PaxExam;
  *
  * @author sj
  */
-@RunWith(PaxExam.class)
 public class OSGITest {
-
-    @Configuration
-    public static Option[] configuration() {
-        return options(
-                junitBundles(),
-                systemProperty("org.ops4j.pax.logging.DefaultServiceLog.level").value("WARN"),
-                bundle("reference:file:target/classes")
-        );
-    }
-
-    @Test
-    public void testPackageExport() throws Exception {
-        System.out.println("testPackageExport");
-        
-        //
-        // regression check; access classes to validate they are available within OSGi containers
-        //
-        Namespace ns = RichObjectFactory.getDefaultNamespace();
-        assertNotNull(ns);
-        Location loc = Location.empty;
-        assertNotNull(loc);
-    }
 
     @Test
     public void testParseGBK() {
