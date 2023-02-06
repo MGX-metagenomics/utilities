@@ -9,43 +9,38 @@ import org.junit.*;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
-import org.junit.runner.RunWith;
-import org.ops4j.pax.exam.Configuration;
 import static org.ops4j.pax.exam.CoreOptions.bundle;
 import static org.ops4j.pax.exam.CoreOptions.junitBundles;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
 import static org.ops4j.pax.exam.CoreOptions.systemProperty;
-import org.ops4j.pax.exam.Option;
-import org.ops4j.pax.exam.junit.PaxExam;
 
 /**
  *
  * @author patrick
  */
-@RunWith(PaxExam.class)
 public class SFFReaderTest {
 
-    @Configuration
-    public static Option[] configuration() {
-        return options(
-                junitBundles(),
-                mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-isequences").versionAsInProject(),
-                mavenBundle().groupId("de.cebitec.mgx").artifactId("Trove-OSGi").versionAsInProject(),
-                mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-BufferedRandomAccessFile").versionAsInProject(),
-                mavenBundle().groupId("de.cebitec.mgx").artifactId("SFFReader").versionAsInProject(),
-                mavenBundle().groupId("org.apache.commons").artifactId("commons-math3").versionAsInProject(),
-                //MGXOptions.serviceLoaderBundles(),
-                MGXOptions.testUtils(),
-                systemProperty("org.ops4j.pax.logging.DefaultServiceLog.level").value("WARN"),
-                bundle("reference:file:target/classes")
-        );
-    }
+//    @Configuration
+//    public static Option[] configuration() {
+//        return options(
+//                junitBundles(),
+//                mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-isequences").versionAsInProject(),
+//                mavenBundle().groupId("de.cebitec.mgx").artifactId("Trove-OSGi").versionAsInProject(),
+//                mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-BufferedRandomAccessFile").versionAsInProject(),
+//                mavenBundle().groupId("de.cebitec.mgx").artifactId("SFFReader").versionAsInProject(),
+//                mavenBundle().groupId("org.apache.commons").artifactId("commons-math3").versionAsInProject(),
+//                //MGXOptions.serviceLoaderBundles(),
+//                MGXOptions.testUtils(),
+//                systemProperty("org.ops4j.pax.logging.DefaultServiceLog.level").value("WARN"),
+//                bundle("reference:file:target/classes")
+//        );
+//    }
 
     @Test
     public void testOneReadSFF() throws Exception {
         System.out.println("OneReadSFF");
-        File f = TestInput.copyTestResource(getClass(), "/de/cebitec/mgx/seqstorage/oneread.sff");
+        File f = TestInput.copyTestResource(getClass(), "de/cebitec/mgx/seqstorage/oneread.sff");
         try (SFFReader sr = new SFFReader(f.getAbsolutePath())) {
             while (sr.hasMoreElements()) {
                 DNAQualitySequenceI entry = sr.nextElement();
@@ -66,7 +61,7 @@ public class SFFReaderTest {
     @Test
     public void testMultipleReadSFF() throws Exception {
         System.out.println("MultipleReadSFF");
-        File f = TestInput.copyTestResource(getClass(), "/de/cebitec/mgx/seqstorage/multipleRead.sff");
+        File f = TestInput.copyTestResource(getClass(), "de/cebitec/mgx/seqstorage/multipleRead.sff");
         int seqCnt = 0;
         try (SFFReader sr = new SFFReader(f.getAbsolutePath())) {
             while (sr.hasMoreElements()) {
