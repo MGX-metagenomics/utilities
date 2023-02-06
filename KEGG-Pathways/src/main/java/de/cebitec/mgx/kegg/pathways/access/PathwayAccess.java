@@ -139,9 +139,6 @@ public class PathwayAccess extends AccessBase {
     public void fetchImageFromServer(PathwayI p) throws KEGGException {
         File cacheFile = new File(getMaster().getCacheDir() + p.getMapNumber() + ".png");
 
-        if (isValid(cacheFile)) {
-            return; // no need to refetch
-        }
         // http://www.genome.jp/kegg/pathway/map/map00620.png
         // REST: https://rest.kegg.jp/get/map07045/image
         // try ( InputStream in = get(getKEGGResource(), "kegg", "pathway", "map", p.getMapNumber() + ".png")) {
@@ -176,7 +173,6 @@ public class PathwayAccess extends AccessBase {
         if (!isValid(cacheFile)) {
             fetchImageFromServer(p);
         }
-        assert isValid(cacheFile);
 
         try {
             img = ImageIO.read(cacheFile);
@@ -203,7 +199,6 @@ public class PathwayAccess extends AccessBase {
         if (!isValid(pw)) {
             fetchCoordsFromServer(pw);
         }
-        assert isValid(pw);
 
         // fetch from db
         final Map<ECNumberI, Collection<Rectangle>> ret = new HashMap<>();
@@ -242,8 +237,6 @@ public class PathwayAccess extends AccessBase {
 
     private void fetchCoordsFromServer(final PathwayI pw) throws KEGGException {
 
-        assert !isValid(pw);
-
         // switch to kegg.jp?
         // https://www.kegg.jp/pathway/map00052
 //        final WebTarget wr = getKEGGResource()
@@ -252,8 +245,14 @@ public class PathwayAccess extends AccessBase {
 //                .queryParam("mapno", pw.getMapNumber().substring(3));
         final WebTarget wr = getRESTResource()
                 .path("get").path(pw.getMapNumber()).path("conf");
+        
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(PathwayAccess.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
-        Response res = wr.request().header("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.1").get(Response.class);
+        Response res = wr.request().get(Response.class);
 
         try {
             catchException(res);
