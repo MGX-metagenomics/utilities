@@ -25,6 +25,7 @@ public class MGXOptions {
                 seqIOBundles(),
                 serviceLoaderBundles(),
                 mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-parallelPropChange").version("1.0"),
+                mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-common").version("1.0"),
                 mavenBundle().groupId("de.cebitec.mgx").artifactId("Trove-OSGi").version("1.0"),
                 mavenBundle().groupId("de.cebitec.mgx").artifactId("BioJava-OSGi").version("1.0"),
                 mavenBundle().groupId("de.cebitec.mgx").artifactId("MGX-DTO")
@@ -40,10 +41,16 @@ public class MGXOptions {
     public static CompositeOption gpmsBundles() {
         return new DefaultCompositeOption(
                 // 1.19.x will additionally need javax.ws.rs:jsr311-api:1.1.1
-                mavenBundle().groupId("com.sun.jersey").artifactId("jersey-client").version("1.18.2"),
-                mavenBundle().groupId("com.sun.jersey").artifactId("jersey-core").version("1.18.2"),
+                mavenBundle().groupId("de.cebitec.mgx").artifactId("RESTEasy-OSGi").version("1.0"),
+                mavenBundle().groupId("javax.servlet").artifactId("javax.servlet-api").version("3.1.0"),
+                mavenBundle().groupId("jakarta.validation").artifactId("jakarta.validation-api").version("2.0.2"),
+                mavenBundle().groupId("jakarta.annotation").artifactId("jakarta.annotation-api").version("1.3.5"),
+                mavenBundle().groupId("jakarta.xml.bind").artifactId("jakarta.xml.bind-api").version("2.3.2"),
+                mavenBundle().groupId("jakarta.ws.rs").artifactId("jakarta.ws.rs-api").version("2.1.6"),
+                //mavenBundle().groupId("org.jboss.spec.javax.ws.rs").artifactId("jboss-jaxrs-api_2.1_spec").version("2.0.1.Final"),
                 mavenBundle().groupId("com.google.protobuf").artifactId("protobuf-java").version("2.6.1"),
                 mavenBundle().groupId("com.google.guava").artifactId("guava").version("30.1.1-jre"),
+                mavenBundle().groupId("com.google.guava").artifactId("failureaccess").version("1.0.1"),
                 mavenBundle().groupId("de.cebitec.gpms").artifactId("GPMS-DTO").version("1.1"),
                 mavenBundle().groupId("de.cebitec.gpms").artifactId("GPMS-core-api").version("1.1"),
                 mavenBundle().groupId("de.cebitec.gpms").artifactId("GPMS-rest-api").version("1.1"),

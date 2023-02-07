@@ -32,7 +32,7 @@
             <exclusions>
                 <exclusion>
                     <groupId>org.jboss.spec.javax.ws.rs</groupId>
-                    <artifactId>jboss-jaxrs-api_3.0_spec</artifactId>
+                    <artifactId>jboss-jaxrs-api_2.1_spec</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -65,6 +65,19 @@
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
             <version>3.1.0</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.sun.activation</groupId>
+            <artifactId>jakarta.activation</artifactId>
+            <version>1.2.1</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>jakarta.ws.rs</groupId>
+            <artifactId>jakarta.ws.rs-api</artifactId>
+            <version>2.1.6</version>
+            <!-- <scope>provided</scope> -->
         </dependency>
     </dependencies>
 
