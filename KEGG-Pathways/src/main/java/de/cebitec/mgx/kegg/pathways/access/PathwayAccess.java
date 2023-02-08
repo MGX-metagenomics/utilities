@@ -29,7 +29,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -245,7 +244,7 @@ public class PathwayAccess extends AccessBase {
 //                .queryParam("mapno", pw.getMapNumber().substring(3));
         final WebTarget wr = getRESTResource()
                 .path("get").path(pw.getMapNumber()).path("conf");
-        
+
         try {
             Thread.sleep(100);
         } catch (InterruptedException ex) {
@@ -374,32 +373,11 @@ public class PathwayAccess extends AccessBase {
     public Collection<PathwayI> getMatchingPathways(final ECNumberI ec) throws KEGGException {
 
         Set<PathwayI> allPW = fetchall();
-        final CountDownLatch done = new CountDownLatch(allPW.size());
         for (final PathwayI pw : allPW) {
-
-            if (isValid(pw)) {
-                done.countDown();
-            } else {
-                getPool().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            getCoords(pw);
-                        } catch (KEGGException ex) {
-                            Logger.getLogger(PathwayAccess.class.getName()).log(Level.SEVERE, null, ex);
-                        } finally {
-                            done.countDown();
-                        }
-                    }
-                });
+            if (!isValid(pw)) {
+                getCoords(pw);
             }
         }
-        try {
-            done.await();
-        } catch (InterruptedException ex) {
-            throw new KEGGException(ex);
-        }
-
         final Set<PathwayI> ret = new HashSet<>();
 
         try ( Connection conn = getMaster().getConnection()) {
@@ -420,29 +398,10 @@ public class PathwayAccess extends AccessBase {
     public Collection<PathwayI> getMatchingPathways(final Set<ECNumberI> ecs) throws KEGGException {
 
         Set<PathwayI> allPW = fetchall();
-        final CountDownLatch done = new CountDownLatch(allPW.size());
         for (final PathwayI pw : allPW) {
-            if (isValid(pw)) {
-                done.countDown();
-            } else {
-                getPool().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            getCoords(pw);
-                        } catch (KEGGException ex) {
-                            Logger.getLogger(PathwayAccess.class.getName()).log(Level.SEVERE, null, ex);
-                        } finally {
-                            done.countDown();
-                        }
-                    }
-                });
+            if (!isValid(pw)) {
+                getCoords(pw);
             }
-        }
-        try {
-            done.await();
-        } catch (InterruptedException ex) {
-            throw new KEGGException(ex);
         }
 
         String sql = "SELECT DISTINCT mapnum, name FROM pathway LEFT JOIN coords ON (pathway.mapnum=coords.pw_num) WHERE coords.ec_num IN ("

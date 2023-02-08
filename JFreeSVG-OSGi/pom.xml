@@ -28,7 +28,7 @@
                         <Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
                         <Embed-Transitive>true</Embed-Transitive>
                         <_exportcontents>
-                            org.jfree.svg
+                            org.jfree.graphics2d.svg
                         </_exportcontents>
                         <Export-Package />
                         <Private-Package/>

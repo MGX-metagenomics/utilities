@@ -36,7 +36,7 @@
                             javax.ws.rs.client,
                             javax.ws.rs.core,
                             javax.ws.rs,
-                            org.jfree.svg
+                            org.jfree.graphics2d.svg
                         </Import-Package>
                         <Export-Package>
                             de.cebitec.mgx.kegg.pathways,

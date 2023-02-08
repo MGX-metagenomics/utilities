@@ -12,8 +12,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.channels.FileChannel;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,17 +25,11 @@ import javax.ws.rs.core.Response;
 public class AccessBase {
 
     private final KEGGMaster master;
-    private final ExecutorService pool;
 
     protected final ReentrantReadWriteLock rwl = new ReentrantReadWriteLock();
 
     public AccessBase(KEGGMaster master) {
         this.master = master;
-        pool = Executors.newFixedThreadPool(1);
-    }
-
-    ExecutorService getPool() {
-        return pool;
     }
 
     protected final InputStream get(final WebTarget resource, final String... path) throws KEGGException {
