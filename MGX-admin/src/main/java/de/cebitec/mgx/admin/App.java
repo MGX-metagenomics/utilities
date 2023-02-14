@@ -37,9 +37,9 @@ import org.biojavax.bio.seq.RichSequenceIterator;
  */
 public class App {
 
-    public static final String GLOBAL_DIR = "/vol/mgx-data/GLOBAL/references/";
+    public static final String GLOBAL_DIR = "/vol/mgx-data/GLOBAL/MGX2_references/";
 
-    private final static String FTP_PREFIX = "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/";
+    private final static String FTP_PREFIX = "https://ftp.ncbi.nlm.nih.gov/genomes/all/";
     private final static String LOCAL_DIR = "/vol/biodb/ncbi_genomes/all/";
 
     public static void main(String[] args) throws Exception {
@@ -54,7 +54,7 @@ public class App {
         List<File> files = new ArrayList<>();
 
         File summary = new File("/vol/biodb/ncbi_genomes/refseq/bacteria/assembly_summary.txt");
-        try (BufferedReader br = new BufferedReader(new FileReader(summary))) {
+        try ( BufferedReader br = new BufferedReader(new FileReader(summary))) {
             String line;
             while (null != (line = br.readLine())) {
                 if (!line.startsWith("#")) {
@@ -62,12 +62,18 @@ public class App {
                     if ("latest".equals(parts[10]) && "Complete Genome".equals(parts[11])) {
                         if ("representative genome".equals(parts[4])) {
                             String localDir = parts[19].substring(FTP_PREFIX.length());
-                            String gbff = LOCAL_DIR + localDir + File.separatorChar + localDir + "_genomic.gbff.gz";
-                            System.out.println(gbff);
+                            String asmName = parts[19];
+                            while (asmName.contains("/")) {
+                                asmName = asmName.substring(asmName.indexOf("/")+1);
+                            }
+                            String gbff = LOCAL_DIR + localDir + File.separatorChar + asmName + "_genomic.gbff.gz";
                             File f = new File(gbff);
                             if (f.exists()) {
+                                System.out.println(gbff);
                                 files.add(f);
                                 readReference(globalRefs, gbff, ds);
+                            } else {
+                                System.out.println("MISSING: " + gbff);
                             }
                         }
                     }
@@ -205,7 +211,7 @@ public class App {
     }
 
     private static void saveReference(String accession, Reference ref, List<Region> regions, String dnaSeq, DataSource ds) throws Exception {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(GLOBAL_DIR + accession + ".fas"))) {
+        try ( BufferedWriter bw = new BufferedWriter(new FileWriter(GLOBAL_DIR + accession + ".fas"))) {
             bw.append(">");
             bw.append(accession);
             bw.newLine();
@@ -213,12 +219,12 @@ public class App {
             bw.newLine();
         }
         ref.setFile(GLOBAL_DIR + accession + ".fas");
-        try (Connection conn = ds.getConnection()) {
-            try (PreparedStatement stmt = conn.prepareStatement(ADD_REF)) {
+        try ( Connection conn = ds.getConnection()) {
+            try ( PreparedStatement stmt = conn.prepareStatement(ADD_REF)) {
                 stmt.setString(1, ref.getName());
                 stmt.setInt(2, ref.getLength());
                 stmt.setString(3, ref.getFile());
-                try (ResultSet rs = stmt.executeQuery()) {
+                try ( ResultSet rs = stmt.executeQuery()) {
                     if (!rs.next()) {
                         throw new Exception("error");
                     }
@@ -226,8 +232,8 @@ public class App {
                 }
             }
         }
-        try (Connection conn = ds.getConnection()) {
-            try (PreparedStatement stmt = conn.prepareStatement(ADD_REGION)) {
+        try ( Connection conn = ds.getConnection()) {
+            try ( PreparedStatement stmt = conn.prepareStatement(ADD_REGION)) {
                 for (Region r : regions) {
                     stmt.setString(1, r.getName());
                     stmt.setString(2, r.getType());
@@ -244,9 +250,9 @@ public class App {
 
     private static List<String> listReferences(DataSource ds) {
         List<String> ret = new ArrayList<>();
-        try (Connection conn = ds.getConnection()) {
-            try (PreparedStatement stmt = conn.prepareStatement(GET_REFS)) {
-                try (ResultSet rs = stmt.executeQuery()) {
+        try ( Connection conn = ds.getConnection()) {
+            try ( PreparedStatement stmt = conn.prepareStatement(GET_REFS)) {
+                try ( ResultSet rs = stmt.executeQuery()) {
                     while (rs.next()) {
                         Long id = rs.getLong(1);
                         String name = rs.getString(2);
@@ -270,7 +276,7 @@ public class App {
 
     public static DataSource createDataSource(String userName, String pw) throws ClassNotFoundException {
         Class.forName("org.postgresql.Driver");
-        String jdbc = "jdbc:postgresql://postgresql.internal.computational.bio.uni-giessen.de:5432/MGX_global";
+        String jdbc = "jdbc:postgresql://postgresql-15.intra:5432/MGX2_global";
 
         HikariConfig cfg = new HikariConfig();
         cfg.setPoolName("globalPool");
@@ -280,9 +286,9 @@ public class App {
         cfg.setDataSourceClassName("org.postgresql.ds.PGSimpleDataSource");
         cfg.addDataSourceProperty("user", userName);
         cfg.addDataSourceProperty("password", pw);
-        cfg.addDataSourceProperty("serverName", "postgresql.internal.computational.bio.uni-giessen.de");
+        cfg.addDataSourceProperty("serverName", "postgresql-15.intra");
         cfg.addDataSourceProperty("portNumber", 5432);
-        cfg.addDataSourceProperty("databaseName", "MGX_global");
+        cfg.addDataSourceProperty("databaseName", "MGX2_global");
         cfg.setConnectionTimeout(1500); // ms
         cfg.setMaxLifetime(1000 * 60 * 2);  // 2 mins
         cfg.setIdleTimeout(1000 * 60);
