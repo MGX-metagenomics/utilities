@@ -11,6 +11,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeListenerProxy;
 import java.beans.PropertyChangeSupport;
+import java.io.Serial;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,6 +26,9 @@ import java.util.logging.Logger;
  * @author sj
  */
 public class ParallelPropertyChangeSupport extends PropertyChangeSupport implements AutoCloseable {
+    
+    @Serial
+    private static final long serialVersionUID = 6401253773779951803L;
 
     private volatile static EventDistributor distributor = null;
     private volatile static AtomicInteger numInstances = new AtomicInteger(0);

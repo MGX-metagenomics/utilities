@@ -17,6 +17,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Serial;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,6 +34,9 @@ import org.jfree.svg.SVGGraphics2D;
  * @author sj
  */
 public class KEGGPanel extends JComponent {
+
+    @Serial
+    private static final long serialVersionUID = 6401253773779951803L;
 
     private transient BufferedImage image = null;
     private final transient KEGGMaster master;
@@ -150,7 +154,7 @@ public class KEGGPanel extends JComponent {
         SVGGraphics2D g2 = new SVGGraphics2D(image.getWidth(), image.getHeight());
         g2.drawImage(image, 0, 0, null);
         String svgElement = g2.getSVGElement();
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(target))) {
+        try ( BufferedWriter bw = new BufferedWriter(new FileWriter(target))) {
             bw.write(svgElement);
         }
     }
