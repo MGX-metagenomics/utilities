@@ -17,8 +17,6 @@
       
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.src.version>1.8</java.src.version>
-        <java.trg.version>1.8</java.trg.version>
     </properties>
     
     <dependencies>
@@ -100,11 +98,6 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.11.0</version>
-                    <configuration>
-                        <compilerArgument>-Xlint:all</compilerArgument>
-                        <source>${java.src.version}</source>
-                        <target>${java.trg.version}</target>
-                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -143,6 +136,19 @@
                 </plugin>
             </plugins>
         </pluginManagement>
+        
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <compilerArgument>-Xlint:all</compilerArgument>
+                    <source>15</source>
+                    <release>15</release>
+                    <target>15</target>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
     
     <distributionManagement>
