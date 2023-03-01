@@ -126,7 +126,7 @@ public class ReaderFactoryTest {
         temp.delete();
     }
 
-    private static File copyTestData(Class clazz, String uri, File targetDir, String targetName) throws Exception {
+    private static File copyTestData(Class<?> clazz, String uri, File targetDir, String targetName) throws Exception {
         File f = new File(targetDir.getAbsolutePath() + File.separator + targetName);
         try (BufferedInputStream is = new BufferedInputStream(clazz.getClassLoader().getResourceAsStream(uri))) {
             f.deleteOnExit();

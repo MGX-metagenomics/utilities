@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  */
 public class TestInput {
 
-    public static File copyTestResource(Class clazz, String uri) throws IOException {
+    public static File copyTestResource(Class<?> clazz, String uri) throws IOException {
         assertNotNull(clazz.getClassLoader().getResource(uri), "Test file " + uri + " missing");
         File f = null;
         try (BufferedInputStream is = new BufferedInputStream(clazz.getClassLoader().getResourceAsStream(uri))) {
