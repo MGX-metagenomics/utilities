@@ -32,8 +32,8 @@ public class PBWriter implements MessageBodyWriter<GeneratedMessageV3> {
     }
 
     @Override
-    public final void writeTo(GeneratedMessageV3 m, Class type, Type genericType, Annotation[] annotations,
-            MediaType mediaType, MultivaluedMap httpHeaders,
+    public final void writeTo(GeneratedMessageV3 m, Class<?> type, Type genericType, Annotation[] annotations,
+            MediaType mediaType, MultivaluedMap<String, Object> httpHeaders,
             OutputStream entityStream) throws IOException, WebApplicationException {
 
         PeekableBAOutputStream bao = new PeekableBAOutputStream(65535);

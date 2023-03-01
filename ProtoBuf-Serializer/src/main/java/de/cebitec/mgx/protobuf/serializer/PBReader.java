@@ -32,7 +32,7 @@ public class PBReader implements MessageBodyReader<Message> {
             InputStream entityStream) throws IOException, WebApplicationException {
         try (GZIPInputStream gzi = new GZIPInputStream(entityStream, 65535)) {
             Method newBuilder = type.getMethod("newBuilder");
-            GeneratedMessageV3.Builder builder = (GeneratedMessageV3.Builder) newBuilder.invoke(type);
+            GeneratedMessageV3.Builder<?> builder = (GeneratedMessageV3.Builder) newBuilder.invoke(type);
             return builder.mergeFrom(gzi).build();
         } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | IOException e) {
             throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
