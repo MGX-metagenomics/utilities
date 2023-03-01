@@ -5,7 +5,6 @@
  */
 package de.cebitec.mgx.sffreader.datatypes;
 
-import com.sun.tools.javac.util.Assert;
 import de.cebitec.mgx.braf.BufferedRandomAccessFile;
 import java.io.File;
 import java.io.FileOutputStream;
