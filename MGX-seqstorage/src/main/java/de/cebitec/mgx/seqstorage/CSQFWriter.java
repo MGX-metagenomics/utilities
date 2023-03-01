@@ -81,7 +81,7 @@ public class CSQFWriter implements SeqWriterI<DNAQualitySequenceI> {
     }
 
     @Override
-    public void close() throws Exception {
+    public void close() throws IOException {
         seqout.close();
         nameout.close();
 

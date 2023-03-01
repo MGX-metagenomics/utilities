@@ -1,6 +1,7 @@
 package de.cebitec.mgx.sequence;
 
 import de.cebitec.mgx.seqcompression.SequenceException;
+import java.io.IOException;
 
 /**
  *
@@ -9,5 +10,8 @@ import de.cebitec.mgx.seqcompression.SequenceException;
 public interface SeqWriterI<T extends DNASequenceI> extends AutoCloseable {
     
     public void addSequence(T seq) throws SequenceException;
+
+    @Override
+    public void close() throws SequenceException, IOException;
 
 }

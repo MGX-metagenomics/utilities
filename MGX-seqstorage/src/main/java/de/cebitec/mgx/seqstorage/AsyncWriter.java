@@ -9,6 +9,7 @@ import de.cebitec.mgx.seqcompression.SequenceException;
 import de.cebitec.mgx.sequence.DNASequenceI;
 import de.cebitec.mgx.sequence.SeqStoreException;
 import de.cebitec.mgx.sequence.SeqWriterI;
+import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -71,9 +72,13 @@ public class AsyncWriter<T extends DNASequenceI> implements SeqWriterI<T>, Runna
     }
 
     @Override
-    public void close() throws Exception {
+    public void close() throws SequenceException, IOException {
         mayExit = true;
-        isDone.await();
+        try {
+            isDone.await();
+        } catch (InterruptedException ex) {
+            throw new SequenceException(ex.getMessage());
+        }
         target.close();
     }
 
