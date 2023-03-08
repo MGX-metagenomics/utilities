@@ -198,7 +198,7 @@ public class KEGGMaster implements AutoCloseable {
     }
 
     @Override
-    public void close() throws Exception {
+    public void close() {
         restclient.close();
     }
 }
