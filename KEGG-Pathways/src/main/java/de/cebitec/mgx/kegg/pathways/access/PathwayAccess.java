@@ -106,7 +106,6 @@ public class PathwayAccess extends AccessBase {
                     Map<String, String> data = new HashMap<>();
                     String line;
                     while ((line = bin.readLine()) != null) {
-                        line = line.substring(5); // remove leading "path:"
                         String[] split = line.split("\t");
                         if (data.containsKey(split[0])) {
                             Logger.getLogger(PathwayAccess.class.getName()).log(Level.INFO, "KEGG map {0} received more than once.", split[0]);
