@@ -9,10 +9,10 @@
     </parent>
 
     <groupId>de.cebitec.mgx</groupId>
-    <artifactId>BioJava5-OSGi</artifactId>
+    <artifactId>BioJava-OSGi</artifactId>
     <packaging>bundle</packaging>
 
-    <name>BioJava5-OSGi</name>
+    <name>BioJava-OSGi</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

@@ -48,7 +48,6 @@
         <module>ProtoBuf-Serializer</module>
         <module>MGX-DTO</module>
         <module>MGX-admin</module>
-        <module>BioJava5-OSGi</module>
         <module>SwingX-OSGi</module>
         <module>SFFReader</module>
         <module>MGX-BufferedRandomAccessFile</module>
@@ -73,6 +72,7 @@
         <module>DNAUtils</module>
         <module>MGX-seqcompression</module>
         <module>BioJava-legacy-OSGi</module>
+        <module>BioJava-OSGi</module>
     </modules>
       
     
