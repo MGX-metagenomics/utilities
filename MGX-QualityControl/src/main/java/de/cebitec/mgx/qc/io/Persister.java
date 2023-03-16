@@ -21,7 +21,7 @@ import java.util.logging.Logger;
  */
 public class Persister {
 
-    public static boolean persist(String prefix, Analyzer a) {
+    public static boolean persist(String prefix, Analyzer<?> a) {
         File f = null;
         try {
             f = new File(prefix + a.getName() + ".tmp");
