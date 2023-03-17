@@ -6,6 +6,7 @@
 package de.cebitec.mgx.qc;
 
 import de.cebitec.mgx.qc.impl.*;
+import de.cebitec.mgx.sequence.DNASequenceI;
 
 /**
  *
@@ -13,16 +14,18 @@ import de.cebitec.mgx.qc.impl.*;
  */
 public class QCFactory {
 
-    public static Analyzer<?>[] getQCAnalyzers(boolean hasQuality, boolean isPaired) {
+    @SuppressWarnings("rawtypes")
+    public static <T extends DNASequenceI> Analyzer<T>[] getQCAnalyzers(boolean hasQuality, boolean isPaired) {
+        
         if (hasQuality) {
             if (isPaired) {
-                return new Analyzer<?>[]{new FirstReadQualityDistribution(),new SecondReadQualityDistribution(),
+                return new Analyzer[]{new FirstReadQualityDistribution(),new SecondReadQualityDistribution(),
                     new LengthDistribution(), new NucleotideDistribution(), new GCDistribution()};
             } else {
-                return new Analyzer<?>[]{new FirstReadQualityDistribution(), new LengthDistribution(), new NucleotideDistribution(), new GCDistribution()};
+                return new Analyzer[]{new FirstReadQualityDistribution(), new LengthDistribution(), new NucleotideDistribution(), new GCDistribution()};
             }
         } else {
-            return new Analyzer<?>[]{new LengthDistribution(), new NucleotideDistribution(), new GCDistribution()};
+            return new Analyzer[]{new LengthDistribution(), new NucleotideDistribution(), new GCDistribution()};
         }
     }
 
