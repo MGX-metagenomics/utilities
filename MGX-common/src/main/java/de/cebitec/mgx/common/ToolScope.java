@@ -11,9 +11,9 @@ package de.cebitec.mgx.common;
  */
 public enum ToolScope {
     
-    READ(0),
-    ASSEMBLY(1),
-    GENE_ANNOTATION(2);
+    READ(0), // single-read based analysis
+    ASSEMBLY(1), // workflow that perform assembly
+    GENE_ANNOTATION(2); // annotate predicted genes on assembled contigs
 
     private final int code;
 
