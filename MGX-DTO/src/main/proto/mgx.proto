@@ -501,6 +501,7 @@ message AssemblyDTO {
     sint64 job_id = 3;
     uint64 reads_assembled = 4;
     uint64 n50 = 5;
+    uint64 total_cds = 6;
 }
 
 message AssemblyDTOList {
