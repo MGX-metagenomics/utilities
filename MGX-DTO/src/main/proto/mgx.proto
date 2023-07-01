@@ -537,6 +537,8 @@ message ContigDTO {
 
 message ContigDTOList {
     repeated ContigDTO contig = 1;
+    bool complete = 2;
+    string uuid = 3;
 }
 
 message AssemblyJobDTO {
