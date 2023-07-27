@@ -72,7 +72,12 @@ public class CSFWriter implements SeqWriterI<DNASequenceI> {
             nameout.write(nmsRecord);
 
             // encode sequence and write to seqout
-            byte[] encoded = FourBitEncoder.encode(seq.getSequence());
+            byte[] encoded;
+            if (seq instanceof EncodedDNASequence) {
+                encoded = ((EncodedDNASequence)seq).getEncodedSequence();
+            } else {
+                encoded = FourBitEncoder.encode(seq.getSequence());
+            }
             seqout.write(encoded);
             seqout.write(FourBitEncoder.RECORD_SEPARATOR);
 
