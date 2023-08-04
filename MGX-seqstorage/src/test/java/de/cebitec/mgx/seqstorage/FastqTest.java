@@ -7,6 +7,7 @@ import java.io.*;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import org.junit.jupiter.api.Test;
 
@@ -258,6 +259,25 @@ public class FastqTest {
         assertEquals(1, cnt);
     }
 
+//    @Test
+//    public void testExternalFile() throws Exception {
+//        System.out.println("testExternalFile");
+//        File f = new File("/home/sj/G1_90_K_cont.fastq");
+//        assertTrue(f.exists());
+//        assertTrue(f.canRead());
+//
+//        int seqCnt = 0;
+//        try ( FASTQReader fr = new FASTQReader(f.getAbsolutePath(), false)) {
+//            while (fr.hasMoreElements()) {
+//                DNAQualitySequenceI seq = fr.nextElement();
+//                assertNotNull(seq);
+//                seqCnt++;
+//            }
+//        } catch (SeqStoreException ex) {
+//            fail(ex.getMessage());
+//        }
+//    }
+
     private static DNAQualitySequenceI generateSequence(int len) throws SequenceException {
         byte[] seqName = String.valueOf(len).getBytes();
         byte[] s = new byte[len];
@@ -266,7 +286,7 @@ public class FastqTest {
 
         for (int i = 0; i < len; i++) {
             s[i] = 'A';
-            q[i] = (byte)quality;
+            q[i] = (byte) quality;
         }
         DNAQualitySequenceI seq = new QualityDNASequence(s, q, true);
         seq.setName(seqName);
