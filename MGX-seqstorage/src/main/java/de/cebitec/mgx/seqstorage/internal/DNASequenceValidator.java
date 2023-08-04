@@ -92,10 +92,17 @@ public class DNASequenceValidator {
         if (quality == null) {
             throw new SequenceException("DNA quality is null.");
         }
+        
+        //
+        // Illumina: 0-45
+        //
+        // according to https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0257521,
+        // Phred scores for Nanopore data use a range of 0-93.
+        //
 
         for (byte b : quality) {
             int i = (int) b;
-            if (i < 0 || i > 45) {
+            if (i < 0 || i > 93) {
                 throw new SequenceException("Invalid Phred score: " + i);
             }
         }
