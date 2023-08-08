@@ -3,9 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package de.cebitec.mgx.sequence;
+package de.cebitec.mgx.seqstorage;
 
 import de.cebitec.mgx.seqcompression.SequenceException;
+import de.cebitec.mgx.sequence.DNAQualitySequenceI;
+import de.cebitec.mgx.sequence.SeqReaderI;
+import de.cebitec.mgx.sequence.SeqStoreException;
 import java.util.HashSet;
 import java.util.Set;
 
