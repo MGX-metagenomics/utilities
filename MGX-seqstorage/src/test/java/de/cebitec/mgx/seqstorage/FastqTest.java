@@ -38,7 +38,7 @@ public class FastqTest {
         System.out.println("readFastq");
         File f = TestInput.copyTestResource(getClass(), "de/cebitec/mgx/seqstorage/sample_1.fq");
         int seqCnt = 0;
-        try (FASTQReader fr = new FASTQReader(f.getAbsolutePath(), false)) {
+        try ( FASTQReader fr = new FASTQReader(f.getAbsolutePath(), false)) {
             while (fr.hasMoreElements()) {
                 fr.nextElement();
                 seqCnt++;
@@ -58,7 +58,7 @@ public class FastqTest {
         int seqCnt = 0;
         File target = File.createTempFile("testFQWriter", "xx");
         FASTQWriter fw = new FASTQWriter(target.getAbsolutePath(), QualityEncoding.Illumina5);
-        try (FASTQReader fr = new FASTQReader(f.getAbsolutePath(), false)) {
+        try ( FASTQReader fr = new FASTQReader(f.getAbsolutePath(), false)) {
             while (fr.hasMoreElements()) {
                 DNAQualitySequenceI qseq = fr.nextElement();
                 fw.addSequence(qseq);
@@ -81,7 +81,7 @@ public class FastqTest {
         File f = TestInput.copyTestResource(getClass(), "de/cebitec/mgx/seqstorage/sample_1_dos.fq");
         int seqCnt = 0;
         DNAQualitySequenceI qseq = null;
-        try (FASTQReader fr = new FASTQReader(f.getAbsolutePath(), false)) {
+        try ( FASTQReader fr = new FASTQReader(f.getAbsolutePath(), false)) {
             while (fr.hasMoreElements()) {
                 qseq = fr.nextElement();
                 assertNotNull(qseq);
@@ -101,7 +101,7 @@ public class FastqTest {
     public void testFirstReadInFastq() throws Exception {
         System.out.println("FirstReadInFastq");
         File f = TestInput.copyTestResource(getClass(), "de/cebitec/mgx/seqstorage/sample_1.fq");
-        try (FASTQReader fr = new FASTQReader(f.getAbsolutePath(), false)) {
+        try ( FASTQReader fr = new FASTQReader(f.getAbsolutePath(), false)) {
             fr.hasMoreElements();
             DNAQualitySequenceI entry = fr.nextElement();
             assertArrayEquals("IRIS:7:1:17:394#0/1".getBytes(), entry.getName());
@@ -124,7 +124,7 @@ public class FastqTest {
         File f = TestInput.copyTestResource(getClass(), "de/cebitec/mgx/seqstorage/incomplete_last_line.fq");
         int seqCnt = 0;
         DNAQualitySequenceI seq = null;
-        try (FASTQReader fr = new FASTQReader(f.getAbsolutePath(), false)) {
+        try ( FASTQReader fr = new FASTQReader(f.getAbsolutePath(), false)) {
             while (fr.hasMoreElements()) {
                 seq = fr.nextElement();
                 seqCnt++;
@@ -145,7 +145,7 @@ public class FastqTest {
         // file has no line break after last line
         File f = TestInput.copyTestResource(getClass(), "de/cebitec/mgx/seqstorage/broken_seq.fq");
         DNAQualitySequenceI seq = null;
-        try (FASTQReader fr = new FASTQReader(f.getAbsolutePath(), false)) {
+        try ( FASTQReader fr = new FASTQReader(f.getAbsolutePath(), false)) {
             while (fr.hasMoreElements()) {
                 seq = fr.nextElement();
             }
@@ -163,7 +163,7 @@ public class FastqTest {
     public void testLowerCaseInput() throws Exception {
         System.out.println("testLowerCaseInput");
         File f = TestInput.copyTestResource(getClass(), "de/cebitec/mgx/seqstorage/lowercase.fq");
-        try (FASTQReader fr = new FASTQReader(f.getAbsolutePath(), false)) {
+        try ( FASTQReader fr = new FASTQReader(f.getAbsolutePath(), false)) {
             fr.hasMoreElements();
             DNAQualitySequenceI entry = fr.nextElement();
             assertEquals("TCGGT", new String(entry.getSequence()));
@@ -178,7 +178,7 @@ public class FastqTest {
         System.out.println("testIUPAC");
         File f = TestInput.copyTestResource(getClass(), "de/cebitec/mgx/seqstorage/regression_iupac.fq");
         int seqCnt = 0;
-        try (FASTQReader fr = new FASTQReader(f.getAbsolutePath(), false)) {
+        try ( FASTQReader fr = new FASTQReader(f.getAbsolutePath(), false)) {
             while (fr.hasMoreElements()) {
                 fr.nextElement();
                 seqCnt++;
@@ -197,7 +197,7 @@ public class FastqTest {
         File target = File.createTempFile("testIncreasingSeqLength", "fq");
         assertNotNull(target);
 
-        try (FASTQWriter fw = new FASTQWriter(target.getAbsolutePath(), QualityEncoding.Sanger)) {
+        try ( FASTQWriter fw = new FASTQWriter(target.getAbsolutePath(), QualityEncoding.Sanger)) {
             assertNotNull(fw);
             for (int seqCnt = 1; seqCnt <= 2000; seqCnt++) {
                 DNAQualitySequenceI qseq = generateSequence(seqCnt);
@@ -211,7 +211,7 @@ public class FastqTest {
         }
 
         int seqCnt = 1;
-        try (FASTQReader fr = new FASTQReader(target.getAbsolutePath(), false)) {
+        try ( FASTQReader fr = new FASTQReader(target.getAbsolutePath(), false)) {
             while (fr.hasMoreElements()) {
                 DNAQualitySequenceI qseq = fr.nextElement();
                 assertEquals(seqCnt, qseq.getSequence().length);
@@ -231,8 +231,8 @@ public class FastqTest {
         File target = File.createTempFile("testFQWriterxx", null);
         target.delete();
         DNAQualitySequenceI seq = null;
-        try (FASTQReader fr = new FASTQReader(f.getAbsolutePath(), false)) {
-            try (CSQFWriter csq = new CSQFWriter(target.getAbsolutePath())) {
+        try ( FASTQReader fr = new FASTQReader(f.getAbsolutePath(), false)) {
+            try ( CSQFWriter csq = new CSQFWriter(target.getAbsolutePath())) {
                 while (fr.hasMoreElements()) {
                     seq = fr.nextElement();
                     fr.hasMoreElements();
@@ -262,12 +262,12 @@ public class FastqTest {
 //    @Test
 //    public void testExternalFile() throws Exception {
 //        System.out.println("testExternalFile");
-//        File f = new File("/home/sj/G1_90_K_cont.fastq");
+//        File f = new File("/home/sj/SRR7158629_2.fastq.gz");
 //        assertTrue(f.exists());
 //        assertTrue(f.canRead());
 //
 //        int seqCnt = 0;
-//        try ( FASTQReader fr = new FASTQReader(f.getAbsolutePath(), false)) {
+//        try ( FASTQReader fr = new FASTQReader(f.getAbsolutePath(), true)) {
 //            while (fr.hasMoreElements()) {
 //                DNAQualitySequenceI seq = fr.nextElement();
 //                assertNotNull(seq);
@@ -276,6 +276,7 @@ public class FastqTest {
 //        } catch (SeqStoreException ex) {
 //            fail(ex.getMessage());
 //        }
+//        assertEquals(62_779_079, seqCnt);
 //    }
 
     private static DNAQualitySequenceI generateSequence(int len) throws SequenceException {
