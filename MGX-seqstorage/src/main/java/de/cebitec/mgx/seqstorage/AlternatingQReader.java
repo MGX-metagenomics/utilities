@@ -29,7 +29,8 @@ public class AlternatingQReader implements SeqReaderI<DNAQualitySequenceI> {
 
     @Override
     public void delete() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        reader1.delete();
+        reader2.delete();
     }
 
     @Override
