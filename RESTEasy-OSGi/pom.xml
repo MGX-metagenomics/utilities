@@ -28,7 +28,7 @@
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-client</artifactId>
-            <version>6.2.4.Final</version>
+            <version>6.2.5.Final</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.jboss.spec.javax.ws.rs</groupId>
