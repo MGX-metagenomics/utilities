@@ -100,7 +100,6 @@ public class KEGGMaster implements AutoCloseable {
     }
 
     public long getTimeout() {
-        assert timeout > 0;
         return timeout;
     }
 
