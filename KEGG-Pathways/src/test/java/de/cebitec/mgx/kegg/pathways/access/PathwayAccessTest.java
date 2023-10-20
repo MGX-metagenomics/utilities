@@ -17,7 +17,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -43,21 +42,6 @@ public class PathwayAccessTest {
             }
             m = null;
         }
-    }
-
-    @Test
-    public void testValid() throws Exception {
-        System.out.println("testValid");
-        getMaster().setValid("FOO");
-        boolean valid = getMaster().isValid("FOO");
-        assertTrue(valid);
-    }
-
-    @Test
-    public void testInvalid() throws Exception {
-        System.out.println("testInvalid");
-        boolean notValid = getMaster().isValid("BAR");
-        assertFalse(notValid);
     }
 
     @Test
@@ -114,7 +98,7 @@ public class PathwayAccessTest {
             return m;
         }
         try {
-            m = KEGGMaster.getInstance(folder.toAbsolutePath().toString());
+            m = KEGGMaster.getInstance("/tmp/kegg/");
             return m;
         } catch (KEGGException ex) {
             fail();

@@ -1,28 +1,25 @@
 package de.cebitec.mgx.kegg.pathways;
 
-import de.cebitec.mgx.kegg.pathways.access.AccessBase;
 import de.cebitec.mgx.kegg.pathways.access.ECNumberAccess;
 import de.cebitec.mgx.kegg.pathways.access.PathwayAccess;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.WebTarget;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -33,7 +30,6 @@ public class KEGGMaster implements AutoCloseable {
     private final Client restclient;
     private final String cacheDir;
     private final static String REST_BASE = "https://rest.kegg.jp/";
-    private final static String CACHEDIR = "/tmp/kegg/";
     private final long timeout = 1000L * 60L * 60L * 24L * 7L * 24L; // 24 weeks
     private PathwayAccess pwacc = null;
     private ECNumberAccess ecacc = null;
@@ -43,38 +39,43 @@ public class KEGGMaster implements AutoCloseable {
     private final static Map<String, KEGGMaster> instances = new HashMap<>();
 
     public static KEGGMaster getInstance(String cacheDir) throws KEGGException {
+        return getInstance(cacheDir, false);
+    }
+
+    public static KEGGMaster getInstance(String cacheDir, boolean createNewDB) throws KEGGException {
         if (!instances.containsKey(cacheDir)) {
-            instances.put(cacheDir, new KEGGMaster(cacheDir));
+            instances.put(cacheDir, new KEGGMaster(cacheDir, createNewDB));
         }
         return instances.get(cacheDir);
     }
 
-    public static KEGGMaster getInstance() throws KEGGException {
-        return getInstance(CACHEDIR);
-    }
-
-    private KEGGMaster(String cacheDirectory) throws KEGGException {
+    private KEGGMaster(String cacheDirectory, boolean createNewDB) throws KEGGException {
         cacheDir = cacheDirectory + File.separator;
-        //ClientConfig cc = new ClientConfig();
-        //cc.getProperties().put(ClientConfig.PROPERTY_THREADPOOL_SIZE, 30);
-        restclient = ClientBuilder.newBuilder()
-                .connectTimeout(5, TimeUnit.SECONDS)
-                .readTimeout(10, TimeUnit.SECONDS)
-                //  .withConfig(cc)
-                .build();
+
         File f = new File(cacheDir);
         if (!f.exists()) {
             if (!f.mkdirs()) {
                 throw new KEGGException("Could not create " + cacheDir);
             }
         }
+
+        // check sqlite driver is available
         try {
             Class.forName("org.sqlite.JDBC");
-            //conn = DriverManager.getConnection("jdbc:h2:" + cacheDir + File.separator + "kegg" + ";DEFAULT_TABLE_ENGINE=org.h2.mvstore.db.MVTableEngine;USER=sa;PASSWORD=sa");
-            checkDB();
-        } catch (ClassNotFoundException | SQLException ex) {
+        } catch (ClassNotFoundException ex) {
             throw new KEGGException(ex);
         }
+
+        if (createNewDB) {
+            createDB();
+        } else {
+            installDB(f);
+        }
+
+        restclient = ClientBuilder.newBuilder()
+                .connectTimeout(5, TimeUnit.SECONDS)
+                .readTimeout(10, TimeUnit.SECONDS)
+                .build();
     }
 
     public WebTarget getRESTResource() {
@@ -107,10 +108,10 @@ public class KEGGMaster implements AutoCloseable {
         return DriverManager.getConnection("jdbc:sqlite:" + cacheDir + File.separator + "kegg.db");
     }
 
-    private void checkDB() throws SQLException {
-        try (Connection c = getConnection()) {
+    private void createDB() throws KEGGException {
+        try ( Connection c = getConnection()) {
             DatabaseMetaData dbm = c.getMetaData();
-            try (ResultSet rs = dbm.getTables(null, null, "pathway", null)) {
+            try ( ResultSet rs = dbm.getTables(null, null, "pathway", null)) {
                 if (rs.next()) {
                     // Table exists
                 } else {
@@ -119,7 +120,7 @@ public class KEGGMaster implements AutoCloseable {
                             + "   mapnum VARCHAR(10), "
                             + "   name VARCHAR(512), "
                             + "   UNIQUE(mapnum))";
-                    try (Statement stmt = c.createStatement()) {
+                    try ( Statement stmt = c.createStatement()) {
                         stmt.execute(sql);
                     }
 
@@ -138,66 +139,55 @@ public class KEGGMaster implements AutoCloseable {
                             //                       + "   FOREIGN KEY(ec_num) REFERENCES ecnumber(number),"
                             + "   UNIQUE(pw_num, ec_num, x, y) "
                             + ")";
-                    try (Statement stmt = c.createStatement()) {
-                        stmt.execute(sql);
-                    }
-
-                    sql = "CREATE TABLE IF NOT EXISTS timestamps ("
-                            + "type VARCHAR(30), "
-                            + "time DATETIME)";
-                    try (Statement stmt = c.createStatement()) {
+                    try ( Statement stmt = c.createStatement()) {
                         stmt.execute(sql);
                     }
                 }
             }
         } catch (SQLException ex) {
-            Logger.getLogger(KEGGMaster.class.getName()).log(Level.SEVERE, null, ex);
+            throw new KEGGException(ex.getMessage());
         }
     }
 
-    public boolean isValid(final String type) {
-        boolean ret = false;
-        try (Connection c = getConnection()) {
-            try (PreparedStatement stmt = c.prepareStatement("SELECT time FROM timestamps WHERE type=?")) {
-                stmt.setString(1, type);
-                try (ResultSet rs = stmt.executeQuery()) {
-                    if (rs.next()) {
-                        String s = rs.getString(1);
-                        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-                        Date lastFetch = df.parse(s);
-
-                        Date earliestValidDate = new Date(System.currentTimeMillis() - getTimeout());
-                        ret = (earliestValidDate.before(lastFetch) || earliestValidDate.equals(lastFetch));
-                    }
-                }
+    private void installDB(File targetDir) throws KEGGException {
+        if (!targetDir.exists()) {
+            if (!targetDir.mkdirs()) {
+                throw new KEGGException("Could not create " + targetDir.getAbsolutePath());
             }
-        } catch (SQLException | ParseException ex) {
-            Logger.getLogger(KEGGMaster.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return ret;
-    }
+        if (!targetDir.canWrite()) {
+            throw new KEGGException("Cannot write to " + targetDir.getAbsolutePath());
+        }
 
-    public void setValid(final String type) {
-        //System.err.println("now valid: "+ type);
-        try (Connection c = getConnection()) {
-            try (PreparedStatement stmt = c.prepareStatement("UPDATE timestamps SET time=date('now') WHERE type=?")) {
-                stmt.setString(1, type);
-                stmt.execute();
-                int updateCnt = stmt.getUpdateCount();
-                if (updateCnt != 1) {
-                    try (PreparedStatement pstmt = c.prepareStatement("INSERT INTO timestamps (type, time) VALUES (?, date('now'))")) {
-                        pstmt.setString(1, type);
-                        pstmt.executeUpdate();
-                    }
-                }
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(AccessBase.class.getName()).log(Level.SEVERE, null, ex.getMessage());
+        // remove previous detabase
+        String target = targetDir + File.separator + "kegg.db";
+        if (new File(target).exists()) {
+            new File(target).delete();
         }
+
+        try ( InputStream is = getClass().getClassLoader().getResourceAsStream("de/cebitec/mgx/kegg/kegg.db")) {
+            try ( FileOutputStream rOut = new FileOutputStream(target)) {
+
+                byte[] buffer = new byte[4096];
+
+                int bytesRead = is.read(buffer);
+                while (bytesRead >= 0) {
+                    rOut.write(buffer, 0, bytesRead);
+                    bytesRead = is.read(buffer);
+                }
+
+                rOut.flush();
+            }
+        } catch (IOException ex) {
+            throw new KEGGException(ex.getMessage());
+        }
+
+        Logger.getLogger(getClass().getPackage().getName()).log(Level.INFO, "KEGG database successfully installed to {0}.", targetDir.getAbsolutePath());
     }
 
     @Override
     public void close() {
         restclient.close();
+        instances.remove(cacheDir);
     }
 }

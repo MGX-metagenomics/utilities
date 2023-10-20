@@ -2,8 +2,6 @@ package de.cebitec.mgx.kegg.pathways.access;
 
 import de.cebitec.mgx.kegg.pathways.KEGGException;
 import de.cebitec.mgx.kegg.pathways.KEGGMaster;
-import static de.cebitec.mgx.kegg.pathways.access.PathwayAccess.COORDS;
-import de.cebitec.mgx.kegg.pathways.api.PathwayI;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -14,7 +12,6 @@ import java.io.InputStreamReader;
 import java.nio.channels.FileChannel;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jakarta.ws.rs.client.WebTarget;
@@ -27,17 +24,9 @@ import jakarta.ws.rs.core.Response;
 public class AccessBase {
 
     private final KEGGMaster master;
-    private final ExecutorService pool;
-
-    protected final ReentrantReadWriteLock rwl = new ReentrantReadWriteLock();
 
     public AccessBase(KEGGMaster master) {
         this.master = master;
-        pool = Executors.newFixedThreadPool(1);
-    }
-
-    ExecutorService getPool() {
-        return pool;
     }
 
     protected final InputStream get(final WebTarget resource, final String... path) throws KEGGException {
@@ -69,37 +58,6 @@ public class AccessBase {
     protected boolean isValid(File f) {
         boolean ret = f.exists() && f.canRead() && f.lastModified() > (System.currentTimeMillis() - getMaster().getTimeout());
         return ret;
-    }
-
-    protected boolean isValid(String type) {
-        try {
-            rwl.readLock().lockInterruptibly();
-        } catch (InterruptedException ex) {
-            Logger.getLogger(AccessBase.class.getName()).log(Level.SEVERE, null, ex);
-            return false;
-        }
-
-        boolean ret = getMaster().isValid(type);
-        rwl.readLock().unlock();
-        return ret;
-    }
-
-    protected boolean isValid(PathwayI pw) {
-        try {
-            rwl.readLock().lockInterruptibly();
-        } catch (InterruptedException ex) {
-            Logger.getLogger(AccessBase.class.getName()).log(Level.SEVERE, null, ex);
-            return false;
-        }
-        boolean ret = getMaster().isValid(COORDS + "_" + pw.getMapNumber());
-        rwl.readLock().unlock();
-        return ret;
-    }
-
-    protected void setValid(String type) throws InterruptedException {
-        rwl.writeLock().lockInterruptibly();
-        getMaster().setValid(type);
-        rwl.writeLock().unlock();
     }
 
     protected WebTarget getRESTResource() {
