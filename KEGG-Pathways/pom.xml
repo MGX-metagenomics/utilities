@@ -63,7 +63,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>de.cebitec.mgx.kegg.pathways.App</mainClass>
+                            <mainClass>de.cebitec.mgx.kegg.pathways.CreateDB</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
