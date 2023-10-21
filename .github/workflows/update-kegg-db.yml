@@ -33,12 +33,8 @@ jobs:
       with:
         path: ~/.m2/repository
         key: ${{ runner.os }}-mgx-cache
-    - name: Compile required dependencies
-      run: |
-        mvn -DskipTests=true --file JFreeSVG-OSGi/pom.xml clean install
-        mvn -DskipTests=true --file RESTEasy-OSGi/pom.xml clean install
-    - name: Build KEGG pathway module
-      run: mvn -DskipTests=true --file KEGG-Pathways/pom.xml clean install
+    - name: Compile 
+      run: mvn clean install -DskipTests=true
     - name: Create new KEGG database
       run: java -jar KEGG-Pathways/target/KEGG-Pathways-2.0.jar
     - name: Run CI tests
