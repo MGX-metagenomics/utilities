@@ -8,6 +8,7 @@ name: KEGG database update
 on:
   schedule:
     - cron: '0 0 1 1,3,6,9,12 *'
+  workflow_dispatch:
 
 jobs:
   update-kegg-db:
