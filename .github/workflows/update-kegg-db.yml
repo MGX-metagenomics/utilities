@@ -43,7 +43,6 @@ jobs:
     - name: Run CI tests
       run: mvn -B package --file KEGG-Pathways/pom.xml
     - name: Commit KEGG database
-      uses: actions/checkout@v4
       run: |
         cp /tmp/kegg/kegg.db KEGG-Pathways/src/main/resources/de/cebitec/mgx/kegg/
         git config user.name github-actions
