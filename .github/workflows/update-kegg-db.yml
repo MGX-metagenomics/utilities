@@ -41,11 +41,12 @@ jobs:
         mvn clean install -DskipTests=true --file KEGG-Pathways/pom.xml
     - name: Create new KEGG database
       run: java -jar KEGG-Pathways/target/KEGG-Pathways-2.0.jar
-    - name: Run CI tests
-      run: mvn -B package --file KEGG-Pathways/pom.xml
-    - name: Commit KEGG database
+    - name: Run KEGG CI tests
       run: |
         cp /tmp/kegg/kegg.db KEGG-Pathways/src/main/resources/de/cebitec/mgx/kegg/
+        mvn -B package --file KEGG-Pathways/pom.xml
+    - name: Commit KEGG database
+      run: |
         git config user.name github-actions
         git config user.email github-actions@github.com
         git commit -m "Automated KEGG database update [ci skip]" KEGG-Pathways/src/main/resources/de/cebitec/mgx/kegg/kegg.db
