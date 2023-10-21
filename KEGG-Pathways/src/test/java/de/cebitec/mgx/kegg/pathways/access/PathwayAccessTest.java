@@ -8,7 +8,6 @@ import de.cebitec.mgx.kegg.pathways.model.ECNumberFactory;
 import de.cebitec.mgx.kegg.pathways.model.Pathway;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
@@ -21,16 +20,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 
 /**
  *
  * @author sj
  */
 public class PathwayAccessTest {
-
-    @TempDir
-    Path folder;
 
     @AfterEach
     public void tearDown() {
@@ -48,7 +43,7 @@ public class PathwayAccessTest {
     public void testFetchall() throws Exception {
         System.out.println("fetchall");
         Set<PathwayI> fetchall = getMaster().Pathways().fetchall();
-        assertTrue(fetchall.size() > 465);
+        assertTrue(fetchall.size() >= 568, "Number of pathways should be at least 568");
     }
 
     @Test
@@ -67,14 +62,23 @@ public class PathwayAccessTest {
         PathwayI pw = new Pathway("map00010", "xxxx");
         BufferedImage image = getMaster().Pathways().getImage(pw);
         assertNotNull(image);
+        assertEquals(1029, image.getHeight());
+        assertEquals(720, image.getWidth());
     }
 
     @Test
     public void testGetMatchingPathways_ECNumberI() throws Exception {
         System.out.println("getMatchingPathways_forECNumberI");
         ECNumberI ec = ECNumberFactory.fromString("6.3.1.9");
-        Collection<PathwayI> result = getMaster().Pathways().getMatchingPathways(ec);
+        Set<PathwayI> result = getMaster().Pathways().getMatchingPathways(ec);
+        assertNotNull(result);
         assertEquals(1, result.size());
+        //
+        for (PathwayI p : result) {
+            // there is only one
+            assertEquals("map00480", p.getMapNumber());
+            assertEquals("Glutathione metabolism", p.getName());
+        }
         //
         ec = ECNumberFactory.fromString("5.5.1.1");
         result = getMaster().Pathways().getMatchingPathways(ec);

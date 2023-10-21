@@ -309,7 +309,7 @@ public class PathwayAccess extends AccessBase {
         }
     }
 
-    public Collection<PathwayI> getMatchingPathways(final ECNumberI ec) throws KEGGException {
+    public Set<PathwayI> getMatchingPathways(final ECNumberI ec) throws KEGGException {
 
         final Set<PathwayI> ret = new HashSet<>();
 
