@@ -16,6 +16,9 @@ public class PairedEndFASTQWriter implements SeqWriterI<DNAQualitySequenceI> {
     private boolean useFirst = true;
 
     public PairedEndFASTQWriter(String filename, QualityEncoding qualityEncoding) throws SequenceException {
+        if (!filename.contains(".")) {
+            filename = filename + ".fq";
+        }
         int idx = filename.lastIndexOf(".");
         String prefix = filename.substring(0, idx);
         String suffix = filename.substring(idx);
