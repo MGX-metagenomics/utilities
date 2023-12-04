@@ -29,8 +29,8 @@
                 </executions>
                 <configuration>
                     <instructions>
+                        <Embed-Dependency>duckdb_jdbc;scope=compile|runtime</Embed-Dependency>
                         <Import-Package>
-                            org.sqlite,
                             javax.swing,
                             javax.imageio,
                             jakarta.ws.rs.client,
@@ -93,9 +93,9 @@
   
     <dependencies>
         <dependency>
-            <groupId>org.xerial</groupId>
-            <artifactId>sqlite-jdbc</artifactId>
-            <version>3.44.1.0</version>
+            <groupId>org.duckdb</groupId>
+            <artifactId>duckdb_jdbc</artifactId>
+            <version>0.9.2</version>
         </dependency>
         <dependency>
             <groupId>de.cebitec.mgx</groupId>

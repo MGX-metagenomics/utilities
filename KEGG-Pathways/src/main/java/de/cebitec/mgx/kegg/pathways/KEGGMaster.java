@@ -59,9 +59,9 @@ public class KEGGMaster implements AutoCloseable {
             }
         }
 
-        // check sqlite driver is available
+        // check sql driver is available
         try {
-            Class.forName("org.sqlite.JDBC");
+            Class.forName("org.duckdb.DuckDBDriver");
         } catch (ClassNotFoundException ex) {
             throw new KEGGException(ex);
         }
@@ -105,7 +105,7 @@ public class KEGGMaster implements AutoCloseable {
     }
 
     public final Connection getConnection() throws SQLException {
-        return DriverManager.getConnection("jdbc:sqlite:" + cacheDir + File.separator + "kegg.db");
+        return DriverManager.getConnection("jdbc:duckdb:" + cacheDir + File.separator + "kegg.db");
     }
 
     private void createDB() throws KEGGException {

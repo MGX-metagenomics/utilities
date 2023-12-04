@@ -102,9 +102,8 @@ public class PathwayAccess extends AccessBase {
                         for (Entry<String, String> e : data.entrySet()) {
                             stmt.setString(1, e.getKey());
                             stmt.setString(2, e.getValue());
-                            stmt.addBatch();
+                            stmt.executeUpdate();
                         }
-                        stmt.executeBatch();
                     }
                 }
 
@@ -298,9 +297,8 @@ public class PathwayAccess extends AccessBase {
                         stmt.setInt(4, rect.y);
                         stmt.setInt(5, rect.width);
                         stmt.setInt(6, rect.height);
-                        stmt.addBatch();
+                        stmt.executeUpdate();
                     }
-                    stmt.executeBatch();
                 }
             }
 
