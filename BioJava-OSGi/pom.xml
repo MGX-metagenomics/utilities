@@ -50,14 +50,16 @@
                         <Import-Package>
                             org.xml.sax,
                             org.w3c.dom,
-                            javax.management,
-                            javax.naming,
-                            javax.script,
+                            jakarta.xml.bind,
+                            jakarta.xml.bind.annotation,
+                            jakarta.xml.bind.annotation.adapters,
                             javax.xml.parsers,
-                            javax.xml.transform
+                            javax.xml.transform,
+                            javax.xml.xpath,
+                            org.slf4j
                         </Import-Package>
                         <Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
-                        <Embed-Transitive>true</Embed-Transitive>
+                        <Embed-Transitive>false</Embed-Transitive>
                         <_exportcontents>org.biojava.nbio.core.*</_exportcontents>
                         <Private-Package/>
                     </instructions>
